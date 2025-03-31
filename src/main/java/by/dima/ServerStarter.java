@@ -1,26 +1,36 @@
 package by.dima;
 
+
 import java.io.IOException;
-import java.net.*;
-import java.util.Arrays;
+import java.net.BindException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ServerStarter {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 
-        byte[] bytes = new byte[10];
-        int len = bytes.length;
-        int port = 80;
+        DatagramSocket socket;
+        DatagramPacket packet;
 
-        try {
-            System.out.println("Сервер запущен");
-            DatagramSocket socket = new DatagramSocket(port);
-            DatagramPacket packet = new DatagramPacket(bytes, len);
+        byte[] dataInput = new byte[10];
+        List<Integer> ports = new ArrayList<>(List.of(65000, 65001, 65002));
 
-            socket.receive(packet);
-            System.out.println(Arrays.toString(bytes));
+        for (Integer port : ports) {
+            try {
+                socket = new DatagramSocket(port);
+                packet = new DatagramPacket(dataInput, dataInput.length);
+                socket.receive(packet);
+                System.out.println(new String(dataInput, StandardCharsets.UTF_8));
 
-        } catch (IOException e) {
-            System.err.println("Не удалось установить соединение!");
+                packet = new DatagramPacket(dataInput, dataInput.length, packet.getAddress(), packet.getPort());
+                socket.send(packet);
+            } catch (BindException e) {
+                System.out.println("порт: " + port + " занят!");
+            }
         }
+
     }
 }
