@@ -35,7 +35,7 @@
                     <archive>
                         <manifest>
                             <!-- Укажите ваш главный класс (например, by.dima.Main) -->
-                            <mainClass>by.dima.ServerStarter</mainClass>
+                            <mainClass>by.dima.ServerStarterUDP</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

@@ -9,10 +9,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ServerStarter {
+public class ServerStarterUDP {
     public static void main(String[] args) throws IOException {
 
-        DatagramSocket socket;
+        DatagramSocket socket = null;
         DatagramPacket packet;
 
         byte[] dataInput = new byte[10];
@@ -21,15 +21,19 @@ public class ServerStarter {
         for (Integer port : ports) {
             try {
                 socket = new DatagramSocket(port);
-                packet = new DatagramPacket(dataInput, dataInput.length);
-                socket.receive(packet);
-                System.out.println(new String(dataInput, StandardCharsets.UTF_8));
-
-                packet = new DatagramPacket(dataInput, dataInput.length, packet.getAddress(), packet.getPort());
-                socket.send(packet);
+                System.out.println("Выбран порт " + port);
+                break;
             } catch (BindException e) {
                 System.out.println("порт: " + port + " занят!");
             }
+        }
+        if (socket != null) {
+            packet = new DatagramPacket(dataInput, dataInput.length);
+            socket.receive(packet);
+            System.out.println(new String(dataInput, StandardCharsets.UTF_8));
+
+            packet = new DatagramPacket(dataInput, dataInput.length, packet.getAddress(), packet.getPort());
+            socket.send(packet);
         }
 
     }
