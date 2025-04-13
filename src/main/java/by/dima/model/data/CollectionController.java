@@ -3,8 +3,8 @@ package by.dima.model.data;
 import by.dima.model.data.abstracts.model.Models;
 import by.dima.model.data.group.model.Groups;
 import by.dima.model.data.route.model.main.Route;
-import by.dima.model.service.files.io.write.WriteableFile;
-import by.dima.model.service.files.parser.string.model.ParserToJson;
+import by.dima.model.data.services.files.io.write.WriteableFile;
+import by.dima.model.data.services.files.parser.string.model.ParserToJson;
 import lombok.Getter;
 import lombok.Setter;
 

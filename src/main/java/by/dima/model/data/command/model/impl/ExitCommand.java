@@ -1,7 +1,7 @@
 package by.dima.model.data.command.model.impl;
 
 import by.dima.model.data.command.model.model.CommandAbstract;
-import by.dima.model.service.files.io.ScannerWrapper;
+import by.dima.model.data.services.files.io.ScannerWrapper;
 import lombok.Getter;
 import lombok.Setter;
 

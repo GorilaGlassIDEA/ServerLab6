@@ -2,7 +2,7 @@ package by.dima.model.data.command.model.impl;
 
 import by.dima.model.data.CollectionController;
 import by.dima.model.data.command.model.model.CommandAbstract;
-import by.dima.model.service.iterator.RouteIdSortIterator;
+import by.dima.model.data.services.iterator.RouteIdSortIterator;
 
 /**
  * Данная команда выводит все элементы коллекции в порядке возрастания Id

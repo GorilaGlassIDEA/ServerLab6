@@ -2,9 +2,9 @@ package by.dima.model.data.command.model.impl;
 
 import by.dima.model.data.command.model.CommandManager;
 import by.dima.model.data.command.model.model.CommandAbstract;
-import by.dima.model.service.files.io.read.ReadFileFiles;
-import by.dima.model.service.files.io.read.ReadableFile;
-import by.dima.model.service.iterator.TextIterable;
+import by.dima.model.data.services.files.io.read.ReadFileFiles;
+import by.dima.model.data.services.files.io.read.ReadableFile;
+import by.dima.model.data.services.iterator.TextIterable;
 import lombok.Getter;
 import lombok.Setter;
 

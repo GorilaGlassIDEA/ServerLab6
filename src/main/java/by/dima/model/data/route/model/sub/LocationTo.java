@@ -1,6 +1,6 @@
 package by.dima.model.data.route.model.sub;
 
-import by.dima.model.data.route.model.sub.exceptions.IncorrectDataLocationException;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,7 +13,7 @@ public class LocationTo {
 
     public LocationTo(Double x, Double y, String name) {
         if (x == null || y == null || name == null || name.length() > 330) {
-            throw new IncorrectDataLocationException();
+            //TODO: сделать Logger
         }
         this.x = x;
         this.y = y;

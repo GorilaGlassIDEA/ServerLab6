@@ -3,11 +3,10 @@ package by.dima.model.data.command.model;
 import by.dima.model.data.CollectionController;
 import by.dima.model.data.command.model.impl.*;
 import by.dima.model.data.command.model.model.Command;
-import by.dima.model.data.route.model.main.CreateRouteUsingScanner;
-import by.dima.model.service.files.io.ScannerWrapper;
-import by.dima.model.service.files.parser.string.model.ParserToJson;
-import by.dima.model.service.generate.id.IdGenerateble;
-import by.dima.model.service.util.GetSecondArgFromArgsUtil;
+import by.dima.model.data.services.files.io.ScannerWrapper;
+import by.dima.model.data.services.files.parser.string.model.ParserToJson;
+import by.dima.model.data.services.generate.id.IdGenerateble;
+import by.dima.model.data.services.util.GetSecondArgFromArgsUtil;
 import lombok.Getter;
 
 import java.util.*;
@@ -22,27 +21,29 @@ public class CommandManager {
     private final Map<String, Command> commandMap = new HashMap<>();
     private final ScannerWrapper scannerWrapper;
     private final LinkedList<String> historyCommandQueue;
+    @Getter
+    private final CollectionController collectionController;
 
     public CommandManager(CollectionController collectionController,
                           ScannerWrapper scannerWrapper,
-                          CreateRouteUsingScanner routeCreator,
                           ParserToJson parserToJson,
                           IdGenerateble idGenerateble) {
         this.scannerWrapper = scannerWrapper;
         this.historyCommandQueue = new LinkedList<>();
+        this.collectionController = collectionController;
 
         Command helpCommand = new HelpCommand(this);
         Command infoCommand = new InfoCommand(collectionController);
         Command showCommand = new ShowCommand(collectionController);
-        Command insertCommand = new InsertCommand(collectionController, parserToJson, idGenerateble, routeCreator);
-        Command updateCommand = new UpdateCommand(routeCreator, collectionController);
+//        Command insertCommand = new InsertCommand(collectionController, parserToJson, idGenerateble, routeCreator);
+//        Command updateCommand = new UpdateCommand(routeCreator, collectionController);
         Command clearCommand = new ClearCommand(collectionController);
         Command saveCommand = new SaveCommand(collectionController);
         Command exitCommand = new ExitCommand(scannerWrapper);
         Command removeKeyCommand = new RemoveKeyCommand(collectionController);
         Command historyCommand = new HistoryCommand(historyCommandQueue);
         Command executeScriptCommand = new ExecuteScriptCommand(this);
-        Command replaceIfLoweCommand = new ReplaceIfLoweCommand(idGenerateble, collectionController, routeCreator);
+//        Command replaceIfLoweCommand = new ReplaceIfLoweCommand(idGenerateble, collectionController, routeCreator);
         Command removeLowerKeyCommand = new RemoveLowerKeyCommand(collectionController);
         Command groupCountingByIdCommand = new GroupCountingByIdCommand(collectionController);
         Command printAscendingCommand = new PrintAscendingCommand(collectionController);
@@ -52,15 +53,15 @@ public class CommandManager {
         commandMap.put(helpCommand.getKey(), helpCommand);
         commandMap.put(infoCommand.getKey(), infoCommand);
         commandMap.put(showCommand.getKey(), showCommand);
-        commandMap.put(insertCommand.getKey(), insertCommand);
-        commandMap.put(updateCommand.getKey(), updateCommand);
+//        commandMap.put(insertCommand.getKey(), insertCommand);
+//        commandMap.put(updateCommand.getKey(), updateCommand);
         commandMap.put(clearCommand.getKey(), clearCommand);
         commandMap.put(removeKeyCommand.getKey(), removeKeyCommand);
         commandMap.put(exitCommand.getKey(), exitCommand);
         commandMap.put(saveCommand.getKey(), saveCommand);
         commandMap.put(historyCommand.getKey(), historyCommand);
         commandMap.put(executeScriptCommand.getKey(), executeScriptCommand);
-        commandMap.put(replaceIfLoweCommand.getKey(), replaceIfLoweCommand);
+//        commandMap.put(replaceIfLoweCommand.getKey(), replaceIfLoweCommand);
         commandMap.put(removeLowerKeyCommand.getKey(), removeLowerKeyCommand);
         commandMap.put(groupCountingByIdCommand.getKey(), groupCountingByIdCommand);
         commandMap.put(printAscendingCommand.getKey(), printAscendingCommand);

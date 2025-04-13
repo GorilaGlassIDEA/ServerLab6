@@ -6,7 +6,7 @@ import by.dima.model.data.route.model.main.Route;
 import by.dima.model.data.route.model.sub.Coordinates;
 import by.dima.model.data.route.model.sub.LocationFrom;
 import by.dima.model.data.route.model.sub.LocationTo;
-import by.dima.model.service.generate.id.IdGenerateble;
+import by.dima.model.data.services.generate.id.IdGenerateble;
 
 public class AddCommand extends CommandAbstract {
 

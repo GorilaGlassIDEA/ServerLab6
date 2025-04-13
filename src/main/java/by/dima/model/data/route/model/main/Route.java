@@ -1,8 +1,5 @@
 package by.dima.model.data.route.model.main;
 
-
-import by.dima.model.data.route.model.CheckValidateInfoUtilMyImpl;
-import by.dima.model.data.route.model.CheckableValidateInfoUtil;
 import by.dima.model.data.route.model.sub.Coordinates;
 import by.dima.model.data.route.model.sub.LocationFrom;
 import by.dima.model.data.route.model.sub.LocationTo;
@@ -16,6 +13,7 @@ import java.util.List;
 
 /**
  * Данный класс представляет собой основную модель для хранения данных в коллекции
+ *
  * @see by.dima.model.data.CollectionController
  * @see by.dima.model.data.abstracts.model.Models
  */
@@ -26,7 +24,6 @@ public class Route implements Comparable<Route> {
     private long id;
     private String name;
     private Coordinates coordinates;
-    //    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private ZonedDateTime creationDate;
     private LocationFrom from;
     private LocationTo to;
@@ -41,8 +38,6 @@ public class Route implements Comparable<Route> {
         this.distance = distance;
         // generate id
         this.id = id;
-        CheckableValidateInfoUtil checkableValidateInfoUtil = new CheckValidateInfoUtilMyImpl(this);
-        checkableValidateInfoUtil.checkable();
     }
 
     @Override

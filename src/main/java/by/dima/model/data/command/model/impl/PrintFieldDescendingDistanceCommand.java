@@ -3,7 +3,7 @@ package by.dima.model.data.command.model.impl;
 import by.dima.model.data.CollectionController;
 import by.dima.model.data.command.model.model.CommandAbstract;
 import by.dima.model.data.route.model.main.Route;
-import by.dima.model.service.iterator.RouteDistanceSortIterator;
+import by.dima.model.data.services.iterator.RouteDistanceSortIterator;
 
 /**
  * Данная команда выводит все элементы коллекции отсортированные по убыванию поля distance модели {@link Route}

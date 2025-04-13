@@ -1,6 +1,5 @@
 package by.dima.model.data.route.model.sub;
 
-import by.dima.model.data.route.model.sub.exceptions.IncorrectDataCoordinatesException;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,7 +12,7 @@ public class Coordinates {
     //TODO написать тесты
     public Coordinates(int x, Double y) {
         if (y == null || y <= -749) {
-            throw new IncorrectDataCoordinatesException();
+            //TODO: сделать logger
         }
         this.x = x;
         this.y = y;

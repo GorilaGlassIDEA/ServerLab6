@@ -1,6 +1,7 @@
 package by.dima.model.data.abstracts.model;
 
 import by.dima.model.data.route.model.main.Route;
+import by.dima.model.data.services.files.parser.string.model.ParserToJson;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,7 +14,7 @@ import java.util.Objects;
 /**
  * Данный класс является оберткой структуры Map и используется для работы с элементами Map
  * Этот класс также необходим для правильной сериализации и десериализации объектов в json формат
- * @see by.dima.model.service.files.parser.string.model.ParserToJson
+ * @see ParserToJson
  */
 @NoArgsConstructor
 @Getter
