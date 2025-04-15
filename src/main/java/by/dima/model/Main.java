@@ -11,14 +11,12 @@ import by.dima.model.data.services.files.io.read.ReadFileBufferReader;
 import by.dima.model.data.services.files.io.read.ReadableFile;
 import by.dima.model.data.services.files.io.write.WriteFileOutputStreamWriter;
 import by.dima.model.data.services.files.io.write.WriteableFile;
-import by.dima.model.data.services.files.parser.string.impl.ParserFromJsonJacksonImpl;
-import by.dima.model.data.services.files.parser.string.impl.ParserToJsonJacksonImpl;
+import by.dima.model.data.services.files.parser.string.impl.ModelsParserFromJson;
+import by.dima.model.data.services.files.parser.string.impl.ModelsParserFromModels;
 import by.dima.model.data.services.files.parser.string.model.ParserFromJson;
 import by.dima.model.data.services.files.parser.string.model.ParserToJson;
 import by.dima.model.data.services.generate.id.IdGenerateMy;
 import by.dima.model.data.services.generate.id.IdGenerateble;
-import by.dima.model.server.ServerUDP;
-import by.dima.model.server.ServerUDPNonBlocking;
 import by.dima.model.server.Serverable;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -45,8 +43,8 @@ public class Main {
         ObjectMapper mapper = new ObjectMapper();
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
         mapper.registerModule(new JavaTimeModule());
-        ParserFromJson<Models> parserFromJson = new ParserFromJsonJacksonImpl(mapper);
-        ParserToJson parserToJson = new ParserToJsonJacksonImpl(mapper);
+        ParserFromJson<Models> parserFromJson = new ModelsParserFromJson(mapper);
+        ParserToJson parserToJson = new ModelsParserFromModels(mapper);
 
         try {
             String jsonContent = readableFile.getContent();

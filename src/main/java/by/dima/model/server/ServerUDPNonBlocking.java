@@ -1,11 +1,10 @@
 package by.dima.model.server;
 
+import by.dima.model.server.executor.ExecuteCommand;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import java.net.InetSocketAddress;
-import java.net.Socket;
 import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
@@ -13,13 +12,14 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Setter
+@NoArgsConstructor
 public class ServerUDPNonBlocking implements Serverable {
-    Logger logger;
+    private Logger logger;
+    private ExecuteCommand executeCommand;
 
 
     public void startServer() {

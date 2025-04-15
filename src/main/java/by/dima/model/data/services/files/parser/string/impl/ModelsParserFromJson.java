@@ -4,14 +4,15 @@ import by.dima.model.data.abstracts.model.Models;
 import by.dima.model.data.services.files.parser.string.model.ParserFromJson;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.NoArgsConstructor;
 
 import java.util.HashMap;
+@NoArgsConstructor
+public class ModelsParserFromJson implements ParserFromJson<Models> {
 
-public class ParserFromJsonJacksonImpl implements ParserFromJson<Models> {
+    private ObjectMapper mapper;
 
-    ObjectMapper mapper;
-
-    public ParserFromJsonJacksonImpl(ObjectMapper mapper) {
+    public ModelsParserFromJson(ObjectMapper mapper) {
         this.mapper = mapper;
     }
 

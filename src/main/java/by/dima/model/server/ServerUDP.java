@@ -1,8 +1,8 @@
 package by.dima.model.server;
 
 import by.dima.model.data.command.model.CommandManager;
-import by.dima.model.common.CommandDTO;
-import by.dima.model.executor.ExecuteCommand;
+import by.dima.model.server.common.CommandDTO;
+import by.dima.model.server.executor.ExecuteCommand;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
