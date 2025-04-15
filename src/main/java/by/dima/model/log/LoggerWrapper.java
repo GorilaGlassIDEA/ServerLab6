@@ -1,22 +1,40 @@
 package by.dima.model.log;
 
-import lombok.Setter;
 
-import javax.swing.event.ChangeListener;
-import java.util.logging.Handler;
-import java.util.logging.Logger;
+import java.io.IOException;
+import java.util.logging.*;
 
 public class LoggerWrapper {
-    private Logger logger;
+    private FileHandler fileHandler;
+    public Logger logger;
+    private ConsoleHandler consoleHandler;
 
-    public void initLogger() {
-        logger = Logger.getLogger("server-log");
+    public Logger initLogger() {
+        logger = Logger.getLogger("client-log");
+        logger.setUseParentHandlers(false);
+
+        consoleHandler = new ConsoleHandler();
+        try {
+            fileHandler = new FileHandler("app.log");
+        } catch (IOException e) {
+            System.err.println("Работа вашей программы будет без отслеживания ошибок!");
+        }
+
+        fileHandler.setLevel(Level.FINEST);
+        fileHandler.setFormatter(new SimpleFormatter());
+
+        consoleHandler.setLevel(Level.FINE);
+        consoleHandler.setFilter(record -> (record.getLevel() == Level.FINE) || record.getLevel() == Level.INFO);
+        consoleHandler.setFormatter(new SimpleFormatter());
+        logger.addHandler(fileHandler);
+        logger.addHandler(consoleHandler);
+        logger.setLevel(Level.FINE);
+        return logger;
     }
 
     public void destroyLogger() {
-        for (Handler handler : logger.getHandlers()) {
-            handler.close();
-        }
+        consoleHandler.close();
+        fileHandler.close();
     }
 
 }

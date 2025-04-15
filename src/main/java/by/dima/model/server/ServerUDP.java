@@ -1,4 +1,4 @@
-package by.dima.model;
+package by.dima.model.server;
 
 import by.dima.model.data.command.model.CommandManager;
 import by.dima.model.common.CommandDTO;
@@ -11,7 +11,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.util.logging.*;
 
-public class ServerUDP {
+public class ServerUDP implements Serverable {
     private FileHandler fileHandler;
     private final ConsoleHandler consoleHandler = new ConsoleHandler();
     private final Logger logger = Logger.getLogger(getClass().getName());

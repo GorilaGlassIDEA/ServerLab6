@@ -4,7 +4,10 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
 
-    <bean id="logger" class="by.dima.model.log.LoggerWrapper" init-method="initLogger" destroy-method="destroyLogger"/>
+    <bean id="loggerBean" class="by.dima.model.log.LoggerWrapper" init-method="initLogger" destroy-method="destroyLogger"/>
 
+    <bean id="server" class="by.dima.model.server.ServerUDPNonBlocking">
+        <property name="logger" value="#{loggerBean.logger}"/>
+    </bean>
 
 </beans>

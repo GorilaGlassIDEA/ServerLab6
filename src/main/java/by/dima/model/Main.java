@@ -17,9 +17,13 @@ import by.dima.model.data.services.files.parser.string.model.ParserFromJson;
 import by.dima.model.data.services.files.parser.string.model.ParserToJson;
 import by.dima.model.data.services.generate.id.IdGenerateMy;
 import by.dima.model.data.services.generate.id.IdGenerateble;
+import by.dima.model.server.ServerUDP;
+import by.dima.model.server.ServerUDPNonBlocking;
+import by.dima.model.server.Serverable;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.io.IOException;
 
@@ -59,9 +63,11 @@ public class Main {
 
             //TODO: сделать объект сервера,
             // который принимает объект manager
-
-            ServerUDP serverUDP = new ServerUDP(manager);
+            ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
+            Serverable serverUDP = (Serverable) context.getBean("server");
             serverUDP.startServer();
+
+            context.close();
 
         } catch (IOException e) {
             System.err.println("Не удалось получить путь для сохранения объектов!");
