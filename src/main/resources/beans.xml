@@ -12,7 +12,13 @@
         <property name="logger" value="#{loggerBean.logger}"/>
     </bean>
     <bean id="execute-command" class="by.dima.model.server.executor.ExecuteCommand">
-        <property name="logger" value="#{loggerBean}"/>
+        <property name="logger" value="#{loggerBean.logger}"/>
     </bean>
 
+    <bean id="route-parser" class="by.dima.model.server.request.parser.RouteParserFromJson">
+        <property name="logger" value="#{loggerBean.logger}"/>
+    </bean>
+    <bean id="bytes-parser" class="by.dima.model.server.request.serealizible.ParserBytesToCommandDTO">
+        <property name="logger" value="#{loggerBean.logger}"/>
+    </bean>
 </beans>

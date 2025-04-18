@@ -27,6 +27,7 @@ import java.io.IOException;
 
 public class Main {
     public static String FILE_PATH;
+    public static ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
 
     public static void main(String[] args) {
 
@@ -61,8 +62,9 @@ public class Main {
 
             //TODO: сделать объект сервера,
             // который принимает объект manager
-            ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
+
             Serverable serverUDP = (Serverable) context.getBean("server");
+            serverUDP.setCommandManager(manager);
             serverUDP.startServer();
 
             context.close();

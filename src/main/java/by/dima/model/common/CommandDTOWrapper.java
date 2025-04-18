@@ -1,7 +1,6 @@
-package by.dima.model.server.common;
+package by.dima.model.common;
 
 import by.dima.model.data.route.model.main.Route;
-import by.dima.model.data.services.files.parser.string.impl.ModelsParserFromJson;
 import by.dima.model.data.services.files.parser.string.model.ParserFromJson;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,7 +20,7 @@ public class CommandDTOWrapper {
         this.stringRoute = commandDTO.getJsonRouteObj();
     }
 
-    public String getCommand() {
+    public String getNameCommand() {
         if (commandName != null && !commandName.isEmpty() && !commandName.isBlank()) {
             return commandName.strip();
         } else return null;

@@ -32,6 +32,7 @@ public class CommandManager {
         this.historyCommandQueue = new LinkedList<>();
         this.collectionController = collectionController;
 
+        //TODO: доделать RouteBuilder (routeCreator)
         Command helpCommand = new HelpCommand(this);
         Command infoCommand = new InfoCommand(collectionController);
         Command showCommand = new ShowCommand(collectionController);
