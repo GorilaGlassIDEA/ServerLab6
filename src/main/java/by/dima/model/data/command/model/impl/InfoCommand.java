@@ -13,22 +13,30 @@ import lombok.Setter;
 @Setter
 public class InfoCommand extends CommandAbstract {
     private CollectionController collectionController;
+    private StringBuilder builder;
 
     public InfoCommand(CollectionController collectionController) {
         super("info", "Show collection details (type, initialization date, size).");
         this.collectionController = collectionController;
+        builder = new StringBuilder();
     }
 
 
     @Override
     public void execute() {
         Models models = collectionController.getModels();
+        builder = new StringBuilder();
         if (models.sizeArray() == 0) {
-            System.err.println("Your collections is Empty!\nYou can add new element between insert command!");
+            builder.append("Your collections is Empty!\nYou can add new element between insert command!");
         } else {
-            System.out.println("Type: " + models.getType());
-            System.out.println("Date: " + models.getZonedDateTime());
-            System.out.println("Size: " + models.sizeArray());
+            builder.append("Type: ").append(models.getType());
+            builder.append("Date: ").append(models.getZonedDateTime());
+            builder.append("Size: ").append(models.sizeArray());
         }
+    }
+
+    @Override
+    public String getAnswer() {
+        return new String(builder);
     }
 }

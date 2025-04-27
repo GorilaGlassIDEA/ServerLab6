@@ -7,11 +7,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
-public class ModelsParserFromModels implements ParserToJson {
+public class JsonParserFromModels implements ParserToJson {
     ObjectMapper objectMapper;
 
     //Dependency injection
-    public ModelsParserFromModels(ObjectMapper objectMapper) {
+    public JsonParserFromModels(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
 
     }

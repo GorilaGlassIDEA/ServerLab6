@@ -1,5 +1,6 @@
 package by.dima.model.data.command.model;
 
+import by.dima.model.common.AnswerDTO;
 import by.dima.model.data.CollectionController;
 import by.dima.model.data.command.model.impl.*;
 import by.dima.model.data.command.model.model.Command;
@@ -10,6 +11,8 @@ import by.dima.model.data.services.util.GetSecondArgFromArgsUtil;
 import lombok.Getter;
 
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Данный класс управляет всеми командами через реализацию паттерна команда
@@ -23,14 +26,13 @@ public class CommandManager {
     private final LinkedList<String> historyCommandQueue;
     @Getter
     private final CollectionController collectionController;
+    private final Logger logger;
 
-    public CommandManager(CollectionController collectionController,
-                          ScannerWrapper scannerWrapper,
-                          ParserToJson parserToJson,
-                          IdGenerateble idGenerateble) {
+    public CommandManager(Logger logger, CollectionController collectionController, ScannerWrapper scannerWrapper, IdGenerateble idGenerateble) {
         this.scannerWrapper = scannerWrapper;
         this.historyCommandQueue = new LinkedList<>();
         this.collectionController = collectionController;
+        this.logger = logger;
 
         //TODO: доделать RouteBuilder (routeCreator)
         Command helpCommand = new HelpCommand(this);
@@ -97,8 +99,7 @@ public class CommandManager {
             thisCommand.execute();
             // запускаем выполенение команды
 
-            if (!(thisCommand instanceof HistoryCommand))
-                historyCommandQueue.addLast(key);
+            if (!(thisCommand instanceof HistoryCommand)) historyCommandQueue.addLast(key);
             if (historyCommandQueue.size() > 8) {
                 historyCommandQueue.removeFirst();
             }
@@ -110,25 +111,16 @@ public class CommandManager {
         }
     }
 
-    /**
-     * Данный метод позволяет запускать командны, переданные в аргументы метода. Данный метод необходим
-     * для реализации команды запуска команд из файла
-     *
-     * @param commands
-     * @see ExecuteScriptCommand
-     */
-
-    public void executeCommand(String... commands) {
-        int count = commands.length;
-        while (count > 0) {
-            try {
-                for (String keyCommand : commands) {
-                    count -= 1;
-                    commandMap.get(keyCommand).execute();
-                }
-            } catch (NoSuchElementException e) {
-                System.err.println("Command is not found");
-            }
+    public AnswerDTO executeCommand(String keyCommand) {
+        AnswerDTO answerDTO = new AnswerDTO();
+        if (commandMap.containsKey(keyCommand)) {
+            Command command = commandMap.get(keyCommand);
+            command.execute();
+            answerDTO.setAnswer(command.getAnswer());
+            logger.log(Level.CONFIG, "Ключ " + keyCommand + " существует");
+        } else {
+            logger.log(Level.WARNING, "Ключ " + keyCommand + " не существует");
         }
+        return answerDTO;
     }
 }

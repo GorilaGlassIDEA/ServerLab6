@@ -2,22 +2,19 @@ package by.dima.model.common;
 
 import by.dima.model.data.route.model.main.Route;
 import by.dima.model.data.services.files.parser.string.model.ParserFromJson;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import by.dima.model.server.request.parser.RouteParserFromJson;
 
-@NoArgsConstructor
 public class CommandDTOWrapper {
-    private String commandName;
-    private String commandArg;
-    private String stringRoute;
-    // прописать DI в Spring внедрив в parser Logger
-    @Setter
-    private ParserFromJson<Route> parser;
+    private final String commandName;
+    private final String commandArg;
+    private final String stringRoute;
+    private final ParserFromJson<Route> parser;
 
     public CommandDTOWrapper(CommandDTO commandDTO) {
         this.commandName = commandDTO.getNameCommand();
         this.commandArg = commandDTO.getArgCommand();
         this.stringRoute = commandDTO.getJsonRouteObj();
+        parser = new RouteParserFromJson();
     }
 
     public String getNameCommand() {

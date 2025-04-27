@@ -1,5 +1,6 @@
 package by.dima.model.server.executor;
 
+import by.dima.model.common.AnswerDTO;
 import by.dima.model.data.command.model.CommandManager;
 import by.dima.model.common.CommandDTOWrapper;
 import lombok.NoArgsConstructor;
@@ -9,23 +10,26 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @NoArgsConstructor
-    @Setter
+@Setter
 public class ExecuteCommand {
     private CommandManager manager;
     private Logger logger;
 
-    public ExecuteCommand(CommandManager manager) {
+    public ExecuteCommand(CommandManager manager, Logger logger) {
         this.manager = manager;
+        this.logger = logger;
     }
 
-    public void execute(CommandDTOWrapper commandDTOWrapper) {
+    public AnswerDTO execute(CommandDTOWrapper commandDTOWrapper) {
+        AnswerDTO answerDTO = new AnswerDTO();
         String cleanStringCommand = commandDTOWrapper.getNameCommand().strip();
         try {
-            manager.executeCommand(cleanStringCommand);
-            logger.log(Level.CONFIG, "Действие в классе ExecuteCommand выполнено!");
+            answerDTO = manager.executeCommand(cleanStringCommand);
+            logger.log(Level.FINE, "Действие в классе ExecuteCommand выполнено! Ответ: " + answerDTO);
         } catch (RuntimeException e) {
-            logger.log(Level.CONFIG, "Ошибка в результате работы класса CommandManager");
+            logger.log(Level.WARNING, "Ошибка в результате работы класса CommandManager");
         }
+        return answerDTO;
     }
 
 }

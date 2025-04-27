@@ -12,25 +12,27 @@ import by.dima.model.data.services.files.io.read.ReadableFile;
 import by.dima.model.data.services.files.io.write.WriteFileOutputStreamWriter;
 import by.dima.model.data.services.files.io.write.WriteableFile;
 import by.dima.model.data.services.files.parser.string.impl.ModelsParserFromJson;
-import by.dima.model.data.services.files.parser.string.impl.ModelsParserFromModels;
+import by.dima.model.data.services.files.parser.string.impl.JsonParserFromModels;
 import by.dima.model.data.services.files.parser.string.model.ParserFromJson;
 import by.dima.model.data.services.files.parser.string.model.ParserToJson;
 import by.dima.model.data.services.generate.id.IdGenerateMy;
 import by.dima.model.data.services.generate.id.IdGenerateble;
+import by.dima.model.log.FactoryLogger;
+import by.dima.model.server.ServerUDPNonBlocking;
 import by.dima.model.server.Serverable;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.io.IOException;
+import java.util.logging.Handler;
+import java.util.logging.Logger;
 
 public class Main {
     public static String FILE_PATH;
-    public static ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
+    public static final Logger logger = FactoryLogger.create();
 
     public static void main(String[] args) {
-
         if (System.getenv("FILE_PATH") == null) {
             FILE_PATH = System.getProperty("user.dir") + '/' + "save";
         } else {
@@ -45,7 +47,7 @@ public class Main {
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
         mapper.registerModule(new JavaTimeModule());
         ParserFromJson<Models> parserFromJson = new ModelsParserFromJson(mapper);
-        ParserToJson parserToJson = new ModelsParserFromModels(mapper);
+        ParserToJson parserToJson = new JsonParserFromModels(mapper);
 
         try {
             String jsonContent = readableFile.getContent();
@@ -57,20 +59,18 @@ public class Main {
             IdGenerateble idGenerateble = new IdGenerateMy(collectionController);
 
             ScannerWrapper scannerWrapper = new ScannerWrapper();
-            CommandManager manager = new CommandManager(collectionController, scannerWrapper, parserToJson, idGenerateble);
+            CommandManager manager = new CommandManager(logger, collectionController, scannerWrapper, idGenerateble);
 
+            Serverable serverUDP = new ServerUDPNonBlocking(manager, logger);
 
-            //TODO: сделать объект сервера,
-            // который принимает объект manager
-
-            Serverable serverUDP = (Serverable) context.getBean("server");
-            serverUDP.setCommandManager(manager);
             serverUDP.startServer();
-
-            context.close();
 
         } catch (IOException e) {
             System.err.println("Не удалось получить путь для сохранения объектов!");
+        } finally {
+            for (Handler handler : logger.getHandlers()) {
+                handler.close();
+            }
         }
 
 //

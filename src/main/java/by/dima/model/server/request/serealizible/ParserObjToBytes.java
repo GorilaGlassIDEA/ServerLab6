@@ -2,6 +2,7 @@ package by.dima.model.server.request.serealizible;
 
 import java.nio.ByteBuffer;
 
-public interface ParserBytesToObj<T> {
-    T getObj(ByteBuffer byteBuffer);
+public interface ParserObjToBytes<T> {
+    ByteBuffer getBytes(T t);
+
 }
