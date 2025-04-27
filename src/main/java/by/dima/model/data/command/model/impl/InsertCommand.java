@@ -15,7 +15,6 @@ import lombok.Setter;
  */
 @Getter
 public class InsertCommand extends CommandAbstract {
-    @Setter
     private Route route;
     private long id;
     private final CollectionController collectionController;
@@ -32,9 +31,7 @@ public class InsertCommand extends CommandAbstract {
 
     @Override
     public void execute() {
-//        route = fillOutRouteModelUsingScanner.createRoute(new RouteBuilder(), id);
         collectionController.addElem(route);
-        System.out.println("New element added in collection! You can save changes using save command!");
     }
 
     @Override

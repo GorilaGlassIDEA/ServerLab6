@@ -4,6 +4,7 @@ package by.dima.model;
 import by.dima.model.data.CollectionController;
 import by.dima.model.data.abstracts.model.Models;
 import by.dima.model.data.command.model.CommandManager;
+import by.dima.model.data.route.model.ScannerBuildRoute;
 import by.dima.model.data.services.files.io.ScannerWrapper;
 import by.dima.model.data.services.files.io.create.Creatable;
 import by.dima.model.data.services.files.io.create.CreateFile;
@@ -33,45 +34,47 @@ public class Main {
     public static final Logger logger = FactoryLogger.create();
 
     public static void main(String[] args) {
-        if (System.getenv("FILE_PATH") == null) {
-            FILE_PATH = System.getProperty("user.dir") + '/' + "save";
-        } else {
-            FILE_PATH = System.getenv("FILE_PATH") + '/' + "save";
-        }
-        System.out.println("Путь сохранения вашего файла: " + FILE_PATH);
-        WriteableFile writeableFile = new WriteFileOutputStreamWriter(FILE_PATH);
-        Creatable creatable = new CreateFile(writeableFile);
-        creatable.fileCreator();
-        ReadableFile readableFile = new ReadFileBufferReader(FILE_PATH);
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.enable(SerializationFeature.INDENT_OUTPUT);
-        mapper.registerModule(new JavaTimeModule());
-        ParserFromJson<Models> parserFromJson = new ModelsParserFromJson(mapper);
-        ParserToJson parserToJson = new JsonParserFromModels(mapper);
-
-        try {
-            String jsonContent = readableFile.getContent();
-
-            Models models = parserFromJson.getModels(jsonContent);
-
-
-            CollectionController collectionController = new CollectionController(models, writeableFile, parserToJson);
-            IdGenerateble idGenerateble = new IdGenerateMy(collectionController);
-
-            ScannerWrapper scannerWrapper = new ScannerWrapper();
-            CommandManager manager = new CommandManager(logger, collectionController, scannerWrapper, idGenerateble);
-
-            Serverable serverUDP = new ServerUDPNonBlocking(manager, logger);
-
-            serverUDP.startServer();
-
-        } catch (IOException e) {
-            System.err.println("Не удалось получить путь для сохранения объектов!");
-        } finally {
-            for (Handler handler : logger.getHandlers()) {
-                handler.close();
-            }
-        }
+        ScannerBuildRoute test = new ScannerBuildRoute();
+        System.out.println(test.build(10L));
+//        if (System.getenv("FILE_PATH") == null) {
+//            FILE_PATH = System.getProperty("user.dir") + '/' + "save.json";
+//        } else {
+//            FILE_PATH = System.getenv("FILE_PATH") + '/' + "save.json";
+//        }
+//        System.out.println("Путь сохранения вашего файла: " + FILE_PATH);
+//        WriteableFile writeableFile = new WriteFileOutputStreamWriter(FILE_PATH);
+//        Creatable creatable = new CreateFile(writeableFile);
+//        creatable.fileCreator();
+//        ReadableFile readableFile = new ReadFileBufferReader(FILE_PATH);
+//        ObjectMapper mapper = new ObjectMapper();
+//        mapper.enable(SerializationFeature.INDENT_OUTPUT);
+//        mapper.registerModule(new JavaTimeModule());
+//        ParserFromJson<Models> parserFromJson = new ModelsParserFromJson(mapper);
+//        ParserToJson parserToJson = new JsonParserFromModels(mapper);
+//
+//        try {
+//            String jsonContent = readableFile.getContent();
+//
+//            Models models = parserFromJson.getModels(jsonContent);
+//
+//
+//            CollectionController collectionController = new CollectionController(models, writeableFile, parserToJson);
+//            IdGenerateble idGenerateble = new IdGenerateMy(collectionController);
+//
+//            ScannerWrapper scannerWrapper = new ScannerWrapper();
+//            CommandManager manager = new CommandManager(logger, collectionController, scannerWrapper, idGenerateble);
+//
+//            Serverable serverUDP = new ServerUDPNonBlocking(manager, logger);
+//
+//            serverUDP.startServer();
+//
+//        } catch (IOException e) {
+//            System.err.println("Не удалось получить путь для сохранения объектов!");
+//        } finally {
+//            for (Handler handler : logger.getHandlers()) {
+//                handler.close();
+//            }
+//        }
 
 //
 //

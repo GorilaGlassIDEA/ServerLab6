@@ -13,7 +13,8 @@ import lombok.Setter;
 @Setter
 public class ShowCommand extends CommandAbstract {
 
-    private CollectionController collectionController;
+    private final CollectionController collectionController;
+    private StringBuilder builder;
 
     public ShowCommand(CollectionController collectionController) {
         super("show", "Display all elements in the collection.");
@@ -22,11 +23,17 @@ public class ShowCommand extends CommandAbstract {
 
     @Override
     public void execute() {
+        builder = new StringBuilder();
         Models models = collectionController.getModels();
         if (models.sizeArray() == 0) {
-            System.err.println("Your collections is Empty!\nYou can add new element between insert command!");
+            builder.append("Your collections is Empty!\nYou can add new element between insert command!");
         } else {
-            System.out.println(collectionController.getModels());
+            builder.append(collectionController.getModels());
         }
+    }
+
+    @Override
+    public String getAnswer() {
+        return new String(builder);
     }
 }

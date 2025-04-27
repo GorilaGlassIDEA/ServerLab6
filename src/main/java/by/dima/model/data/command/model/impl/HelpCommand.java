@@ -9,6 +9,7 @@ import by.dima.model.data.command.model.model.CommandAbstract;
  */
 public class HelpCommand extends CommandAbstract {
     private final CommandManager commandManager;
+    private StringBuilder builder;
 
     public HelpCommand(CommandManager commandManager) {
         super("help", "Display help for available commands.");
@@ -17,9 +18,14 @@ public class HelpCommand extends CommandAbstract {
 
     @Override
     public void execute() {
+        builder = new StringBuilder();
         for (Command command : commandManager.getCommandMap().values()) {
-            System.out.println(command.getKey() + ": " + command.getHelp());
+            builder.append(command.getKey()).append(": ").append(command.getHelp());
         }
     }
 
+    @Override
+    public String getAnswer() {
+        return new String(builder);
+    }
 }
