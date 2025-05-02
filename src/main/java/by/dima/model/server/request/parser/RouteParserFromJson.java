@@ -13,20 +13,20 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Setter
-@NoArgsConstructor
 public class RouteParserFromJson implements ParserFromJson<Route> {
     // Переписать под Spring DI
-//    private ObjectMapper mapper;
-    private Logger logger;
+    private final ObjectMapper mapper;
+
+    public RouteParserFromJson(ObjectMapper mapper) {
+        this.mapper = mapper;
+    }
 
     @Override
     public Route getModels(String jsonContent) {
-        ObjectMapper mapper = new ObjectMapper();
         try {
             return mapper.readValue(jsonContent, Route.class);
         } catch (JacksonException e) {
-            logger.log(Level.WARNING, "JacksonException: " + Arrays.toString(e.getStackTrace()));
-            return null;
+            throw new RuntimeException(e);
         }
     }
 }
