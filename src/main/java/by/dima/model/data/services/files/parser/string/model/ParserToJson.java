@@ -1,7 +1,7 @@
 package by.dima.model.data.services.files.parser.string.model;
 
-import by.dima.model.data.abstracts.model.Models;
+import by.dima.model.data.abstracts.model.CollectionDTO;
 
-public interface ParserToJson{
-    String getJson(Models models);
+public interface ParserToJson<T> {
+    String getJson(T models);
 }

@@ -22,9 +22,8 @@ public class ExecuteCommand {
 
     public AnswerDTO execute(CommandDTOWrapper commandDTOWrapper) {
         AnswerDTO answerDTO = new AnswerDTO();
-        String cleanStringCommand = commandDTOWrapper.getNameCommand().strip();
         try {
-            answerDTO = manager.executeCommand(cleanStringCommand);
+            answerDTO = manager.executeCommand(commandDTOWrapper.getCommandDTO());
             logger.log(Level.FINE, "Действие в классе ExecuteCommand выполнено! Ответ: " + answerDTO);
         } catch (RuntimeException e) {
             logger.log(Level.WARNING, "Ошибка в результате работы класса CommandManager");

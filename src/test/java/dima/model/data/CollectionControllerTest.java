@@ -1,7 +1,7 @@
 package dima.model.data;
 
 import by.dima.model.data.CollectionController;
-import by.dima.model.data.abstracts.model.Models;
+import by.dima.model.data.abstracts.model.CollectionDTO;
 import by.dima.model.data.route.model.main.Route;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,7 +24,7 @@ class CollectionControllerTest {
     CollectionController collectionController;
 
     @Mock
-    Models models;
+    CollectionDTO models;
 
 
     @Mock

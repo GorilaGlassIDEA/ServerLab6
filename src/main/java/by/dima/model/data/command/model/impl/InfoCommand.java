@@ -1,7 +1,7 @@
 package by.dima.model.data.command.model.impl;
 
 import by.dima.model.data.CollectionController;
-import by.dima.model.data.abstracts.model.Models;
+import by.dima.model.data.abstracts.model.CollectionDTO;
 import by.dima.model.data.command.model.model.CommandAbstract;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,7 +24,7 @@ public class InfoCommand extends CommandAbstract {
 
     @Override
     public void execute() {
-        Models models = collectionController.getModels();
+        CollectionDTO models = collectionController.getModels();
         builder = new StringBuilder();
         if (models.sizeArray() == 0) {
             builder.append("Your collections is Empty!\nYou can add new element between insert command!");

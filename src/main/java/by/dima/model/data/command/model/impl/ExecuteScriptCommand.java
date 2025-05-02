@@ -55,7 +55,7 @@ public class ExecuteScriptCommand extends CommandAbstract {
                 if (!(command.split(" ").length > 1 || command.equals("insert") || command.equals("update") || command.equals("remove_key") || command.equals("remove_lower_key") || command.equals("exit"))) {
                     System.out.println("Выполняется команда " + command);
                     String actualCommand = command.trim();
-                    commandManager.executeCommand(actualCommand);
+//                    commandManager.executeCommand(actualCommand);
                 }
             }
         }

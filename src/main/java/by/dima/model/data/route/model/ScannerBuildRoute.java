@@ -17,12 +17,13 @@ public class ScannerBuildRoute {
     }
 
     public Route build(Long id) {
-        return new Route(id,
-                readName(),
-                readCoordinates(),
-                readLocationFrom(),
-                readLocationTo(),
-                readDistance());
+        builder.setName(readName());
+        builder.setCoordinates(readCoordinates());
+        builder.setFrom(readLocationFrom());
+        builder.setTo(readLocationTo());
+        builder.setDistance(readDistance());
+        builder.setId(id);
+        return builder.build();
     }
 
     public String readName() {

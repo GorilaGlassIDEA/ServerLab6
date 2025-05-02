@@ -14,23 +14,23 @@ import java.util.Objects;
 /**
  * Данный класс является оберткой структуры Map и используется для работы с элементами Map
  * Этот класс также необходим для правильной сериализации и десериализации объектов в json формат
+ *
  * @see ParserToJson
  */
-@NoArgsConstructor
 @Getter
-public class Models {
+@NoArgsConstructor
+public class CollectionDTO {
     @Setter
     private Map<Long, Route> routesMap;
     private ZonedDateTime zonedDateTime;
     private final String type = Route.class.getName();
 
-    public Models(Map<Long, Route> routesMap) {
+    public CollectionDTO(Map<Long, Route> routesMap) {
         this.routesMap = routesMap;
         this.zonedDateTime = ZonedDateTime.now();
     }
 
     /**
-     *
      * @return количество элементов в Map
      */
     public long sizeArray() {
@@ -38,7 +38,6 @@ public class Models {
     }
 
     /**
-     *
      * @param route элемент для добавления в Map структуру
      */
     public void addNewElement(Route route) {
@@ -60,7 +59,7 @@ public class Models {
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        Models models = (Models) o;
+        CollectionDTO models = (CollectionDTO) o;
         return Objects.equals(routesMap, models.routesMap);
     }
 

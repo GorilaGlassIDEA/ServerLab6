@@ -4,11 +4,14 @@ import by.dima.model.common.AnswerDTO;
 import by.dima.model.common.CommandDTO;
 import by.dima.model.data.command.model.CommandManager;
 import by.dima.model.common.CommandDTOWrapper;
+import by.dima.model.data.command.model.impl.HelpCommand;
+import by.dima.model.data.command.model.model.Command;
 import by.dima.model.server.executor.ExecuteCommand;
 import by.dima.model.server.request.serealizible.ParserAnswerDTOToBytes;
 import by.dima.model.server.request.serealizible.ParserBytesToCommandDTO;
 import by.dima.model.server.request.serealizible.ParserBytesToObj;
 import by.dima.model.server.request.serealizible.ParserObjToBytes;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,6 +23,8 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -32,19 +37,20 @@ public class ServerUDPNonBlocking implements Serverable {
     @Getter
     private int clientPort = -1;
 
+    private final ObjectMapper mapper;
 
-    public ServerUDPNonBlocking(CommandManager commandManager, Logger logger) {
+
+    public ServerUDPNonBlocking(CommandManager commandManager, ObjectMapper mapper, Logger logger) {
         this.commandManager = commandManager;
         this.logger = logger;
+        this.mapper = mapper;
     }
 
 
     public void startServer() {
         ParserBytesToObj<CommandDTO> bytesParser = new ParserBytesToCommandDTO(logger);
         ParserObjToBytes<AnswerDTO> answerParser = new ParserAnswerDTOToBytes(logger);
-
-        ExecuteCommand executeCommand = new ExecuteCommand(commandManager, logger);
-        ByteBuffer byteBufferRecieve = ByteBuffer.allocate(1024);
+        ByteBuffer byteBufferReceive = ByteBuffer.allocate(1024);
 
         try (DatagramChannel channel = DatagramChannel.open();
              Selector selector = Selector.open()) {
@@ -62,18 +68,25 @@ public class ServerUDPNonBlocking implements Serverable {
                         SelectionKey key = iterator.next();
                         iterator.remove();
                         if (key.isReadable()) {
-                            byteBufferRecieve.clear();
-                            address = channel.receive(byteBufferRecieve);
+                            byteBufferReceive.clear();
+                            address = channel.receive(byteBufferReceive);
                             logger.log(Level.INFO, "Ip address client: " + address);
-                            logger.log(Level.CONFIG, "Data client" + ByteBuffer.wrap(byteBufferRecieve.array(), 0, byteBufferRecieve.limit()));
+                            logger.log(Level.CONFIG, "Data client" + ByteBuffer.wrap(byteBufferReceive.array(), 0, byteBufferReceive.limit()));
 
-                            byteBufferRecieve.flip();
-                            CommandDTOWrapper commandDTOWrapper = new CommandDTOWrapper(bytesParser.getObj(byteBufferRecieve));
-                            byteBufferRecieve.clear();
+                            byteBufferReceive.flip();
+                            CommandDTOWrapper commandDTOWrapper = new CommandDTOWrapper(bytesParser.getObj(byteBufferReceive), mapper);
+                            byteBufferReceive.clear();
 
                             logger.log(Level.INFO, "Command: " + commandDTOWrapper.getNameCommand());
 
-                            answerDTO = executeCommand.execute(commandDTOWrapper);
+                            Map<String, Command> commandMap = commandManager.getCommandMap();
+                            Command thisCommand = new HelpCommand(commandManager);
+                            if (commandMap.containsKey(commandDTOWrapper.getNameCommand())) {
+                                thisCommand = commandMap.get(commandDTOWrapper.getNameCommand());
+                            }
+                            thisCommand.setCommandDTO(commandDTOWrapper.getCommandDTO());
+                            thisCommand.execute();
+                            answerDTO = new AnswerDTO(thisCommand.getAnswer());
                             logger.log(Level.INFO, "Command is executed: " + commandDTOWrapper.getNameCommand());
                             if (answerDTO != null) {
                                 ByteBuffer byteBufferSend = answerParser.getBytes(answerDTO);

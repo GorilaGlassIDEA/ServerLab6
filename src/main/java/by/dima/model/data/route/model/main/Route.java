@@ -1,5 +1,6 @@
 package by.dima.model.data.route.model.main;
 
+import by.dima.model.data.abstracts.model.CollectionDTO;
 import by.dima.model.data.route.model.sub.Coordinates;
 import by.dima.model.data.route.model.sub.LocationFrom;
 import by.dima.model.data.route.model.sub.LocationTo;
@@ -15,7 +16,7 @@ import java.util.List;
  * Данный класс представляет собой основную модель для хранения данных в коллекции
  *
  * @see by.dima.model.data.CollectionController
- * @see by.dima.model.data.abstracts.model.Models
+ * @see CollectionDTO
  */
 @Getter
 @Setter

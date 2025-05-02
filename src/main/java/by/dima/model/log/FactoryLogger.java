@@ -22,7 +22,7 @@ public class FactoryLogger {
             System.err.println("Работа вашей программы будет без отслеживания ошибок!");
         }
         consoleHandler.setLevel(Level.FINE);
-        consoleHandler.setFilter(record -> (record.getLevel() == Level.FINE) || record.getLevel() == Level.INFO);
+//        consoleHandler.setFilter(record -> (record.getLevel() == Level.FINE) || record.getLevel() == Level.INFO);
         consoleHandler.setFormatter(new SimpleFormatter());
         logger.addHandler(consoleHandler);
         logger.setLevel(Level.FINE);
