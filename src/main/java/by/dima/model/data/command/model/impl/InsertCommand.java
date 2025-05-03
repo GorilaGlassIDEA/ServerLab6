@@ -53,10 +53,13 @@ public class InsertCommand extends CommandAbstract {
     @Override
     public void execute() {
 
+        builder = new StringBuilder();
+
         logger.log(Level.INFO, "Команда которая пришла на выполнение к insertCommand:" + commandDTO);
         try {
             if (commandDTO != null) {
                 String arg = commandDTO.getArgCommand();
+
                 Long userId = commandDTO.getUserID();
                 Route route = parserFromJson.getModels(commandDTO.getJsonRouteObj());
                 final CollectionController collectionController = new CollectionController(usersCollectionController.getCollectionDTO(userId));
@@ -77,8 +80,6 @@ public class InsertCommand extends CommandAbstract {
         } catch (RuntimeException e) {
             logger.log(Level.SEVERE, "В команде InsertCommand произошла критическая ошибка ");
             e.printStackTrace();
-        } finally {
-            builder = new StringBuilder();
         }
 
     }

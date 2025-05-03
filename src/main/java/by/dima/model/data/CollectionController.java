@@ -10,6 +10,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.util.Map;
+import java.util.Optional;
 
 @Getter
 public class CollectionController {
@@ -24,6 +25,9 @@ public class CollectionController {
 
 
     public void addElem(Route route) {
+        if (route.getId() == -1L) {
+            route.setId(getNextId());
+        }
         models.addNewElement(route);
     }
 
@@ -57,6 +61,11 @@ public class CollectionController {
 
     public boolean existId(Long id) {
         return this.collectionForControl.containsKey(id);
+    }
+
+    public Long getNextId() {
+        return collectionForControl.keySet().stream().max(Long::compare).orElse(0L) + 1;
+
     }
 
     public boolean replaceRouteForKey(Route route) {
