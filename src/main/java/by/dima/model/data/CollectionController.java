@@ -50,12 +50,13 @@ public class CollectionController {
 
     }
 
-    public void updateElem(Route newRoute) {
+    public boolean updateElem(Route newRoute) {
         if (collectionForControl.containsKey(newRoute.getId())) {
             collectionForControl.replace(newRoute.getId(), newRoute);
-
+            return true;
         } else {
-            System.err.println("Element which has this id doesn't exist!");
+            return false;
+
         }
     }
 
