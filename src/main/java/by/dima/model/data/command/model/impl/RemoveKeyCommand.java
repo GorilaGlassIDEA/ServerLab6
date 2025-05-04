@@ -1,7 +1,9 @@
 package by.dima.model.data.command.model.impl;
 
 import by.dima.model.data.CollectionController;
+import by.dima.model.data.UsersCollectionController;
 import by.dima.model.data.command.model.model.CommandAbstract;
+import by.dima.model.data.route.model.main.Route;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,27 +14,31 @@ import lombok.Setter;
 @Setter
 public class RemoveKeyCommand extends CommandAbstract {
 
-    private final CollectionController collectionController;
-    private Long arg;
+    private final UsersCollectionController usersCollectionController;
+    private StringBuilder builder;
 
-    public RemoveKeyCommand(CollectionController collectionController) {
+    public RemoveKeyCommand(UsersCollectionController usersCollectionController) {
         super("remove_key", "Remove an element by its key.");
-        this.collectionController = collectionController;
+        this.usersCollectionController = usersCollectionController;
+        builder = new StringBuilder();
     }
 
 
     @Override
     public void execute() {
-        collectionController.removeElem(arg);
-        System.out.println("Команда выполнена!");
+        CollectionController collectionController = new CollectionController(usersCollectionController.getCollectionDTO(getCommandDTO().getUserID()));
+        builder = new StringBuilder();
+        if (getCommandDTO().getArgCommand() != null) {
+            Long routeId = Long.parseLong(getCommandDTO().getArgCommand());
+            collectionController.removeElem(routeId);
+            builder.append("Элемент с id: ").append(routeId).append(" был удален!");
+        } else {
+            builder.append("Нет id для команды remove_key, проверьте корректность ввода!");
+        }
     }
 
     @Override
-    public void setArgs(String arg) {
-        try {
-            this.arg = Long.parseLong(arg);
-        } catch (NumberFormatException e) {
-            System.err.println("Incorrect arg!");
-        }
+    public String getAnswer() {
+        return new String(builder);
     }
 }

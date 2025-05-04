@@ -41,7 +41,7 @@ public class CommandManager {
         Command clearCommand = new ClearCommand(usersCollectionController);
         Command insertCommand = new InsertCommand(usersCollectionController, parserFromJsonRoute, logger);
         Command exitCommand = new ExitCommand(scannerWrapper);
-//        Command removeKeyCommand = new RemoveKeyCommand(collectionController);
+        Command removeKeyCommand = new RemoveKeyCommand(usersCollectionController);
         Command historyCommand = new HistoryCommand(historyCommandQueue);
         Command executeScriptCommand = new ExecuteScriptCommand(this);
 //        Command replaceIfLoweCommand = new ReplaceIfLoweCommand(idGenerateble, collectionController, routeCreator);
@@ -57,7 +57,7 @@ public class CommandManager {
         commandMap.put(insertCommand.getKey(), insertCommand);
         commandMap.put(updateCommand.getKey(), updateCommand);
         commandMap.put(clearCommand.getKey(), clearCommand);
-//        commandMap.put(removeKeyCommand.getKey(), removeKeyCommand);
+        commandMap.put(removeKeyCommand.getKey(), removeKeyCommand);
         commandMap.put(exitCommand.getKey(), exitCommand);
         commandMap.put(historyCommand.getKey(), historyCommand);
         commandMap.put(executeScriptCommand.getKey(), executeScriptCommand);

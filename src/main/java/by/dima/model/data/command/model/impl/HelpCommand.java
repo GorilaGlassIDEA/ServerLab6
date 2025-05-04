@@ -26,6 +26,6 @@ public class HelpCommand extends CommandAbstract {
 
     @Override
     public String getAnswer() {
-        return new String(builder);
+        return new String(builder).strip();
     }
 }
