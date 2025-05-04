@@ -37,14 +37,14 @@ public class CommandManager {
         Command helpCommand = new HelpCommand(this);
         Command infoCommand = new InfoCommand(usersCollectionController);
         Command showCommand = new ShowCommand(usersCollectionController);
-        Command updateCommand = new UpdateCommand(parserFromJsonRoute ,usersCollectionController);
+        Command updateCommand = new UpdateCommand(parserFromJsonRoute, usersCollectionController);
         Command clearCommand = new ClearCommand(usersCollectionController);
         Command insertCommand = new InsertCommand(usersCollectionController, parserFromJsonRoute, logger);
         Command exitCommand = new ExitCommand(scannerWrapper);
         Command removeKeyCommand = new RemoveKeyCommand(usersCollectionController);
         Command historyCommand = new HistoryCommand(historyCommandQueue);
         Command executeScriptCommand = new ExecuteScriptCommand(this);
-//        Command replaceIfLoweCommand = new ReplaceIfLoweCommand(idGenerateble, collectionController, routeCreator);
+        Command replaceIfLoweCommand = new ReplaceIfLoweCommand(parserFromJsonRoute, usersCollectionController);
 //        Command removeLowerKeyCommand = new RemoveLowerKeyCommand(collectionController);
 //        Command groupCountingByIdCommand = new GroupCountingByIdCommand(collectionController);
         Command printAscendingCommand = new PrintAscendingCommand(usersCollectionController);
@@ -61,7 +61,7 @@ public class CommandManager {
         commandMap.put(exitCommand.getKey(), exitCommand);
         commandMap.put(historyCommand.getKey(), historyCommand);
         commandMap.put(executeScriptCommand.getKey(), executeScriptCommand);
-//        commandMap.put(replaceIfLoweCommand.getKey(), replaceIfLoweCommand);
+        commandMap.put(replaceIfLoweCommand.getKey(), replaceIfLoweCommand);
 //        commandMap.put(removeLowerKeyCommand.getKey(), removeLowerKeyCommand);
 //        commandMap.put(groupCountingByIdCommand.getKey(), groupCountingByIdCommand);
         commandMap.put(printAscendingCommand.getKey(), printAscendingCommand);
