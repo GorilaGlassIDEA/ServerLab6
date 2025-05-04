@@ -34,8 +34,6 @@ import java.util.logging.Logger;
 public class InsertCommand extends CommandAbstract {
     private final UsersCollectionController usersCollectionController;
     private final Command saveCommand;
-    @Setter
-    private CommandDTO commandDTO;
     private final Logger logger;
     private final ParserFromJson<Route> parserFromJson;
     private StringBuilder builder;
@@ -55,13 +53,13 @@ public class InsertCommand extends CommandAbstract {
 
         builder = new StringBuilder();
 
-        logger.log(Level.INFO, "Команда которая пришла на выполнение к insertCommand:" + commandDTO);
+        logger.log(Level.INFO, "Команда которая пришла на выполнение к insertCommand:" + getCommandDTO());
         try {
-            if (commandDTO != null) {
-                String arg = commandDTO.getArgCommand();
+            if (getCommandDTO() != null) {
+                String arg = getCommandDTO().getArgCommand();
 
-                Long userId = commandDTO.getUserID();
-                Route route = parserFromJson.getModels(commandDTO.getJsonRouteObj());
+                Long userId = getCommandDTO().getUserID();
+                Route route = parserFromJson.getModels(getCommandDTO().getJsonRouteObj());
                 final CollectionController collectionController = new CollectionController(usersCollectionController.getCollectionDTO(userId));
                 collectionController.addElem(route);
                 logger.log(Level.FINE, "Нашлась коллекция для пользователя с id: " + userId + " аргумент равен " + arg);

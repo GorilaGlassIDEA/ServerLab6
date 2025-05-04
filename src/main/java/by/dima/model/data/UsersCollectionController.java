@@ -10,6 +10,7 @@ import lombok.ToString;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.logging.Logger;
 
 @ToString
 public class UsersCollectionController {
@@ -20,11 +21,13 @@ public class UsersCollectionController {
     private final ParserToJson<UsersCollectionDTO> parserToJson;
     private final ParserFromJson<UsersCollectionDTO> parserFromJson;
     private CollectionDTO collectionDTO;
+    private final Logger logger;
 
-    public UsersCollectionController(ReadableFile readableFile, ParserFromJson<UsersCollectionDTO> parserFromJson, WriteableFile writeableFile, ParserToJson<UsersCollectionDTO> parserToJson) {
+    public UsersCollectionController(Logger logger, ReadableFile readableFile, ParserFromJson<UsersCollectionDTO> parserFromJson, WriteableFile writeableFile, ParserToJson<UsersCollectionDTO> parserToJson) {
         this.writeableFile = writeableFile;
         this.parserToJson = parserToJson;
         this.parserFromJson = parserFromJson;
+        this.logger = logger;
         try {
             usersCollectionDTO = parserFromJson.getModels(readableFile.getContent());
         } catch (IOException e) {
@@ -52,9 +55,14 @@ public class UsersCollectionController {
         return collectionDTO;
     }
 
-    public CollectionDTO getNowCollectionDTO() {
-        //TODO потом убрать временное решечние для тестов ссылок
-        return collectionDTO;
+
+    public boolean deleteDataFromCollection(Long userId) {
+        if (usersCollectionDTO.getMap().containsKey(userId)) {
+            usersCollectionDTO.getMap().remove(userId);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public boolean saveCollection() {

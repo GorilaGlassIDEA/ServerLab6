@@ -35,10 +35,10 @@ public class CommandManager {
 
         //TODO: доделать RouteBuilder (routeCreator)
         Command helpCommand = new HelpCommand(this);
-//        Command infoCommand = new InfoCommand(collectionController);
-//        Command showCommand = new ShowCommand(collectionController);
+        Command infoCommand = new InfoCommand(usersCollectionController);
+        Command showCommand = new ShowCommand(usersCollectionController);
 //        Command updateCommand = new UpdateCommand(routeCreator, collectionController);
-//        Command clearCommand = new ClearCommand(collectionController);
+        Command clearCommand = new ClearCommand(usersCollectionController);
         Command insertCommand = new InsertCommand(usersCollectionController, parserFromJsonRoute, logger);
         Command exitCommand = new ExitCommand(scannerWrapper);
 //        Command removeKeyCommand = new RemoveKeyCommand(collectionController);
@@ -52,11 +52,11 @@ public class CommandManager {
 //        Command addCommand = new AddCommand(collectionController, idGenerateble);
 
         commandMap.put(helpCommand.getKey(), helpCommand);
-//        commandMap.put(infoCommand.getKey(), infoCommand);
-//        commandMap.put(showCommand.getKey(), showCommand);
+        commandMap.put(infoCommand.getKey(), infoCommand);
+        commandMap.put(showCommand.getKey(), showCommand);
         commandMap.put(insertCommand.getKey(), insertCommand);
 //        commandMap.put(updateCommand.getKey(), updateCommand);
-//        commandMap.put(clearCommand.getKey(), clearCommand);
+        commandMap.put(clearCommand.getKey(), clearCommand);
 //        commandMap.put(removeKeyCommand.getKey(), removeKeyCommand);
         commandMap.put(exitCommand.getKey(), exitCommand);
         commandMap.put(historyCommand.getKey(), historyCommand);
@@ -67,21 +67,5 @@ public class CommandManager {
 //        commandMap.put(printAscendingCommand.getKey(), printAscendingCommand);
 //        commandMap.put(printFieldDescendingDistanceCommand.getKey(), printFieldDescendingDistanceCommand);
 //        commandMap.put(addCommand.getKey(), addCommand);
-
-    }
-
-
-    public AnswerDTO executeCommand(CommandDTO commandDTO) {
-        String keyCommand = commandDTO.getNameCommand();
-        AnswerDTO answerDTO = new AnswerDTO();
-        if (commandMap.containsKey(keyCommand)) {
-            Command command = commandMap.get(keyCommand);
-            command.execute();
-            answerDTO.setAnswer(command.getAnswer());
-            logger.log(Level.FINEST, "Ключ " + keyCommand + " существует");
-        } else {
-            logger.log(Level.WARNING, "Ключ " + keyCommand + " не существует");
-        }
-        return answerDTO;
     }
 }

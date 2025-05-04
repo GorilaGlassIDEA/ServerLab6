@@ -20,7 +20,7 @@ public class HelpCommand extends CommandAbstract {
     public void execute() {
         builder = new StringBuilder();
         for (Command command : commandManager.getCommandMap().values()) {
-            builder.append(command.getKey()).append(": ").append(command.getHelp());
+            builder.append(command.getKey()).append(": ").append(command.getHelp()).append("\n");
         }
     }
 

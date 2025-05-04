@@ -1,6 +1,8 @@
 package by.dima.model.data.command.model.impl;
 
+import by.dima.model.common.CommandDTO;
 import by.dima.model.data.CollectionController;
+import by.dima.model.data.UsersCollectionController;
 import by.dima.model.data.command.model.model.CommandAbstract;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,22 +13,26 @@ import lombok.Setter;
  */
 
 @Getter
-@Setter
 public class ClearCommand extends CommandAbstract {
-    private final CollectionController collectionController;
+    private final UsersCollectionController usersCollectionController;
+    private StringBuilder builder;
 
-    /**
-     * @param collectionController класс для хранения всех данных в программе
-     */
-    public ClearCommand(CollectionController collectionController) {
+    public ClearCommand(UsersCollectionController usersCollectionController) {
         super("clear", "Clear command helps you with clearing collection!");
-        this.collectionController = collectionController;
+        this.usersCollectionController = usersCollectionController;
     }
 
     @Override
     public void execute() {
-        collectionController.resetModels();
-        System.out.println("Команда выполнена!");
+        builder = new StringBuilder();
+        Long userId = getCommandDTO().getUserID();
+        if (userId != null) {
+            if (usersCollectionController.deleteDataFromCollection(userId)) {
+                builder.append("Комадна ничего не удалила, возможно ваша коллекция пуста!");
+            }
+        }
+        builder.append("Команда выполнена!");
     }
+
 
 }

@@ -33,6 +33,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.logging.Handler;
 import java.util.logging.Logger;
 
@@ -59,7 +60,8 @@ public class Main {
         ParserFromJson<Route> parserFromJsonRoute = new RouteParserFromJson(mapper);
 
         try {
-            UsersCollectionController usersCollectionController = new UsersCollectionController(
+
+            UsersCollectionController usersCollectionController = new UsersCollectionController(logger,
                     readableFile, parserFromJson, writeableFile, parserToJson
             );
             ScannerWrapper scannerWrapper = new ScannerWrapper();
@@ -67,6 +69,8 @@ public class Main {
 
             Serverable serverUDP = new ServerUDPNonBlocking(manager, mapper, logger);
             serverUDP.startServer();
+
+            //TODO: исправить ошибку команды info когда коллекция не пустая!
 
         } catch (RuntimeException e) {
             System.err.println("Не удалось получить путь для сохранения объектов!");

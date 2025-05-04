@@ -14,9 +14,7 @@ public interface Command extends Nameable, Helpable {
         // default method for command which has more than one arg (update {id} insert {id})
     }
 
-    default void setCommandDTO(CommandDTO commandDTO) {
-        // убрать setArgs(String arg) после того как все команды начнут использовать setCommandDTO().getArg()
-    }
+    default void setCommandDTO(CommandDTO commandDTO){};
 
 
     default String getAnswer() {

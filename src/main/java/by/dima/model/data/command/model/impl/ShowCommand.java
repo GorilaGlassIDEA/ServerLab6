@@ -1,6 +1,8 @@
 package by.dima.model.data.command.model.impl;
 
+import by.dima.model.common.CommandDTO;
 import by.dima.model.data.CollectionController;
+import by.dima.model.data.UsersCollectionController;
 import by.dima.model.data.abstracts.model.CollectionDTO;
 import by.dima.model.data.command.model.model.CommandAbstract;
 import lombok.Getter;
@@ -13,16 +15,17 @@ import lombok.Setter;
 @Setter
 public class ShowCommand extends CommandAbstract {
 
-    private final CollectionController collectionController;
+    private final UsersCollectionController usersCollectionController;
     private StringBuilder builder;
 
-    public ShowCommand(CollectionController collectionController) {
+    public ShowCommand(UsersCollectionController usersCollectionController) {
         super("show", "Display all elements in the collection.");
-        this.collectionController = collectionController;
+        this.usersCollectionController = usersCollectionController;
     }
 
     @Override
     public void execute() {
+        CollectionController collectionController = new CollectionController(usersCollectionController.getCollectionDTO(getCommandDTO().getUserID()));
         builder = new StringBuilder();
         CollectionDTO models = collectionController.getModels();
         if (models.sizeArray() == 0) {
@@ -31,7 +34,6 @@ public class ShowCommand extends CommandAbstract {
             builder.append(collectionController.getModels());
         }
     }
-
     @Override
     public String getAnswer() {
         return new String(builder);

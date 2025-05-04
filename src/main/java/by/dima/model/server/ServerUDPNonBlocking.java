@@ -6,7 +6,6 @@ import by.dima.model.data.command.model.CommandManager;
 import by.dima.model.common.CommandDTOWrapper;
 import by.dima.model.data.command.model.impl.HelpCommand;
 import by.dima.model.data.command.model.model.Command;
-import by.dima.model.server.executor.ExecuteCommand;
 import by.dima.model.server.request.serealizible.ParserAnswerDTOToBytes;
 import by.dima.model.server.request.serealizible.ParserBytesToCommandDTO;
 import by.dima.model.server.request.serealizible.ParserBytesToObj;
@@ -24,7 +23,6 @@ import java.nio.channels.Selector;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
