@@ -37,7 +37,7 @@ public class CommandManager {
         Command helpCommand = new HelpCommand(this);
         Command infoCommand = new InfoCommand(usersCollectionController);
         Command showCommand = new ShowCommand(usersCollectionController);
-//        Command updateCommand = new UpdateCommand(routeCreator, collectionController);
+        Command updateCommand = new UpdateCommand(parserFromJsonRoute ,usersCollectionController);
         Command clearCommand = new ClearCommand(usersCollectionController);
         Command insertCommand = new InsertCommand(usersCollectionController, parserFromJsonRoute, logger);
         Command exitCommand = new ExitCommand(scannerWrapper);
@@ -47,7 +47,7 @@ public class CommandManager {
 //        Command replaceIfLoweCommand = new ReplaceIfLoweCommand(idGenerateble, collectionController, routeCreator);
 //        Command removeLowerKeyCommand = new RemoveLowerKeyCommand(collectionController);
 //        Command groupCountingByIdCommand = new GroupCountingByIdCommand(collectionController);
-//        Command printAscendingCommand = new PrintAscendingCommand(collectionController);
+        Command printAscendingCommand = new PrintAscendingCommand(usersCollectionController);
 //        Command printFieldDescendingDistanceCommand = new PrintFieldDescendingDistanceCommand(collectionController);
 //        Command addCommand = new AddCommand(collectionController, idGenerateble);
 
@@ -55,7 +55,7 @@ public class CommandManager {
         commandMap.put(infoCommand.getKey(), infoCommand);
         commandMap.put(showCommand.getKey(), showCommand);
         commandMap.put(insertCommand.getKey(), insertCommand);
-//        commandMap.put(updateCommand.getKey(), updateCommand);
+        commandMap.put(updateCommand.getKey(), updateCommand);
         commandMap.put(clearCommand.getKey(), clearCommand);
 //        commandMap.put(removeKeyCommand.getKey(), removeKeyCommand);
         commandMap.put(exitCommand.getKey(), exitCommand);
@@ -64,7 +64,7 @@ public class CommandManager {
 //        commandMap.put(replaceIfLoweCommand.getKey(), replaceIfLoweCommand);
 //        commandMap.put(removeLowerKeyCommand.getKey(), removeLowerKeyCommand);
 //        commandMap.put(groupCountingByIdCommand.getKey(), groupCountingByIdCommand);
-//        commandMap.put(printAscendingCommand.getKey(), printAscendingCommand);
+        commandMap.put(printAscendingCommand.getKey(), printAscendingCommand);
 //        commandMap.put(printFieldDescendingDistanceCommand.getKey(), printFieldDescendingDistanceCommand);
 //        commandMap.put(addCommand.getKey(), addCommand);
     }
