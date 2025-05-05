@@ -26,12 +26,10 @@ import java.util.logging.Logger;
 public class CommandManager {
     @Getter
     private final Map<String, Command> commandMap = new HashMap<>();
-    private final LinkedList<String> historyCommandQueue;
     private final Logger logger;
     private final UsersCollectionController usersCollectionController;
 
     public CommandManager(Logger logger, UsersCollectionController usersCollectionController, ParserFromJson<Route> parserFromJsonRoute) {
-        this.historyCommandQueue = new LinkedList<>();
         this.logger = logger;
         this.usersCollectionController = usersCollectionController;
 
@@ -44,7 +42,7 @@ public class CommandManager {
         Command insertCommand = new InsertCommand(usersCollectionController, parserFromJsonRoute, logger);
         Command removeKeyCommand = new RemoveKeyCommand(usersCollectionController);
         Command historyCommand = new HistoryCommand(usersCollectionController);
-//        Command executeScriptCommand = new ExecuteScriptCommand(this);
+        Command executeScriptCommand = new ExecuteScriptCommand(this);
         Command replaceIfLoweCommand = new ReplaceIfLoweCommand(parserFromJsonRoute, usersCollectionController);
         Command removeLowerKeyCommand = new RemoveLowerKeyCommand(usersCollectionController);
         Command groupCountingByIdCommand = new GroupCountingByIdCommand(usersCollectionController);
@@ -59,7 +57,7 @@ public class CommandManager {
         commandMap.put(clearCommand.getKey(), clearCommand);
         commandMap.put(removeKeyCommand.getKey(), removeKeyCommand);
         commandMap.put(historyCommand.getKey(), historyCommand);
-//        commandMap.put(executeScriptCommand.getKey(), executeScriptCommand);
+        commandMap.put(executeScriptCommand.getKey(), executeScriptCommand);
         commandMap.put(replaceIfLoweCommand.getKey(), replaceIfLoweCommand);
         commandMap.put(removeLowerKeyCommand.getKey(), removeLowerKeyCommand);
         commandMap.put(groupCountingByIdCommand.getKey(), groupCountingByIdCommand);
@@ -70,5 +68,12 @@ public class CommandManager {
     public void execute(Command command) {
         command.execute();
         usersCollectionController.addCommandName(command.getCommandDTO().getNameCommand(), command.getCommandDTO().getUserID());
+    }
+
+    public Command execute(String stringCommand, CommandDTO commandDTO) throws RuntimeException {
+        Command command = commandMap.get(stringCommand.strip());
+        command.setCommandDTO(commandDTO);
+        command.execute();
+        return command;
     }
 }
