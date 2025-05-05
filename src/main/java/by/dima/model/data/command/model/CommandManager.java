@@ -45,10 +45,10 @@ public class CommandManager {
         Command historyCommand = new HistoryCommand(historyCommandQueue);
         Command executeScriptCommand = new ExecuteScriptCommand(this);
         Command replaceIfLoweCommand = new ReplaceIfLoweCommand(parserFromJsonRoute, usersCollectionController);
-//        Command removeLowerKeyCommand = new RemoveLowerKeyCommand(collectionController);
+        Command removeLowerKeyCommand = new RemoveLowerKeyCommand(usersCollectionController);
 //        Command groupCountingByIdCommand = new GroupCountingByIdCommand(collectionController);
         Command printAscendingCommand = new PrintAscendingCommand(usersCollectionController);
-//        Command printFieldDescendingDistanceCommand = new PrintFieldDescendingDistanceCommand(collectionController);
+        Command printFieldDescendingDistanceCommand = new PrintFieldDescendingDistanceCommand(usersCollectionController);
 //        Command addCommand = new AddCommand(collectionController, idGenerateble);
 
         commandMap.put(helpCommand.getKey(), helpCommand);
@@ -62,10 +62,10 @@ public class CommandManager {
         commandMap.put(historyCommand.getKey(), historyCommand);
         commandMap.put(executeScriptCommand.getKey(), executeScriptCommand);
         commandMap.put(replaceIfLoweCommand.getKey(), replaceIfLoweCommand);
-//        commandMap.put(removeLowerKeyCommand.getKey(), removeLowerKeyCommand);
+        commandMap.put(removeLowerKeyCommand.getKey(), removeLowerKeyCommand);
 //        commandMap.put(groupCountingByIdCommand.getKey(), groupCountingByIdCommand);
         commandMap.put(printAscendingCommand.getKey(), printAscendingCommand);
-//        commandMap.put(printFieldDescendingDistanceCommand.getKey(), printFieldDescendingDistanceCommand);
+        commandMap.put(printFieldDescendingDistanceCommand.getKey(), printFieldDescendingDistanceCommand);
 //        commandMap.put(addCommand.getKey(), addCommand);
     }
 }
