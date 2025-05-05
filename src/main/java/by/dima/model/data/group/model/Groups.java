@@ -7,10 +7,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Данный класс реализует хранение и сортировку данных коллекции для реализации команды вывода элементов
  * коллекции в заданных группах.
+ *
  * @see by.dima.model.data.command.model.impl.GroupCountingByIdCommand
  */
 public class Groups {
@@ -24,21 +29,18 @@ public class Groups {
 
         //TODO: переделать под функциональный интерфейс для использования любых условий вывода группы
 
-        Map<String, List<Route>> groups = new HashMap<>();
-        List<Route> evenList = new ArrayList<>();
-        List<Route> unevenList = new ArrayList<>();
-        groups.put("even", evenList);
-        groups.put("uneven", unevenList);
+        List<Route> evenList, unevenList;
         Map<Long, Route> mapFrom = collectionController.getCollectionForControl();
+        evenList = mapFrom.entrySet().stream()
+                .filter(s -> s.getKey() % 2 == 0)
+                .map(Map.Entry::getValue)
+                .toList();
+        unevenList = mapFrom.entrySet().stream()
+                .filter(s -> s.getKey() % 2 == 1)
+                .map(Map.Entry::getValue)
+                .toList();
 
 
-
-
-        for (Long key : mapFrom.keySet()) {
-            if (key % 2 == 0) evenList.add(mapFrom.get(key));
-            else unevenList.add(mapFrom.get(key));
-        }
-
-        return groups;
+        return new HashMap<>(Map.of("even", evenList, "uneven", unevenList));
     }
 }
