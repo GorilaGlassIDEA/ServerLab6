@@ -34,6 +34,7 @@ public class PrintAscendingCommand extends CommandAbstract {
 
     @Override
     public String getAnswer() {
+
         return new String(builder);
     }
 }

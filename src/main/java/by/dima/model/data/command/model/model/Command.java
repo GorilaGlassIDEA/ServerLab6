@@ -10,15 +10,10 @@ import by.dima.model.common.CommandDTO;
 public interface Command extends Nameable, Helpable {
     void execute();
 
-    default void setArgs(String arg) {
-        // default method for command which has more than one arg (update {id} insert {id})
+    default void setCommandDTO(CommandDTO commandDTO) {
     }
 
-    default void setCommandDTO(CommandDTO commandDTO){};
 
-
-    default String getAnswer() {
-        return "Данная команда не выдает ответа";
-    }
+    String getAnswer();
 
 }

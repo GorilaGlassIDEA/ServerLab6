@@ -17,7 +17,7 @@ import java.io.IOException;
  */
 @Setter
 @Getter
-public class ExecuteScriptCommand extends CommandAbstract {
+public abstract class ExecuteScriptCommand extends CommandAbstract {
     private final CommandManager commandManager;
     private String content;
     private TextIterable textIterable;

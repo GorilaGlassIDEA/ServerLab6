@@ -12,7 +12,7 @@ import java.util.List;
  */
 @Getter
 @Setter
-public class HistoryCommand extends CommandAbstract {
+public abstract class HistoryCommand extends CommandAbstract {
 
     private List<String> historyCommandList;
 

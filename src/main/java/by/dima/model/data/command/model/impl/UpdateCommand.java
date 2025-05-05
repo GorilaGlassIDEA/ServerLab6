@@ -45,6 +45,7 @@ public class UpdateCommand extends CommandAbstract {
 
     @Override
     public String getAnswer() {
+        usersCollectionController.saveCollection();
         return new String(builder);
     }
 }

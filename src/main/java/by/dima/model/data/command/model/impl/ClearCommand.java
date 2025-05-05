@@ -34,5 +34,8 @@ public class ClearCommand extends CommandAbstract {
         builder.append("Команда выполнена!");
     }
 
-
+    @Override
+    public String getAnswer() {
+        return new String(builder);
+    }
 }

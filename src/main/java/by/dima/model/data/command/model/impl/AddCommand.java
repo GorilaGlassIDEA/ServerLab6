@@ -8,7 +8,7 @@ import by.dima.model.data.route.model.sub.LocationFrom;
 import by.dima.model.data.route.model.sub.LocationTo;
 import by.dima.model.data.services.generate.id.IdGenerateble;
 
-public class AddCommand extends CommandAbstract {
+public abstract class AddCommand extends CommandAbstract {
 
     private final CollectionController collectionController;
     private final IdGenerateble idGenerateble;

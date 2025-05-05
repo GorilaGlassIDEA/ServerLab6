@@ -39,6 +39,7 @@ public class RemoveKeyCommand extends CommandAbstract {
 
     @Override
     public String getAnswer() {
+        usersCollectionController.saveCollection();
         return new String(builder);
     }
 }

@@ -84,8 +84,7 @@ public class InsertCommand extends CommandAbstract {
 
     @Override
     public String getAnswer() {
+        usersCollectionController.saveCollection();
         return new String(builder);
     }
-    //TODO: доделать метод serCommandDTO до логичного конца и проверить saveCommand()
-
 }
