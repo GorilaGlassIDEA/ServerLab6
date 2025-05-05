@@ -64,8 +64,7 @@ public class Main {
             UsersCollectionController usersCollectionController = new UsersCollectionController(logger,
                     readableFile, parserFromJson, writeableFile, parserToJson
             );
-            ScannerWrapper scannerWrapper = new ScannerWrapper();
-            CommandManager manager = new CommandManager(logger, usersCollectionController, scannerWrapper, parserFromJsonRoute);
+            CommandManager manager = new CommandManager(logger, usersCollectionController, parserFromJsonRoute);
 
             Serverable serverUDP = new ServerUDPNonBlocking(manager, mapper, logger);
             serverUDP.startServer();

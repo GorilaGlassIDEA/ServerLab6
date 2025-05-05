@@ -32,8 +32,6 @@ public class ServerUDPNonBlocking implements Serverable {
     private final CommandManager commandManager;
     @Getter
     private final int thisPort = 8932;
-    @Getter
-    private int clientPort = -1;
 
     private final ObjectMapper mapper;
 
@@ -83,7 +81,7 @@ public class ServerUDPNonBlocking implements Serverable {
                                 thisCommand = commandMap.get(commandDTOWrapper.getNameCommand());
                             }
                             thisCommand.setCommandDTO(commandDTOWrapper.getCommandDTO());
-                            thisCommand.execute();
+                            commandManager.execute(thisCommand);
                             answerDTO = new AnswerDTO(thisCommand.getAnswer());
                             logger.log(Level.INFO, "Command is executed: " + commandDTOWrapper.getNameCommand());
                             if (answerDTO != null) {

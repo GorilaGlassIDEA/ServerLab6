@@ -10,6 +10,7 @@ import lombok.ToString;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Logger;
 
 @ToString
@@ -46,14 +47,25 @@ public class UsersCollectionController {
 //    }
 
 
-    public CollectionDTO getCollectionDTO(Long id) {
-        collectionDTO = usersCollectionDTO.getCollection(id);
+    public CollectionDTO getCollectionDTO(Long userId) {
+        collectionDTO = usersCollectionDTO.getCollection(userId);
         if (collectionDTO == null) {
             collectionDTO = new CollectionDTO(new HashMap<>());
-            usersCollectionDTO.edit(id, collectionDTO);
+            usersCollectionDTO.edit(userId, collectionDTO);
         }
         return collectionDTO;
     }
+
+    public void addCommandName(String commandName, Long userId) {
+        collectionDTO = getCollectionDTO(userId);
+        collectionDTO.addCommandHistory(commandName);
+    }
+
+    public List<String> getCommandNameList(Long userId) {
+        collectionDTO = getCollectionDTO(userId);
+        return collectionDTO.getHistoryCommandList();
+    }
+
 
 
     public boolean deleteDataFromCollection(Long userId) {

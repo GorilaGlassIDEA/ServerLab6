@@ -8,9 +8,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.time.ZonedDateTime;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Данный класс является оберткой структуры Map и используется для работы с элементами Map
@@ -25,10 +23,16 @@ public class CollectionDTO {
     private Map<Long, Route> routesMap;
     private ZonedDateTime zonedDateTime;
     private final String type = Route.class.getName();
+    private final List<String> historyCommandList = new ArrayList<>();
+
 
     public CollectionDTO(Map<Long, Route> routesMap) {
         this.routesMap = routesMap;
         this.zonedDateTime = ZonedDateTime.now();
+    }
+
+    public void addCommandHistory(String commandName) {
+        historyCommandList.add(commandName);
     }
 
     /**

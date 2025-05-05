@@ -28,10 +28,12 @@ public class CommandManager {
     private final Map<String, Command> commandMap = new HashMap<>();
     private final LinkedList<String> historyCommandQueue;
     private final Logger logger;
+    private final UsersCollectionController usersCollectionController;
 
-    public CommandManager(Logger logger, UsersCollectionController usersCollectionController, ScannerWrapper scannerWrapper, ParserFromJson<Route> parserFromJsonRoute) {
+    public CommandManager(Logger logger, UsersCollectionController usersCollectionController, ParserFromJson<Route> parserFromJsonRoute) {
         this.historyCommandQueue = new LinkedList<>();
         this.logger = logger;
+        this.usersCollectionController = usersCollectionController;
 
         //TODO: доделать RouteBuilder (routeCreator)
         Command helpCommand = new HelpCommand(this);
@@ -41,14 +43,13 @@ public class CommandManager {
         Command clearCommand = new ClearCommand(usersCollectionController);
         Command insertCommand = new InsertCommand(usersCollectionController, parserFromJsonRoute, logger);
         Command removeKeyCommand = new RemoveKeyCommand(usersCollectionController);
-//        Command historyCommand = new HistoryCommand(historyCommandQueue);
+        Command historyCommand = new HistoryCommand(usersCollectionController);
 //        Command executeScriptCommand = new ExecuteScriptCommand(this);
         Command replaceIfLoweCommand = new ReplaceIfLoweCommand(parserFromJsonRoute, usersCollectionController);
         Command removeLowerKeyCommand = new RemoveLowerKeyCommand(usersCollectionController);
         Command groupCountingByIdCommand = new GroupCountingByIdCommand(usersCollectionController);
         Command printAscendingCommand = new PrintAscendingCommand(usersCollectionController);
         Command printFieldDescendingDistanceCommand = new PrintFieldDescendingDistanceCommand(usersCollectionController);
-//        Command addCommand = new AddCommand(collectionController, idGenerateble);
 
         commandMap.put(helpCommand.getKey(), helpCommand);
         commandMap.put(infoCommand.getKey(), infoCommand);
@@ -57,13 +58,17 @@ public class CommandManager {
         commandMap.put(updateCommand.getKey(), updateCommand);
         commandMap.put(clearCommand.getKey(), clearCommand);
         commandMap.put(removeKeyCommand.getKey(), removeKeyCommand);
-//        commandMap.put(historyCommand.getKey(), historyCommand);
+        commandMap.put(historyCommand.getKey(), historyCommand);
 //        commandMap.put(executeScriptCommand.getKey(), executeScriptCommand);
         commandMap.put(replaceIfLoweCommand.getKey(), replaceIfLoweCommand);
         commandMap.put(removeLowerKeyCommand.getKey(), removeLowerKeyCommand);
         commandMap.put(groupCountingByIdCommand.getKey(), groupCountingByIdCommand);
         commandMap.put(printAscendingCommand.getKey(), printAscendingCommand);
         commandMap.put(printFieldDescendingDistanceCommand.getKey(), printFieldDescendingDistanceCommand);
-//        commandMap.put(addCommand.getKey(), addCommand);
+    }
+
+    public void execute(Command command) {
+        command.execute();
+        usersCollectionController.addCommandName(command.getCommandDTO().getNameCommand(), command.getCommandDTO().getUserID());
     }
 }

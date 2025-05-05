@@ -13,7 +13,8 @@ public interface Command extends Nameable, Helpable {
     default void setCommandDTO(CommandDTO commandDTO) {
     }
 
-
     String getAnswer();
+
+    CommandDTO getCommandDTO();
 
 }

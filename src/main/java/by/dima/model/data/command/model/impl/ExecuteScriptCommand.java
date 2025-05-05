@@ -28,25 +28,25 @@ public abstract class ExecuteScriptCommand extends CommandAbstract {
         this.commandManager = commandManager;
     }
 
-    @Override
-    public void setArgs(String arg) {
-        String content = tryReadFile(arg);
-
-        if (content == null) {
-            String relativePath = System.getProperty("user.dir") + File.separator + arg;
-            content = tryReadFile(relativePath);
-        }
-
-        if (content == null) {
-            System.err.println("Не удалось найти или прочитать файл");
-        } else {
-            System.out.println(content);
-            System.out.println("Путь открытия файла: " + arg);
-        }
-
-        this.content = content; // Фиксируем конечное состояние
-        this.textIterable = (content != null) ? new TextIterable(content) : null;
-    }
+//    @Override
+//    public void setArgs(String arg) {
+//        String content = tryReadFile(arg);
+//
+//        if (content == null) {
+//            String relativePath = System.getProperty("user.dir") + File.separator + arg;
+//            content = tryReadFile(relativePath);
+//        }
+//
+//        if (content == null) {
+//            System.err.println("Не удалось найти или прочитать файл");
+//        } else {
+//            System.out.println(content);
+//            System.out.println("Путь открытия файла: " + arg);
+//        }
+//
+//        this.content = content; // Фиксируем конечное состояние
+//        this.textIterable = (content != null) ? new TextIterable(content) : null;
+//    }
 
     @Override
     public void execute() {
