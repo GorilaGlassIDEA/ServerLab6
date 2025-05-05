@@ -28,12 +28,6 @@ public class CommandDTOWrapper {
         } else return null;
     }
 
-    public String getArg() {
-        if (commandArg != null && !commandArg.isEmpty() && !commandArg.isBlank()) {
-            return commandArg.strip();
-        } else return null;
-    }
-
     public Route getRoute() {
         return parser.getModels(stringRoute);
     }

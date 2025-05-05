@@ -32,6 +32,7 @@ public class CollectionDTO {
     }
 
     public void addCommandHistory(String commandName) {
+
         historyCommandList.add(commandName);
     }
 

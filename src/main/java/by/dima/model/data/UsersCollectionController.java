@@ -37,15 +37,6 @@ public class UsersCollectionController {
         }
     }
 
-//    public void addCollection(Long userId, CollectionDTO collectionDTO) {
-//        if (usersCollectionDTO.getMap() != null) {
-//            usersCollectionDTO.edit(userId, collectionDTO);
-//            writeableFile.write(parserToJson.getJson(usersCollectionDTO));
-//        } else {
-//            System.out.println("Не удалось добавить новую модель CollectionDTO");
-//        }
-//    }
-
 
     public CollectionDTO getCollectionDTO(Long userId) {
         collectionDTO = usersCollectionDTO.getCollection(userId);

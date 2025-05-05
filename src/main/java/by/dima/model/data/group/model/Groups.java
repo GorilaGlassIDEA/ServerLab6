@@ -32,6 +32,8 @@ public class Groups {
         Map<Long, Route> mapFrom = collectionController.getCollectionForControl();
 
 
+
+
         for (Long key : mapFrom.keySet()) {
             if (key % 2 == 0) evenList.add(mapFrom.get(key));
             else unevenList.add(mapFrom.get(key));
