@@ -1,6 +1,6 @@
 package dima.model.data.route.model.main;
 
-import by.dima.model.data.route.model.main.NormalizeValueImpl;
+import by.dima.model.common.main.NormalizeValueImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

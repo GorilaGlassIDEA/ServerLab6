@@ -62,7 +62,9 @@ public class UsersCollectionController {
     public boolean deleteDataFromCollection(Long userId) {
         if (usersCollectionDTO.getMap().containsKey(userId)) {
             usersCollectionDTO.getMap().remove(userId);
+            saveCollection();
             return true;
+
         } else {
             return false;
         }

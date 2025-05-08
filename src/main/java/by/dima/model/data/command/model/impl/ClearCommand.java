@@ -27,7 +27,7 @@ public class ClearCommand extends CommandAbstract {
         builder = new StringBuilder();
         Long userId = getCommandDTO().getUserID();
         if (userId != null) {
-            if (usersCollectionController.deleteDataFromCollection(userId)) {
+            if (!usersCollectionController.deleteDataFromCollection(userId)) {
                 builder.append("Комадна ничего не удалила, возможно ваша коллекция пуста!");
             }
         }
