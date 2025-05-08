@@ -3,7 +3,7 @@ package by.dima.model.data.command.model.impl;
 import by.dima.model.data.CollectionController;
 import by.dima.model.data.UsersCollectionController;
 import by.dima.model.data.command.model.model.CommandAbstract;
-import by.dima.model.data.route.model.main.Route;
+import by.dima.model.common.main.Route;
 import by.dima.model.data.services.files.parser.string.model.ParserFromJson;
 
 /**

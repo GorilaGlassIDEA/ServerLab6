@@ -1,4 +1,4 @@
-package by.dima.model.data.route.model.main;
+package by.dima.model.common.main;
 
 import lombok.Setter;
 

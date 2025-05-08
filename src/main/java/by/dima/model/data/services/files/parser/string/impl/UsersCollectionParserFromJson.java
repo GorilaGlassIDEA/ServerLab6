@@ -25,7 +25,6 @@ public class UsersCollectionParserFromJson implements ParserFromJson<UsersCollec
             return mapper.readValue(jsonContent, UsersCollectionDTO.class);
         } catch (IOException e) {
             logger.log(Level.WARNING, "Не удалось переделать json в UsersCollectionDTO!");
-            e.printStackTrace();
             return new UsersCollectionDTO(new HashMap<>());
         }
     }

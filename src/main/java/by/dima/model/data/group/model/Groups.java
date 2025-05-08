@@ -1,16 +1,11 @@
 package by.dima.model.data.group.model;
 
 import by.dima.model.data.CollectionController;
-import by.dima.model.data.route.model.main.Route;
+import by.dima.model.common.main.Route;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Данный класс реализует хранение и сортировку данных коллекции для реализации команды вывода элементов

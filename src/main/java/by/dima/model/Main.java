@@ -1,27 +1,20 @@
 package by.dima.model;
 
 
-import by.dima.model.data.CollectionController;
 import by.dima.model.data.UsersCollectionController;
-import by.dima.model.data.abstracts.model.CollectionDTO;
 import by.dima.model.data.abstracts.model.UsersCollectionDTO;
 import by.dima.model.data.command.model.CommandManager;
-import by.dima.model.data.route.model.main.Route;
-import by.dima.model.data.services.files.io.ScannerWrapper;
+import by.dima.model.common.main.Route;
 import by.dima.model.data.services.files.io.create.Creatable;
 import by.dima.model.data.services.files.io.create.CreateFile;
 import by.dima.model.data.services.files.io.read.ReadFileBufferReader;
 import by.dima.model.data.services.files.io.read.ReadableFile;
 import by.dima.model.data.services.files.io.write.WriteFileOutputStreamWriter;
 import by.dima.model.data.services.files.io.write.WriteableFile;
-import by.dima.model.data.services.files.parser.string.impl.CollectionDTOParserFromJson;
-import by.dima.model.data.services.files.parser.string.impl.CollectionDTOParserToJson;
 import by.dima.model.data.services.files.parser.string.impl.UsersCollectionParserFromJson;
 import by.dima.model.data.services.files.parser.string.impl.UsersCollectionParserToJson;
 import by.dima.model.data.services.files.parser.string.model.ParserFromJson;
 import by.dima.model.data.services.files.parser.string.model.ParserToJson;
-import by.dima.model.data.services.generate.id.IdGenerateMy;
-import by.dima.model.data.services.generate.id.IdGenerateble;
 import by.dima.model.log.FactoryLogger;
 import by.dima.model.server.ServerUDPNonBlocking;
 import by.dima.model.server.Serverable;

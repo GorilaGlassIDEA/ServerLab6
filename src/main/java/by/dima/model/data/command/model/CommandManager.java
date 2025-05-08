@@ -1,21 +1,14 @@
 package by.dima.model.data.command.model;
 
-import by.dima.model.common.AnswerDTO;
 import by.dima.model.common.CommandDTO;
-import by.dima.model.data.CollectionController;
 import by.dima.model.data.UsersCollectionController;
 import by.dima.model.data.command.model.impl.*;
 import by.dima.model.data.command.model.model.Command;
-import by.dima.model.data.route.model.main.Route;
-import by.dima.model.data.services.files.io.ScannerWrapper;
+import by.dima.model.common.main.Route;
 import by.dima.model.data.services.files.parser.string.model.ParserFromJson;
-import by.dima.model.data.services.files.parser.string.model.ParserToJson;
-import by.dima.model.data.services.generate.id.IdGenerateble;
-import by.dima.model.data.services.util.GetSecondArgFromArgsUtil;
 import lombok.Getter;
 
 import java.util.*;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**

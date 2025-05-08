@@ -1,28 +1,21 @@
-package by.dima.model.data.route.model.main;
+package by.dima.model.common.main;
 
-import by.dima.model.data.abstracts.model.CollectionDTO;
+import by.dima.model.common.sub.*;
+
 import by.dima.model.data.route.model.sub.Coordinates;
-import by.dima.model.data.route.model.sub.LocationFrom;
-import by.dima.model.data.route.model.sub.LocationTo;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
+import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Данный класс представляет собой основную модель для хранения данных в коллекции
- *
- * @see by.dima.model.data.CollectionController
- * @see CollectionDTO
- */
 @Getter
 @Setter
 @NoArgsConstructor
-public class Route implements Comparable<Route> {
+public class Route implements Comparable<Route>, Serializable {
     private long id;
     private String name;
     private Coordinates coordinates;

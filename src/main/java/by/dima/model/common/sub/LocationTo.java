@@ -1,12 +1,15 @@
-package by.dima.model.data.route.model.sub;
+package by.dima.model.common.sub;
 
 
+import by.dima.model.server.Serverable;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 @Data
 @NoArgsConstructor
-public class LocationTo {
+public class LocationTo implements Serializable {
     private Double x;
     private Double y;
     private String name;

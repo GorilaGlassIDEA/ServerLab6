@@ -1,28 +1,15 @@
 package by.dima.model.data.command.model.impl;
 
-import by.dima.model.common.CommandDTO;
 import by.dima.model.data.CollectionController;
 import by.dima.model.data.UsersCollectionController;
-import by.dima.model.data.abstracts.model.CollectionDTO;
-import by.dima.model.data.command.model.CommandManager;
 import by.dima.model.data.command.model.model.Command;
 import by.dima.model.data.command.model.model.CommandAbstract;
 
-import by.dima.model.data.route.model.main.Route;
+import by.dima.model.common.main.Route;
 
 import by.dima.model.data.services.files.parser.string.model.ParserFromJson;
-import by.dima.model.data.services.files.parser.string.model.ParserToJson;
-import by.dima.model.data.services.generate.id.IdGenerateble;
 import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-import lombok.experimental.Tolerate;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.w3c.dom.ls.LSOutput;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -55,7 +42,7 @@ public class InsertCommand extends CommandAbstract {
 
         logger.log(Level.INFO, "Команда которая пришла на выполнение к insertCommand:" + getCommandDTO());
         try {
-            if (getCommandDTO() != null) {
+            if (getCommandDTO() != null && getCommandDTO().getJsonRouteObj()!=null) {
                 String arg = getCommandDTO().getArgCommand();
 
                 Long userId = getCommandDTO().getUserID();

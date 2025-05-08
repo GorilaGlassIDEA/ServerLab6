@@ -1,11 +1,10 @@
 package by.dima.model.data.abstracts.model;
 
-import by.dima.model.data.route.model.main.Route;
+import by.dima.model.common.main.Route;
 import by.dima.model.data.services.files.parser.string.model.ParserToJson;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 import java.time.ZonedDateTime;
 import java.util.*;

@@ -32,6 +32,7 @@ public class ParserBytesToCommandDTO implements ParserBytesToObj<CommandDTO> {
         } catch (ClassNotFoundException e) {
             logger.log(Level.WARNING, "Класс для преобразования потока байтов в объект не найден!");
         } catch (IOException e) {
+            e.printStackTrace();
             logger.log(Level.WARNING, "Не удалось создать поток чтения из пришедшего потока байтов!");
         }
         return commandDTO;

@@ -37,7 +37,7 @@ public class ExecuteScriptCommand extends CommandAbstract {
         builder = new StringBuilder();
         String allCommand = getCommandDTO().getArgCommand();
         CommandDTO thisCommandDTO;
-        for (String command : allCommand.split("\n")) {
+        for (String command : allCommand.split(" ")) {
             try {
                 thisCommandDTO = new CommandDTO();
                 thisCommandDTO.setUserID(getCommandDTO().getUserID());
@@ -46,6 +46,7 @@ public class ExecuteScriptCommand extends CommandAbstract {
                 builder.append("Команда выполнена успешно: ").append(command).append("\n");
                 builder.append("Ответ: ").append(thisCommand.getAnswer());
             } catch (RuntimeException e) {
+                e.printStackTrace();
                 builder.append("Не удалось выполнить команду: ").append(command).append("\n");
             }
         }
