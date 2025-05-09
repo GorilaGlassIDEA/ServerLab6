@@ -1,7 +1,7 @@
 package dima.model.service.generate.id;
 
 import by.dima.model.data.CollectionController;
-import by.dima.model.data.route.model.main.Route;
+import by.dima.model.common.route.main.Route;
 import by.dima.model.data.services.generate.id.IdGenerateMy;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

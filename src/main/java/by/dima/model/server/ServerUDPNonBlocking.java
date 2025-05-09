@@ -46,7 +46,7 @@ public class ServerUDPNonBlocking implements Serverable {
     public void startServer() {
         ParserBytesToObj<CommandDTO> bytesParser = new ParserBytesToCommandDTO(logger);
         ParserObjToBytes<AnswerDTO> answerParser = new ParserAnswerDTOToBytes(logger);
-        ByteBuffer byteBufferReceive = ByteBuffer.allocate(1024);
+        ByteBuffer byteBufferReceive = ByteBuffer.allocate(100000);
 
         try (DatagramChannel channel = DatagramChannel.open();
              Selector selector = Selector.open()) {

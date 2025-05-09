@@ -1,6 +1,6 @@
 package by.dima.model.server.request.parser;
 
-import by.dima.model.data.route.model.main.Route;
+import by.dima.model.common.route.main.Route;
 import by.dima.model.data.services.files.parser.string.model.ParserFromJson;
 import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.databind.ObjectMapper;

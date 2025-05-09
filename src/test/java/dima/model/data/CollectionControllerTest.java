@@ -2,7 +2,7 @@ package dima.model.data;
 
 import by.dima.model.data.CollectionController;
 import by.dima.model.data.abstracts.model.CollectionDTO;
-import by.dima.model.data.route.model.main.Route;
+import by.dima.model.common.route.main.Route;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

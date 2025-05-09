@@ -4,7 +4,7 @@ package by.dima.model;
 import by.dima.model.data.UsersCollectionController;
 import by.dima.model.data.abstracts.model.UsersCollectionDTO;
 import by.dima.model.data.command.model.CommandManager;
-import by.dima.model.data.route.model.main.Route;
+import by.dima.model.common.route.main.Route;
 import by.dima.model.data.services.files.io.create.Creatable;
 import by.dima.model.data.services.files.io.create.CreateFile;
 import by.dima.model.data.services.files.io.read.ReadFileBufferReader;

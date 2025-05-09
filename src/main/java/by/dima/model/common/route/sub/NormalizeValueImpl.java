@@ -1,18 +1,23 @@
-package by.dima.model.data.route.model.main;
+package by.dima.model.common.route.sub;
 
+import by.dima.model.common.route.main.Route;
 import lombok.Setter;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Данный класс является одной из реализаций нормализации данных для сортировки {@link Route}
  */
-public class NormalizeValueImpl implements NormalisationValue {
+public class NormalizeValueImpl implements NormalisationValue, Serializable {
     private double max;
     private double min;
     @Setter
     private List<Number> numbers;
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     public NormalizeValueImpl() {
         max = -1000000000D;

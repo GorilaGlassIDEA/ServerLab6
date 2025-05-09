@@ -1,4 +1,6 @@
-package by.dima.model.data.route.model.main;
+package by.dima.model.common.route.sub;
+
+import by.dima.model.common.route.main.Route;
 
 import java.io.Serializable;
 import java.util.List;

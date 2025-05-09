@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -21,7 +22,7 @@ public class CommandDTO implements Serializable {
     private String argCommand;
     private String jsonRouteObj;
     private Long userID;
-    private Map<String, String> executeScriptArgs;
+    private ExecuteDTO executeDTO;
 
     public CommandDTO(String nameCommand, String argCommand, String jsonRouteObj, Long userID) {
         this.nameCommand = nameCommand;
