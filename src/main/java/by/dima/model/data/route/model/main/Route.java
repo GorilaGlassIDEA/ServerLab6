@@ -1,8 +1,9 @@
-package by.dima.model.common.main;
+package by.dima.model.data.route.model.main;
 
-import by.dima.model.common.sub.*;
 
 import by.dima.model.data.route.model.sub.Coordinates;
+import by.dima.model.data.route.model.sub.LocationFrom;
+import by.dima.model.data.route.model.sub.LocationTo;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

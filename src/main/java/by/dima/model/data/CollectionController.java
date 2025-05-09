@@ -2,7 +2,7 @@ package by.dima.model.data;
 
 import by.dima.model.data.abstracts.model.CollectionDTO;
 import by.dima.model.data.group.model.Groups;
-import by.dima.model.common.main.Route;
+import by.dima.model.data.route.model.main.Route;
 import lombok.Getter;
 import lombok.Setter;
 

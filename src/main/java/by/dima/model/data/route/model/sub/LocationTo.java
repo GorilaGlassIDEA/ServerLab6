@@ -1,4 +1,4 @@
-package by.dima.model.common.sub;
+package by.dima.model.data.route.model.sub;
 
 
 import by.dima.model.server.Serverable;

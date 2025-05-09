@@ -1,5 +1,6 @@
 package by.dima.model.data.model;
 
+import by.dima.model.data.command.model.model.Command;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;

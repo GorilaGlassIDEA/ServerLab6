@@ -1,6 +1,6 @@
 package dima.model.service.iterator;
 
-import by.dima.model.common.main.Route;
+import by.dima.model.data.route.model.main.Route;
 import by.dima.model.data.services.iterator.RouteDistanceSortIterator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -4,7 +4,7 @@ import by.dima.model.common.CommandDTO;
 import by.dima.model.data.UsersCollectionController;
 import by.dima.model.data.command.model.impl.*;
 import by.dima.model.data.command.model.model.Command;
-import by.dima.model.common.main.Route;
+import by.dima.model.data.route.model.main.Route;
 import by.dima.model.data.services.files.parser.string.model.ParserFromJson;
 import lombok.Getter;
 
@@ -19,11 +19,9 @@ import java.util.logging.Logger;
 public class CommandManager {
     @Getter
     private final Map<String, Command> commandMap = new HashMap<>();
-    private final Logger logger;
     private final UsersCollectionController usersCollectionController;
 
     public CommandManager(Logger logger, UsersCollectionController usersCollectionController, ParserFromJson<Route> parserFromJsonRoute) {
-        this.logger = logger;
         this.usersCollectionController = usersCollectionController;
 
         //TODO: доделать RouteBuilder (routeCreator)

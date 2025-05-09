@@ -1,6 +1,6 @@
 package by.dima.model.data.services.iterator;
 
-import by.dima.model.common.main.Route;
+import by.dima.model.data.route.model.main.Route;
 
 import java.util.*;
 
