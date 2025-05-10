@@ -6,6 +6,7 @@ import by.dima.model.data.command.model.impl.*;
 import by.dima.model.data.command.model.model.Command;
 import by.dima.model.common.route.main.Route;
 import by.dima.model.data.services.files.parser.string.model.ParserFromJson;
+import by.dima.model.data.services.files.parser.string.model.ParserToJson;
 import lombok.Getter;
 
 import java.util.*;
@@ -21,7 +22,7 @@ public class CommandManager {
     private final Map<String, Command> commandMap = new HashMap<>();
     private final UsersCollectionController usersCollectionController;
 
-    public CommandManager(Logger logger, UsersCollectionController usersCollectionController, ParserFromJson<Route> parserFromJsonRoute) {
+    public CommandManager(Logger logger, UsersCollectionController usersCollectionController, ParserToJson<Route> parserToJson, ParserFromJson<Route> parserFromJsonRoute) {
         this.usersCollectionController = usersCollectionController;
 
         //TODO: доделать RouteBuilder (routeCreator)
@@ -33,7 +34,7 @@ public class CommandManager {
         Command insertCommand = new InsertCommand(usersCollectionController, parserFromJsonRoute, logger);
         Command removeKeyCommand = new RemoveKeyCommand(usersCollectionController);
         Command historyCommand = new HistoryCommand(usersCollectionController);
-        Command executeScriptCommand = new ExecuteScriptCommand(this);
+        Command executeScriptCommand = new ExecuteScriptCommand(parserToJson, this);
         Command replaceIfLoweCommand = new ReplaceIfLoweCommand(parserFromJsonRoute, usersCollectionController);
         Command removeLowerKeyCommand = new RemoveLowerKeyCommand(usersCollectionController);
         Command groupCountingByIdCommand = new GroupCountingByIdCommand(usersCollectionController);
@@ -66,5 +67,9 @@ public class CommandManager {
         command.setCommandDTO(commandDTO);
         command.execute();
         return command;
+    }
+
+    public Command getCommand(String commandName) {
+        return commandMap.get(commandName.strip());
     }
 }

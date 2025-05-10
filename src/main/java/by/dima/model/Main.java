@@ -11,6 +11,7 @@ import by.dima.model.data.services.files.io.read.ReadFileBufferReader;
 import by.dima.model.data.services.files.io.read.ReadableFile;
 import by.dima.model.data.services.files.io.write.WriteFileOutputStreamWriter;
 import by.dima.model.data.services.files.io.write.WriteableFile;
+import by.dima.model.data.services.files.parser.string.impl.ParserToJsonImpl;
 import by.dima.model.data.services.files.parser.string.impl.UsersCollectionParserFromJson;
 import by.dima.model.data.services.files.parser.string.impl.UsersCollectionParserToJson;
 import by.dima.model.data.services.files.parser.string.model.ParserFromJson;
@@ -53,7 +54,8 @@ public class Main {
             UsersCollectionController usersCollectionController = new UsersCollectionController(logger,
                     readableFile, parserFromJson, writeableFile, parserToJson
             );
-            CommandManager manager = new CommandManager(logger, usersCollectionController, parserFromJsonRoute);
+
+            CommandManager manager = new CommandManager(logger, usersCollectionController, new ParserToJsonImpl<Route>(mapper), parserFromJsonRoute);
 
             Serverable serverUDP = new ServerUDPNonBlocking(manager, mapper, logger);
             serverUDP.startServer();
