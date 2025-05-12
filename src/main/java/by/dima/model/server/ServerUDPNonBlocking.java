@@ -17,12 +17,11 @@ import lombok.Setter;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.nio.ByteBuffer;
-import java.nio.channels.DatagramChannel;
-import java.nio.channels.SelectionKey;
-import java.nio.channels.Selector;
+import java.nio.channels.*;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -50,13 +49,17 @@ public class ServerUDPNonBlocking implements Serverable {
 
         try (DatagramChannel channel = DatagramChannel.open();
              Selector selector = Selector.open()) {
+            Scanner scanner = new Scanner(System.in);
+
             channel.configureBlocking(false);
             channel.bind(new InetSocketAddress(thisPort));
             channel.register(selector, SelectionKey.OP_READ);
+
+
             while (true) {
                 try {
-                    logger.log(Level.CONFIG, "I am listening...");
-                    selector.select();
+//                    logger.log(Level.CONFIG, "I am listening...");
+                    selector.select(100);
                     Iterator<SelectionKey> iterator = selector.selectedKeys().iterator();
                     while (iterator.hasNext()) {
                         AnswerDTO answerDTO;
@@ -81,8 +84,13 @@ public class ServerUDPNonBlocking implements Serverable {
                                 thisCommand = commandMap.get(commandDTOWrapper.getNameCommand());
                             }
                             thisCommand.setCommandDTO(commandDTOWrapper.getCommandDTO());
-                            commandManager.execute(thisCommand);
-                            answerDTO = new AnswerDTO(thisCommand.getAnswer());
+                            try {
+                                commandManager.execute(thisCommand);
+                                answerDTO = new AnswerDTO(thisCommand.getAnswer());
+                            } catch (RuntimeException e) {
+                                answerDTO = new AnswerDTO("Невозможно выполнить такую команду!");
+                                logger.log(Level.INFO, "Невозможно выполнить execute_script внутри другого!");
+                            }
                             logger.log(Level.INFO, "Command is executed: " + commandDTOWrapper.getNameCommand());
                             if (answerDTO != null) {
                                 ByteBuffer byteBufferSend = answerParser.getBytes(answerDTO);
@@ -95,6 +103,14 @@ public class ServerUDPNonBlocking implements Serverable {
                     }
                 } catch (Exception e) {
                     logger.log(Level.SEVERE, "Непредвиденная ошибка класса: " + getClass().getName() + ": " + Arrays.toString(e.getStackTrace()));
+                }
+                if (System.in.available()>0){
+                    logger  .log(Level.FINE,"Начался ввод с клавиатуры!");
+                    String input = scanner.nextLine();
+                    if (input.equals("exit")){
+                        logger.log(Level.INFO, "Сервер остановлен");
+                        return;
+                    }
                 }
             }
 

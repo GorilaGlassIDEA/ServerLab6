@@ -63,6 +63,7 @@ public class Main {
             //TODO: исправить ошибку команды info когда коллекция не пустая!
 
         } catch (RuntimeException e) {
+            ;
             System.err.println("Не удалось получить путь для сохранения объектов!");
         } finally {
             for (Handler handler : logger.getHandlers()) {

@@ -41,22 +41,28 @@ public class ExecuteScriptCommand extends CommandAbstract {
     public void execute() {
         stringBuilder = new StringBuilder();
         executeDTO = getCommandDTO().getExecuteDTO();
-        Map<String, List<Route>> executeCommandMap = getCommandDTO().getExecuteDTO().getCommandsForExecuteScript();
-        for (String s : executeCommandMap.keySet()) {
-            Command command = manager.getCommand(s);
-            if (command != null) {
-                CommandDTO commandDTO = new CommandDTO();
-                commandDTO.setNameCommand(command.getKey());
-                commandDTO.setUserID(getCommandDTO().getUserID());
-                for (Route route : executeCommandMap.get(command.getKey())) {
-                    commandDTO.setJsonRouteObj(parser.getJson(route));
-                    command.setCommandDTO(commandDTO);
-                    command.execute();
-                    stringBuilder.append("Команда ").append(command.getKey()).append(" выполнена!").append("\n");
+        try {
+            Map<String, List<Route>> executeCommandMap = getCommandDTO().getExecuteDTO().getCommandsForExecuteScript();
+
+            for (String s : executeCommandMap.keySet()) {
+                Command command = manager.getCommand(s);
+                if (command != null) {
+                    CommandDTO commandDTO = new CommandDTO();
+                    commandDTO.setNameCommand(command.getKey());
+                    commandDTO.setUserID(getCommandDTO().getUserID());
+                    for (Route route : executeCommandMap.get(command.getKey())) {
+                        commandDTO.setJsonRouteObj(parser.getJson(route));
+                        command.setCommandDTO(commandDTO);
+                        command.execute();
+                        if (!command.getKey().equals("execute_script"))
+                            stringBuilder.append("Команда ").append(command.getKey()).append(" выполнена!").append("\n");
+                    }
+                } else {
+                    stringBuilder.append("Не удалось выполнить команду: ").append(s).append("\n");
                 }
-            } else {
-                stringBuilder.append("Не удалось выполнить команду: ").append(s).append("\n");
             }
+        } catch (RuntimeException e) {
+            stringBuilder.append("Не удалось выполнить команду").append("\n");
         }
     }
 
