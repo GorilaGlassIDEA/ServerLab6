@@ -14,5 +14,8 @@ public class JdbcRunner {
         UserModel user = new UserModel("alex22820", "mypassword!");
         System.out.println(dao.authorization(user));
 
+        //TODO: написать регистрацию/аутентификацию на клиента + добавить UserDTO для обмена данными
+        // с полем typeRequest: authenticate/authorizex
+
     }
 }
