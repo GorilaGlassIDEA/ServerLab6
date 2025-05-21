@@ -1,9 +1,11 @@
 package by.dima.model.db.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
-public final class User {
+@AllArgsConstructor
+public final class UserModel {
     private String username;
     private String password;
 }
