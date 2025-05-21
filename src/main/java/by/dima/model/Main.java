@@ -16,7 +16,7 @@ import by.dima.model.data.services.files.parser.string.impl.UsersCollectionParse
 import by.dima.model.data.services.files.parser.string.impl.UsersCollectionParserToJson;
 import by.dima.model.data.services.files.parser.string.model.ParserFromJson;
 import by.dima.model.data.services.files.parser.string.model.ParserToJson;
-import by.dima.model.log.FactoryLogger;
+import by.dima.model.utils.log.FactoryLogger;
 import by.dima.model.server.ServerUDPNonBlocking;
 import by.dima.model.server.Serverable;
 import by.dima.model.server.request.parser.RouteParserFromJson;

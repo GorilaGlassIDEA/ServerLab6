@@ -1,4 +1,4 @@
-package by.dima.model.log;
+package by.dima.model.utils.log;
 
 
 import java.io.IOException;
