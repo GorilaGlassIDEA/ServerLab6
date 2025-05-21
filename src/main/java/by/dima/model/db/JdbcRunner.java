@@ -12,7 +12,7 @@ public class JdbcRunner {
 
         UserDAO dao = new UserDAO();
         UserModel user = new UserModel("Alex", "mypassword!");
-        dao.createUser(user);
+        System.out.println("Ключ, сгенерированный для пользователя: " +dao.createUser(user));
 
     }
 }
