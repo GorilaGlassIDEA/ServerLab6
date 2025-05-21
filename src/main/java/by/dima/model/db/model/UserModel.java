@@ -7,5 +7,6 @@ import lombok.Data;
 @AllArgsConstructor
 public final class UserModel {
     private String username;
+    private String name;
     private String password;
 }

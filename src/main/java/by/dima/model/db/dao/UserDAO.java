@@ -26,13 +26,14 @@ public class UserDAO {
      */
     public int createUser(UserModel user) {
         String sqlRequest = """
-                INSERT INTO users (name, password) values (?, ?)
+                INSERT INTO users (username, name, password) values (?,?, ?)
                 """;
 
         try (Connection connection = ConnectionManager.open()) {
             PreparedStatement statement = connection.prepareStatement(sqlRequest, Statement.RETURN_GENERATED_KEYS);
             statement.setString(1, user.getUsername());
-            statement.setString(2, user.getPassword());
+            statement.setString(2, user.getName());
+            statement.setString(3, user.getPassword());
             int countEdit = statement.executeUpdate();
             ResultSet result = statement.getGeneratedKeys();
             if (countEdit > 0 && result.next()) {
@@ -42,8 +43,12 @@ public class UserDAO {
                 logger.log(Level.INFO, "Не удалось добавить пользователя !");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
-            logger.log(Level.SEVERE, "Ошибка подключения к базе данных!");
+            if ("23505".equals(e.getSQLState())) {
+                logger.log(Level.WARNING, "Пользователь с таким именем уже существует!");
+                //TODO добавлять в ответ от сервера информацию о том, что такой ник уже существует!
+            } else {
+                logger.log(Level.SEVERE, "Ошибка подключения к базе данных!");
+            }
         }
         return -1;
     }
