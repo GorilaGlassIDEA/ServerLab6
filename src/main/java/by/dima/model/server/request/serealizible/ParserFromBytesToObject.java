@@ -15,26 +15,26 @@ import java.util.logging.Logger;
  * Реализовать DI через xml beans
  */
 @Setter
-public class ParserBytesToCommandDTO implements ParserBytesToObj<CommandDTO> {
+public class ParserFromBytesToObject<T> implements ParserBytesToObj<T> {
     private Logger logger;
 
-    public ParserBytesToCommandDTO(Logger logger) {
+    public ParserFromBytesToObject(Logger logger) {
         this.logger = logger;
     }
 
 
     @Override
-    public CommandDTO getObj(ByteBuffer byteBuffer) {
-        CommandDTO commandDTO = new CommandDTO();
+    public T getObj(ByteBuffer byteBuffer) {
+        T t = null;
         try (ByteArrayInputStream bis = new ByteArrayInputStream(byteBuffer.array(), 0, byteBuffer.limit());
              ObjectInputStream ois = new ObjectInputStream(bis)) {
-            commandDTO = (CommandDTO) ois.readObject();
+            t = (T) ois.readObject();
         } catch (ClassNotFoundException e) {
             logger.log(Level.WARNING, "Класс для преобразования потока байтов в объект не найден!");
         } catch (IOException e) {
             e.printStackTrace();
             logger.log(Level.WARNING, "Не удалось создать поток чтения из пришедшего потока байтов!");
         }
-        return commandDTO;
+        return t;
     }
 }

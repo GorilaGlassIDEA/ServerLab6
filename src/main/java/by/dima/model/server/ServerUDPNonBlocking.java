@@ -1,13 +1,14 @@
 package by.dima.model.server;
 
 import by.dima.model.common.AnswerDTO;
+import by.dima.model.common.AuthorizationRequestDTO;
 import by.dima.model.common.CommandDTO;
 import by.dima.model.data.command.model.CommandManager;
 import by.dima.model.common.CommandDTOWrapper;
 import by.dima.model.data.command.model.impl.HelpCommand;
 import by.dima.model.data.command.model.model.Command;
 import by.dima.model.server.request.serealizible.ParserAnswerDTOToBytes;
-import by.dima.model.server.request.serealizible.ParserBytesToCommandDTO;
+import by.dima.model.server.request.serealizible.ParserFromBytesToObject;
 import by.dima.model.server.request.serealizible.ParserBytesToObj;
 import by.dima.model.server.request.serealizible.ParserObjToBytes;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -43,7 +44,7 @@ public class ServerUDPNonBlocking implements Serverable {
 
 
     public void startServer() {
-        ParserBytesToObj<CommandDTO> bytesParser = new ParserBytesToCommandDTO(logger);
+        ParserBytesToObj<AuthorizationRequestDTO> bytesParser = new ParserFromBytesToObject<>(logger);
         ParserObjToBytes<AnswerDTO> answerParser = new ParserAnswerDTOToBytes(logger);
         ByteBuffer byteBufferReceive = ByteBuffer.allocate(100000);
 
@@ -73,7 +74,9 @@ public class ServerUDPNonBlocking implements Serverable {
                             logger.log(Level.CONFIG, "Data client" + ByteBuffer.wrap(byteBufferReceive.array(), 0, byteBufferReceive.limit()));
 
                             byteBufferReceive.flip();
-                            CommandDTOWrapper commandDTOWrapper = new CommandDTOWrapper(bytesParser.getObj(byteBufferReceive), mapper);
+                            AuthorizationRequestDTO authorizationRequestDTO = bytesParser.getObj(byteBufferReceive);
+
+                            CommandDTOWrapper commandDTOWrapper = new CommandDTOWrapper(authorizationRequestDTO.getCommandDTO(), mapper);
                             byteBufferReceive.clear();
 
                             logger.log(Level.INFO, "Command: " + commandDTOWrapper.getNameCommand());
