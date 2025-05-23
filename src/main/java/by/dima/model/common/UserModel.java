@@ -1,13 +1,15 @@
-package by.dima.model.db.model;
+package by.dima.model.common;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public final class UserModel {
+public final class UserModel implements Serializable {
     private Integer id;
     private String username;
     private String name;

@@ -1,8 +1,8 @@
 package by.dima.model.db;
 
 
-import by.dima.model.db.dao.UserDatabaseProxy;
-import by.dima.model.db.model.UserModel;
+import by.dima.model.db.dao.UserDatabaseFacade;
+import by.dima.model.common.UserModel;
 
 import java.sql.SQLException;
 
@@ -10,7 +10,7 @@ public class JdbcRunner {
 
     public static void main(String[] args) throws SQLException {
 
-        UserDatabaseProxy dao = new UserDatabaseProxy();
+        UserDatabaseFacade dao = new UserDatabaseFacade();
         UserModel user = new UserModel("alex22820", "mypassword!");
         System.out.println(dao.authorization(user));
 

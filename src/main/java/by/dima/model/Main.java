@@ -16,6 +16,8 @@ import by.dima.model.data.services.files.parser.string.impl.UsersCollectionParse
 import by.dima.model.data.services.files.parser.string.impl.UsersCollectionParserToJson;
 import by.dima.model.data.services.files.parser.string.model.ParserFromJson;
 import by.dima.model.data.services.files.parser.string.model.ParserToJson;
+import by.dima.model.db.dao.UserDatabaseFacade;
+import by.dima.model.db.dao.UserFacadeableDatabase;
 import by.dima.model.utils.log.FactoryLogger;
 import by.dima.model.server.ServerUDPNonBlocking;
 import by.dima.model.server.Serverable;
@@ -49,6 +51,7 @@ public class Main {
         ParserToJson<UsersCollectionDTO> parserToJson = new UsersCollectionParserToJson(mapper);
         ParserFromJson<Route> parserFromJsonRoute = new RouteParserFromJson(mapper);
 
+        UserFacadeableDatabase userFacadeableDatabase = new UserDatabaseFacade();
         try {
 
             UsersCollectionController usersCollectionController = new UsersCollectionController(logger,
@@ -57,7 +60,7 @@ public class Main {
 
             CommandManager manager = new CommandManager(logger, usersCollectionController, new ParserToJsonImpl<Route>(mapper), parserFromJsonRoute);
 
-            Serverable serverUDP = new ServerUDPNonBlocking(manager, mapper, logger);
+            Serverable serverUDP = new ServerUDPNonBlocking(userFacadeableDatabase, manager, mapper, logger);
             serverUDP.startServer();
 
             //TODO: исправить ошибку команды info когда коллекция не пустая!

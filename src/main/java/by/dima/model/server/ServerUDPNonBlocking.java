@@ -2,11 +2,12 @@ package by.dima.model.server;
 
 import by.dima.model.common.AnswerDTO;
 import by.dima.model.common.AuthorizationRequestDTO;
-import by.dima.model.common.CommandDTO;
+import by.dima.model.common.UserModel;
 import by.dima.model.data.command.model.CommandManager;
 import by.dima.model.common.CommandDTOWrapper;
 import by.dima.model.data.command.model.impl.HelpCommand;
 import by.dima.model.data.command.model.model.Command;
+import by.dima.model.db.dao.UserFacadeableDatabase;
 import by.dima.model.server.request.serealizible.ParserAnswerDTOToBytes;
 import by.dima.model.server.request.serealizible.ParserFromBytesToObject;
 import by.dima.model.server.request.serealizible.ParserBytesToObj;
@@ -34,12 +35,14 @@ public class ServerUDPNonBlocking implements Serverable {
     private final int thisPort = 8932;
 
     private final ObjectMapper mapper;
+    private UserFacadeableDatabase proxyableDatabase;
 
 
-    public ServerUDPNonBlocking(CommandManager commandManager, ObjectMapper mapper, Logger logger) {
+    public ServerUDPNonBlocking(UserFacadeableDatabase proxyableDatabase, CommandManager commandManager, ObjectMapper mapper, Logger logger) {
         this.commandManager = commandManager;
         this.logger = logger;
         this.mapper = mapper;
+        this.proxyableDatabase = proxyableDatabase;
     }
 
 
@@ -47,6 +50,7 @@ public class ServerUDPNonBlocking implements Serverable {
         ParserBytesToObj<AuthorizationRequestDTO> bytesParser = new ParserFromBytesToObject<>(logger);
         ParserObjToBytes<AnswerDTO> answerParser = new ParserAnswerDTOToBytes(logger);
         ByteBuffer byteBufferReceive = ByteBuffer.allocate(100000);
+        AuthorizationRequestDTO authorizationRequestDTO;
 
         try (DatagramChannel channel = DatagramChannel.open();
              Selector selector = Selector.open()) {
@@ -73,25 +77,32 @@ public class ServerUDPNonBlocking implements Serverable {
                             logger.log(Level.CONFIG, "Data client" + ByteBuffer.wrap(byteBufferReceive.array(), 0, byteBufferReceive.limit()));
 
                             byteBufferReceive.flip();
-                            AuthorizationRequestDTO authorizationRequestDTO = bytesParser.getObj(byteBufferReceive);
+                            authorizationRequestDTO = bytesParser.getObj(byteBufferReceive);
 
                             CommandDTOWrapper commandDTOWrapper = new CommandDTOWrapper(authorizationRequestDTO.getCommandDTO(), mapper);
                             byteBufferReceive.clear();
+                            UserModel userModel = authorizationRequestDTO.getUserModel();
 
-                            logger.log(Level.INFO, "Command: " + commandDTOWrapper.getNameCommand());
+                            if (proxyableDatabase.isAuthorization(userModel) && userModel != null) {
 
-                            Map<String, Command> commandMap = commandManager.getCommandMap();
-                            Command thisCommand = new HelpCommand(commandManager);
-                            if (commandMap.containsKey(commandDTOWrapper.getNameCommand())) {
-                                thisCommand = commandMap.get(commandDTOWrapper.getNameCommand());
-                            }
-                            thisCommand.setCommandDTO(commandDTOWrapper.getCommandDTO());
-                            try {
-                                commandManager.execute(thisCommand);
-                                answerDTO = new AnswerDTO(thisCommand.getAnswer());
-                            } catch (RuntimeException e) {
-                                answerDTO = new AnswerDTO("Невозможно выполнить такую команду!");
-                                logger.log(Level.INFO, "Невозможно выполнить execute_script внутри другого!");
+                                logger.log(Level.INFO, "Command: " + commandDTOWrapper.getNameCommand());
+                                logger.log(Level.INFO, "Username: " + userModel.getUsername() + "\nPassword: " + userModel.getPassword());
+
+                                Map<String, Command> commandMap = commandManager.getCommandMap();
+                                Command thisCommand = new HelpCommand(commandManager);
+                                if (commandMap.containsKey(commandDTOWrapper.getNameCommand())) {
+                                    thisCommand = commandMap.get(commandDTOWrapper.getNameCommand());
+                                }
+                                thisCommand.setCommandDTO(commandDTOWrapper.getCommandDTO());
+                                try {
+                                    commandManager.execute(thisCommand);
+                                    answerDTO = new AnswerDTO(thisCommand.getAnswer());
+                                } catch (RuntimeException e) {
+                                    answerDTO = new AnswerDTO("Невозможно выполнить такую команду!");
+                                    logger.log(Level.INFO, "Невозможно выполнить execute_script внутри другого!");
+                                }
+                            } else {
+                                answerDTO = new AnswerDTO("Невозможно выполнить команду, пользователь не авторизирован!");
                             }
                             logger.log(Level.INFO, "Command is executed: " + commandDTOWrapper.getNameCommand());
                             ByteBuffer byteBufferSend = answerParser.getBytes(answerDTO);
@@ -102,12 +113,13 @@ public class ServerUDPNonBlocking implements Serverable {
                         }
                     }
                 } catch (Exception e) {
+                    e.printStackTrace();
                     logger.log(Level.SEVERE, "Непредвиденная ошибка класса: " + getClass().getName() + ": " + Arrays.toString(e.getStackTrace()));
                 }
-                if (System.in.available()>0){
-                    logger  .log(Level.FINE,"Начался ввод с клавиатуры!");
+                if (System.in.available() > 0) {
+                    logger.log(Level.FINE, "Начался ввод с клавиатуры!");
                     String input = scanner.nextLine();
-                    if (input.equals("exit")){
+                    if (input.equals("exit")) {
                         logger.log(Level.INFO, "Сервер остановлен");
                         return;
                     }

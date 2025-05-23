@@ -1,7 +1,7 @@
 package by.dima.model.db.dao;
 
 import by.dima.model.Main;
-import by.dima.model.db.model.UserModel;
+import by.dima.model.common.UserModel;
 import by.dima.model.db.utils.ConnectionManager;
 
 import java.sql.Connection;

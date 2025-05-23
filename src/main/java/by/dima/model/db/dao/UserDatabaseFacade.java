@@ -1,9 +1,9 @@
 package by.dima.model.db.dao;
 
-import by.dima.model.db.model.UserModel;
+import by.dima.model.common.UserModel;
 
 
-public class UserDatabaseProxy {
+public class UserDatabaseFacade implements UserFacadeableDatabase {
     /**
      * Данный метод выполняет авторизацию пользователей в базе данных.
      * На вход приходит потенциальный user, а на выходе либо тот же user с правильным Id,
@@ -18,7 +18,7 @@ public class UserDatabaseProxy {
     }
 
     /**
-         * Данный метод возвращает UserModel с id из базы данных сгенерированный для добавленного пользователя в случае успеха
+     * Данный метод возвращает UserModel с id из базы данных сгенерированный для добавленного пользователя в случае успеха
      * или null в случае ошибки или исключения
      *
      * @param user

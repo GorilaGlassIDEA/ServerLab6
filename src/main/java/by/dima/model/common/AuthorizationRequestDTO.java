@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+
 /**
  * Трансферный объект для передачи команд для авторизированного пользователя по сети
  */
@@ -12,8 +13,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AuthorizationRequestDTO implements Serializable {
-    private String username;
-    private String password;
+    private UserModel userModel;
     private CommandDTO commandDTO;
 }
 
