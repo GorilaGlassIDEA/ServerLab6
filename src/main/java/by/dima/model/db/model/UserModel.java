@@ -1,7 +1,6 @@
 package by.dima.model.db.model;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,7 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public final class UserModel {
-    private int id;
+    private Integer id;
     private String username;
     private String name;
     private String password;

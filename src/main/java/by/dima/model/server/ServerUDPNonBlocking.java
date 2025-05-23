@@ -59,7 +59,6 @@ public class ServerUDPNonBlocking implements Serverable {
 
             while (true) {
                 try {
-//                    logger.log(Level.CONFIG, "I am listening...");
                     selector.select(100);
                     Iterator<SelectionKey> iterator = selector.selectedKeys().iterator();
                     while (iterator.hasNext()) {
@@ -95,12 +94,10 @@ public class ServerUDPNonBlocking implements Serverable {
                                 logger.log(Level.INFO, "Невозможно выполнить execute_script внутри другого!");
                             }
                             logger.log(Level.INFO, "Command is executed: " + commandDTOWrapper.getNameCommand());
-                            if (answerDTO != null) {
-                                ByteBuffer byteBufferSend = answerParser.getBytes(answerDTO);
-                                if (address != null) {
-                                    channel.send(byteBufferSend, address);
-                                    logger.log(Level.CONFIG, "Ответ " + answerDTO + " отправлен клиенту по адресу: " + address);
-                                }
+                            ByteBuffer byteBufferSend = answerParser.getBytes(answerDTO);
+                            if (address != null) {
+                                channel.send(byteBufferSend, address);
+                                logger.log(Level.CONFIG, "Ответ " + answerDTO + " отправлен клиенту по адресу: " + address);
                             }
                         }
                     }
