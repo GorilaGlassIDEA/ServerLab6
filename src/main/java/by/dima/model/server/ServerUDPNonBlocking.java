@@ -15,6 +15,8 @@ import by.dima.model.server.request.serealizible.ParserObjToBytes;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
@@ -29,6 +31,7 @@ import java.util.logging.Logger;
 
 @Setter
 public class ServerUDPNonBlocking implements Serverable {
+    private static final Log log = LogFactory.getLog(ServerUDPNonBlocking.class);
     private final Logger logger;
     private final CommandManager commandManager;
     @Getter
@@ -66,7 +69,7 @@ public class ServerUDPNonBlocking implements Serverable {
                     selector.select(100);
                     Iterator<SelectionKey> iterator = selector.selectedKeys().iterator();
                     while (iterator.hasNext()) {
-                        AnswerDTO answerDTO;
+                        AnswerDTO answerDTO = new AnswerDTO();
                         SocketAddress address;
                         SelectionKey key = iterator.next();
                         iterator.remove();
@@ -78,37 +81,47 @@ public class ServerUDPNonBlocking implements Serverable {
 
                             byteBufferReceive.flip();
                             authorizationRequestDTO = bytesParser.getObj(byteBufferReceive);
+                            CommandDTOWrapper commandDTOWrapper;
+                            try {
+                                commandDTOWrapper = new CommandDTOWrapper(authorizationRequestDTO.getCommandDTO(), mapper);
 
-                            CommandDTOWrapper commandDTOWrapper = new CommandDTOWrapper(authorizationRequestDTO.getCommandDTO(), mapper);
-                            byteBufferReceive.clear();
-                            UserModel userModel = authorizationRequestDTO.getUserModel();
+                                byteBufferReceive.clear();
+                                UserModel userModel = authorizationRequestDTO.getUserModel();
+                                logger.log(Level.INFO, "User который пришел от клиента: " + userModel);
 
-                            if (proxyableDatabase.isAuthorization(userModel) && userModel != null) {
+                                if (proxyableDatabase.isAuthorization(userModel) && userModel != null) {
+                                    if (commandDTOWrapper.getNameCommand() == null) {
+                                        logger.log(Level.INFO, "Команда пустая! В этом блоке кода можно обрабатывать !");
+                                        break;
+                                    }
+                                    logger.log(Level.INFO, "Command: " + commandDTOWrapper.getNameCommand());
+                                    logger.log(Level.INFO, "Username: " + userModel.getUsername() + "\nPassword: " + userModel.getPassword());
 
-                                logger.log(Level.INFO, "Command: " + commandDTOWrapper.getNameCommand());
-                                logger.log(Level.INFO, "Username: " + userModel.getUsername() + "\nPassword: " + userModel.getPassword());
-
-                                Map<String, Command> commandMap = commandManager.getCommandMap();
-                                Command thisCommand = new HelpCommand(commandManager);
-                                if (commandMap.containsKey(commandDTOWrapper.getNameCommand())) {
-                                    thisCommand = commandMap.get(commandDTOWrapper.getNameCommand());
+                                    Map<String, Command> commandMap = commandManager.getCommandMap();
+                                    Command thisCommand = new HelpCommand(commandManager);
+                                    if (commandMap.containsKey(commandDTOWrapper.getNameCommand())) {
+                                        thisCommand = commandMap.get(commandDTOWrapper.getNameCommand());
+                                    }
+                                    thisCommand.setCommandDTO(commandDTOWrapper.getCommandDTO());
+                                    try {
+                                        commandManager.execute(thisCommand);
+                                        answerDTO = new AnswerDTO(thisCommand.getAnswer());
+                                    } catch (RuntimeException e) {
+                                        answerDTO = new AnswerDTO("Невозможно выполнить такую команду!");
+                                        logger.log(Level.INFO, "Невозможно выполнить execute_script внутри другого!");
+                                    }
+                                    logger.log(Level.INFO, "Command is executed: " + commandDTOWrapper.getNameCommand());
+                                } else {
+                                    answerDTO.setAuth(false);
+                                    answerDTO.setAnswer("Пользователь не авторизирован!");
                                 }
-                                thisCommand.setCommandDTO(commandDTOWrapper.getCommandDTO());
-                                try {
-                                    commandManager.execute(thisCommand);
-                                    answerDTO = new AnswerDTO(thisCommand.getAnswer());
-                                } catch (RuntimeException e) {
-                                    answerDTO = new AnswerDTO("Невозможно выполнить такую команду!");
-                                    logger.log(Level.INFO, "Невозможно выполнить execute_script внутри другого!");
+                                ByteBuffer byteBufferSend = answerParser.getBytes(answerDTO);
+                                if (address != null) {
+                                    channel.send(byteBufferSend, address);
+                                    logger.log(Level.CONFIG, "Ответ " + answerDTO + " отправлен клиенту по адресу: " + address);
                                 }
-                            } else {
-                                answerDTO = new AnswerDTO("Невозможно выполнить команду, пользователь не авторизирован!");
-                            }
-                            logger.log(Level.INFO, "Command is executed: " + commandDTOWrapper.getNameCommand());
-                            ByteBuffer byteBufferSend = answerParser.getBytes(answerDTO);
-                            if (address != null) {
-                                channel.send(byteBufferSend, address);
-                                logger.log(Level.CONFIG, "Ответ " + answerDTO + " отправлен клиенту по адресу: " + address);
+                            } catch (NullPointerException e) {
+                                logger.log(Level.INFO, "Команда пустая!");
                             }
                         }
                     }

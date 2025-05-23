@@ -17,7 +17,7 @@ public class AuthorizationService {
     public static UserModel authorization(UserModel user) {
         UserModel answerUser = new UserModel();
         String sqlRequest = """
-                SELECT id, username, name, password from users where username = ?;
+                SELECT id, username, password from users where username = ?;
                 """;
 
         try (Connection connection = ConnectionManager.open()) {
@@ -27,16 +27,17 @@ public class AuthorizationService {
             if (result.next()) {
                 answerUser.setId(result.getInt("id"));
                 answerUser.setUsername(result.getString("username"));
-                answerUser.setName(result.getString("name"));
                 answerUser.setPassword(result.getString("password"));
+                logger.log(Level.FINE, "Пользователь найден в базе данных!");
                 return answerUser;
             } else {
                 logger.log(Level.WARNING, "Пользователь с username: " + user.getUsername() + " не найден!");
             }
         } catch (SQLException e) {
+            e.printStackTrace();
             logger.log(Level.SEVERE, "Ошибка подключения к базе данных!");
         }
-        return null;
+        return new UserModel();
     }
 
 }

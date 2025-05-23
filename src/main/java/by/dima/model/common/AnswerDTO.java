@@ -16,8 +16,13 @@ public class AnswerDTO implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
     private String answer;
+    private Boolean auth;
 
     public AnswerDTO() {
         answer = "Нет ответа от выполненной команды!";
+    }
+
+    public AnswerDTO(String answer) {
+        this.answer = answer;
     }
 }

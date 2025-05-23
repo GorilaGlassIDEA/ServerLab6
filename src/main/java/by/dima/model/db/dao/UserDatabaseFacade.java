@@ -35,9 +35,7 @@ public class UserDatabaseFacade implements UserFacadeableDatabase {
      * @return
      */
     public boolean isAuthorization(UserModel user) {
-        if (user != null) {
-            return authorization(user).equals(user);
-        } else return false;
+        return authorization(user).equals(user);
     }
 
     /**
