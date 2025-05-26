@@ -94,16 +94,17 @@ public class ServerUDPNonBlocking implements Serverable {
                                         authorizationRequestDTO.setAuthenticated(true);
                                         logger.log(Level.FINEST, "Создан новый пользователь, но почему то не зарегистрировался, непредвиденное поведение программы!");
                                     }
-                                }
-                                if (facadeableDatabase.isAuthorization(userModel)) {
-                                    logger.log(Level.INFO, "Пользователь авторизован!");
-                                    answerDTO.setAuth(AuthList.AUTHORIZATION);
                                 } else {
-                                    logger.log(Level.INFO, "Пользователь не авторизован");
-                                    answerDTO.setAuth(AuthList.UNAUTHORIZED);
-                                    if (!facadeableDatabase.isAuthentication(userModel)) {
-                                        logger.log(Level.INFO, "Пользователь не существует!");
-                                        answerDTO.setAuth(AuthList.UNAUTHENTICATED);
+                                    if (facadeableDatabase.isAuthorization(userModel)) {
+                                        logger.log(Level.INFO, "Пользователь авторизован!");
+                                        answerDTO.setAuth(AuthList.AUTHORIZATION);
+                                    } else {
+                                        logger.log(Level.INFO, "Пользователь не авторизован");
+                                        answerDTO.setAuth(AuthList.UNAUTHORIZED);
+                                        if (!facadeableDatabase.isAuthentication(userModel)) {
+                                            logger.log(Level.INFO, "Пользователь не существует!");
+                                            answerDTO.setAuth(AuthList.UNAUTHENTICATED);
+                                        }
                                     }
                                 }
                             } catch (Exception e) {
