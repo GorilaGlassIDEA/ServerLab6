@@ -2,8 +2,10 @@ package by.dima.model.common;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
+
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -11,9 +13,14 @@ import java.io.Serializable;
  */
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
-public class AuthorizationRequestDTO implements Serializable {
-    private UserModel userModel;
+@RequiredArgsConstructor
+public class AuthRequestDTO implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
+    private final UserModel userModel;
     private CommandDTO commandDTO;
+    private boolean isAuthenticated;
+
+
 }
 

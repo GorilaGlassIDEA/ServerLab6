@@ -11,7 +11,7 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class AuthorizationService {
+class AuthorizationService {
     private final static Logger logger = Main.logger;
 
     public static UserModel authorization(UserModel user) {
@@ -38,6 +38,25 @@ public class AuthorizationService {
             logger.log(Level.SEVERE, "Ошибка подключения к базе данных!");
         }
         return new UserModel();
+    }
+
+    public static boolean isExist(UserModel userModel) {
+        String sqlRequest = """
+                SELECT COUNT(*) FROM users WHERE username=? and password=?
+                """;
+        try (Connection connection = ConnectionManager.open()) {
+            PreparedStatement statement = connection.prepareStatement(sqlRequest);
+            statement.setString(1, userModel.getUsername());
+            statement.setString(2, userModel.getPassword());
+            ResultSet result = statement.executeQuery();
+            if (result.next()) {
+                return result.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            logger.log(Level.SEVERE, "Ошибка подключения к базе данных!");
+        }
+        return false;
     }
 
 }

@@ -35,14 +35,14 @@ public class UserDatabaseFacade implements UserFacadeableDatabase {
      * @return
      */
     public boolean isAuthorization(UserModel user) {
-        return authorization(user).equals(user);
+        return AuthorizationService.isExist(user);
     }
 
     /**
      * Данный метод проверят зарегистрирован ли пользователь
      */
     public boolean isAuthentication(UserModel user) {
-        return user != null && authentication(user) == null;
+        return AuthorizationService.isExist(user);
     }
 
     public boolean validateData(UserModel user) {

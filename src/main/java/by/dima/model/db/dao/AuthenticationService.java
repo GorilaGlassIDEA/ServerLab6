@@ -8,7 +8,7 @@ import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class AuthenticationService {
+class AuthenticationService {
     private final static Logger logger = Main.logger;
 
 
@@ -21,7 +21,10 @@ public class AuthenticationService {
      */
     public static UserModel authentication(UserModel user) {
         String sqlRequest = """
-                INSERT INTO users (username, password) values (?,?, ?)
+                INSERT INTO users (username, password) values (?,?)
+                """;
+        String sqlGetId = """
+                SELECT id from users where username=?
                 """;
 
         try (Connection connection = ConnectionManager.open()) {
@@ -33,6 +36,7 @@ public class AuthenticationService {
             if (countEdit > 0 && result.next()) {
                 logger.log(Level.FINE, "Пользователь успешно добавлен!");
                 user.setId(result.getInt("id"));
+                System.out.println("Успешное добавление user при регистрации" + user);
                 return user;
             } else {
                 logger.log(Level.INFO, "Не удалось добавить пользователя !");
@@ -46,5 +50,23 @@ public class AuthenticationService {
             }
         }
         return null;
+    }
+
+    public static boolean isExist(UserModel user) {
+        String sql = """
+                SELECT COUNT(*) FROM users WHERE  username=?
+                """;
+        try (Connection connection = ConnectionManager.open()) {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, user.getUsername());
+            ResultSet result = statement.executeQuery();
+
+            if (result.next()) {
+                return !(result.getInt(1) == 0);
+            }
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, "Ошибка подключения к базе данных!");
+        }
+        return false;
     }
 }

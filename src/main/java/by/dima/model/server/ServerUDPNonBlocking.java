@@ -1,10 +1,7 @@
 package by.dima.model.server;
 
-import by.dima.model.common.AnswerDTO;
-import by.dima.model.common.AuthorizationRequestDTO;
-import by.dima.model.common.UserModel;
+import by.dima.model.common.*;
 import by.dima.model.data.command.model.CommandManager;
-import by.dima.model.common.CommandDTOWrapper;
 import by.dima.model.data.command.model.impl.HelpCommand;
 import by.dima.model.data.command.model.model.Command;
 import by.dima.model.db.dao.UserFacadeableDatabase;
@@ -31,29 +28,28 @@ import java.util.logging.Logger;
 
 @Setter
 public class ServerUDPNonBlocking implements Serverable {
-    private static final Log log = LogFactory.getLog(ServerUDPNonBlocking.class);
     private final Logger logger;
     private final CommandManager commandManager;
     @Getter
     private final int thisPort = 8932;
 
     private final ObjectMapper mapper;
-    private UserFacadeableDatabase proxyableDatabase;
+    private UserFacadeableDatabase facadeableDatabase;
 
 
-    public ServerUDPNonBlocking(UserFacadeableDatabase proxyableDatabase, CommandManager commandManager, ObjectMapper mapper, Logger logger) {
+    public ServerUDPNonBlocking(UserFacadeableDatabase facadeableDatabase, CommandManager commandManager, ObjectMapper mapper, Logger logger) {
         this.commandManager = commandManager;
         this.logger = logger;
         this.mapper = mapper;
-        this.proxyableDatabase = proxyableDatabase;
+        this.facadeableDatabase = facadeableDatabase;
     }
 
 
     public void startServer() {
-        ParserBytesToObj<AuthorizationRequestDTO> bytesParser = new ParserFromBytesToObject<>(logger);
+        ParserBytesToObj<AuthRequestDTO> bytesParser = new ParserFromBytesToObject<>(logger);
         ParserObjToBytes<AnswerDTO> answerParser = new ParserAnswerDTOToBytes(logger);
         ByteBuffer byteBufferReceive = ByteBuffer.allocate(100000);
-        AuthorizationRequestDTO authorizationRequestDTO;
+        AuthRequestDTO authorizationRequestDTO;
 
         try (DatagramChannel channel = DatagramChannel.open();
              Selector selector = Selector.open()) {
@@ -69,7 +65,6 @@ public class ServerUDPNonBlocking implements Serverable {
                     selector.select(100);
                     Iterator<SelectionKey> iterator = selector.selectedKeys().iterator();
                     while (iterator.hasNext()) {
-                        AnswerDTO answerDTO = new AnswerDTO();
                         SocketAddress address;
                         SelectionKey key = iterator.next();
                         iterator.remove();
@@ -82,21 +77,43 @@ public class ServerUDPNonBlocking implements Serverable {
                             byteBufferReceive.flip();
                             authorizationRequestDTO = bytesParser.getObj(byteBufferReceive);
                             CommandDTOWrapper commandDTOWrapper;
-                            try {
-                                commandDTOWrapper = new CommandDTOWrapper(authorizationRequestDTO.getCommandDTO(), mapper);
+                            final AnswerDTO answerDTO = new AnswerDTO();
 
-                                byteBufferReceive.clear();
+                            try {
                                 UserModel userModel = authorizationRequestDTO.getUserModel();
                                 logger.log(Level.INFO, "User который пришел от клиента: " + userModel);
-
-                                if (proxyableDatabase.isAuthorization(userModel) && userModel != null) {
-                                    if (commandDTOWrapper.getNameCommand() == null) {
-                                        logger.log(Level.INFO, "Команда пустая! В этом блоке кода можно обрабатывать !");
-                                        break;
+                                logger.log(Level.INFO, "Username: " + userModel.getUsername() + "\nPassword: " + userModel.getPassword());
+                                if (!authorizationRequestDTO.isAuthenticated()) {
+                                    facadeableDatabase.authentication(userModel);
+                                    if (facadeableDatabase.isAuthorization(userModel)) {
+                                        answerDTO.setAuth(AuthList.AUTHORIZATION);
+                                        authorizationRequestDTO.setAuthenticated(true);
+                                        logger.log(Level.FINEST, "Создан новый пользователь!");
+                                    } else if (facadeableDatabase.isAuthentication(userModel)) {
+                                        answerDTO.setAuth(AuthList.UNAUTHORIZED);
+                                        authorizationRequestDTO.setAuthenticated(true);
+                                        logger.log(Level.FINEST, "Создан новый пользователь, но почему то не зарегистрировался, непредвиденное поведение программы!");
                                     }
-                                    logger.log(Level.INFO, "Command: " + commandDTOWrapper.getNameCommand());
-                                    logger.log(Level.INFO, "Username: " + userModel.getUsername() + "\nPassword: " + userModel.getPassword());
+                                }
+                                if (facadeableDatabase.isAuthorization(userModel)) {
+                                    logger.log(Level.INFO, "Пользователь авторизован!");
+                                    answerDTO.setAuth(AuthList.AUTHORIZATION);
+                                } else {
+                                    logger.log(Level.INFO, "Пользователь не авторизован");
+                                    answerDTO.setAuth(AuthList.UNAUTHORIZED);
+                                    if (!facadeableDatabase.isAuthentication(userModel)) {
+                                        logger.log(Level.INFO, "Пользователь не существует!");
+                                        answerDTO.setAuth(AuthList.UNAUTHENTICATED);
+                                    }
+                                }
+                            } catch (Exception e) {
+                                logger.log(Level.INFO, "Проблема с авторизацией класс " + this.getClass().getName());
+                            }
 
+                            if (answerDTO.getAuth() == AuthList.AUTHORIZATION) {
+                                try {
+                                    byteBufferReceive.clear();
+                                    commandDTOWrapper = new CommandDTOWrapper(authorizationRequestDTO.getCommandDTO(), mapper);
                                     Map<String, Command> commandMap = commandManager.getCommandMap();
                                     Command thisCommand = new HelpCommand(commandManager);
                                     if (commandMap.containsKey(commandDTOWrapper.getNameCommand())) {
@@ -105,26 +122,27 @@ public class ServerUDPNonBlocking implements Serverable {
                                     thisCommand.setCommandDTO(commandDTOWrapper.getCommandDTO());
                                     try {
                                         commandManager.execute(thisCommand);
-                                        answerDTO = new AnswerDTO(thisCommand.getAnswer());
+                                        answerDTO.setAnswer(thisCommand.getAnswer());
                                     } catch (RuntimeException e) {
-                                        answerDTO = new AnswerDTO("Невозможно выполнить такую команду!");
+                                        answerDTO.setAnswer("Невозможно выполнить такую команду!");
                                         logger.log(Level.INFO, "Невозможно выполнить execute_script внутри другого!");
                                     }
                                     logger.log(Level.INFO, "Command is executed: " + commandDTOWrapper.getNameCommand());
-                                } else {
-                                    answerDTO.setAuth(false);
-                                    answerDTO.setAnswer("Пользователь не авторизирован!");
+                                } catch (NullPointerException e) {
+                                    logger.log(Level.INFO, "Команда пустая!");
+                                    answerDTO.setAnswer("Команда пустая!");
                                 }
+                            } else {
+                                answerDTO.setAnswer("Несанкционированный доступ!");
+                            }
+                            if (address != null) {
                                 ByteBuffer byteBufferSend = answerParser.getBytes(answerDTO);
-                                if (address != null) {
-                                    channel.send(byteBufferSend, address);
-                                    logger.log(Level.CONFIG, "Ответ " + answerDTO + " отправлен клиенту по адресу: " + address);
-                                }
-                            } catch (NullPointerException e) {
-                                logger.log(Level.INFO, "Команда пустая!");
+                                channel.send(byteBufferSend, address);
+                                logger.log(Level.CONFIG, "Ответ " + answerDTO + " отправлен клиенту по адресу: " + address);
                             }
                         }
                     }
+
                 } catch (Exception e) {
                     e.printStackTrace();
                     logger.log(Level.SEVERE, "Непредвиденная ошибка класса: " + getClass().getName() + ": " + Arrays.toString(e.getStackTrace()));
@@ -139,7 +157,8 @@ public class ServerUDPNonBlocking implements Serverable {
                 }
             }
 
-        } catch (Exception e) {
+        } catch (
+                Exception e) {
             logger.log(Level.WARNING, Arrays.toString(e.getStackTrace()));
         }
 
