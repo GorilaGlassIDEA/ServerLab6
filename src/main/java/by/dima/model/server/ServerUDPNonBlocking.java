@@ -14,6 +14,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.w3c.dom.ls.LSOutput;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
@@ -80,6 +81,7 @@ public class ServerUDPNonBlocking implements Serverable {
                             CommandDTOWrapper commandDTOWrapper;
                             final AnswerDTO answerDTO = new AnswerDTO();
 
+                            System.out.println(authorizationRequestDTO);
                             try {
                                 UserModel userModel = authorizationRequestDTO.getUserModel();
                                 logger.log(Level.INFO, "User который пришел от клиента: " + userModel);
@@ -89,27 +91,48 @@ public class ServerUDPNonBlocking implements Serverable {
                                     case GET_STATUS -> {
                                         if (facadeableDatabase.isAuthorization(userModel)) {
                                             answerDTO.setAuth(AuthList.AUTHORIZATION);
+                                            answerDTO.setAnswer("Пользователь авторизирован");
                                         } else if (facadeableDatabase.isExist(userModel)) {
                                             answerDTO.setAuth(AuthList.IS_EXIST);
+                                            answerDTO.setAnswer("Пользователь существует в базе данных (возможно неверно введен пароль)");
                                         } else {
                                             answerDTO.setAuth(AuthList.NOT_EXIST);
+                                            answerDTO.setAnswer("Пользователь с таким username не существует!");
                                         }
-                                        logger.log(Level.INFO, "Установлен статус " + answerDTO.getAuth());
+                                        logger.log(Level.INFO, "Отправлен статус " + answerDTO.getAuth());
                                     }
                                     case REQUEST_REGISTER -> {
-                                        if (!facadeableDatabase.isExist(userModel)){
+                                        if (!facadeableDatabase.isExist(userModel)) {
                                             facadeableDatabase.authentication(userModel);
-                                            if (facadeableDatabase.isExist(userModel)){
+                                            if (facadeableDatabase.isExist(userModel)) {
                                                 answerDTO.setAuth(AuthList.UNAUTHORIZED);
                                                 answerDTO.setAnswer("Пользователь успешно создан!");
-                                            }else {
+                                            } else {
                                                 answerDTO.setAuth(AuthList.NONE);
                                                 answerDTO.setAnswer("Не удалось добавить пользователя, возможно ошибка в базе данных!");
                                             }
-                                        }else {
+                                        } else {
                                             answerDTO.setAuth(AuthList.IS_EXIST);
                                             answerDTO.setAnswer("Пользователь с таким именем уже существует!");
                                         }
+                                    }
+                                    case UNAUTHORIZED -> {
+                                        if (facadeableDatabase.isExist(userModel)) {
+                                            if (facadeableDatabase.isAuthorization(userModel)) {
+                                                answerDTO.setAuth(AuthList.AUTHORIZATION);
+                                                answerDTO.setAnswer("Пользователь авторизирован!");
+                                            } else {
+                                                answerDTO.setAuth(AuthList.UNAUTHORIZED);
+                                                answerDTO.setAnswer("Пользователь не авторизован!");
+                                            }
+                                        } else {
+                                            answerDTO.setAuth(AuthList.NOT_EXIST);
+                                            answerDTO.setAnswer("Пользователь не существует");
+                                        }
+                                    }
+                                    default -> {
+                                        answerDTO.setAuth(AuthList.NONE);
+                                        answerDTO.setAnswer("Не соблюдено API проверьте код!");
                                     }
                                 }
 

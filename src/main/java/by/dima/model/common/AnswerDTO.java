@@ -2,6 +2,7 @@ package by.dima.model.common;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -12,15 +13,13 @@ import java.io.Serializable;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class AnswerDTO implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
     private String answer;
-    private AuthList auth = AuthList.NONE;
+    private AuthList auth;
 
-    public AnswerDTO() {
-        answer = "Нет ответа от выполненной команды!";
-    }
 
     public AnswerDTO(String answer) {
         this.answer = answer;
