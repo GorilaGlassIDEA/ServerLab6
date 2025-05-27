@@ -9,7 +9,7 @@ public interface UserFacadeableDatabase {
 
     boolean isAuthorization(UserModel user);
 
-    boolean isAuthentication(UserModel user);
+    boolean isExist(UserModel user);
 
     boolean validateData(UserModel user);
 }

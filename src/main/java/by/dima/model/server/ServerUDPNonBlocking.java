@@ -28,6 +28,7 @@ import java.util.logging.Logger;
 
 @Setter
 public class ServerUDPNonBlocking implements Serverable {
+    private static final Log log = LogFactory.getLog(ServerUDPNonBlocking.class);
     private final Logger logger;
     private final CommandManager commandManager;
     @Getter
@@ -83,59 +84,64 @@ public class ServerUDPNonBlocking implements Serverable {
                                 UserModel userModel = authorizationRequestDTO.getUserModel();
                                 logger.log(Level.INFO, "User который пришел от клиента: " + userModel);
                                 logger.log(Level.INFO, "Username: " + userModel.getUsername() + "\nPassword: " + userModel.getPassword());
-                                if (!authorizationRequestDTO.isAuthenticated()) {
-                                    facadeableDatabase.authentication(userModel);
-                                    if (facadeableDatabase.isAuthorization(userModel)) {
-                                        answerDTO.setAuth(AuthList.AUTHORIZATION);
-                                        authorizationRequestDTO.setAuthenticated(true);
-                                        logger.log(Level.FINEST, "Создан новый пользователь!");
-                                    } else if (facadeableDatabase.isAuthentication(userModel)) {
-                                        answerDTO.setAuth(AuthList.UNAUTHORIZED);
-                                        authorizationRequestDTO.setAuthenticated(true);
-                                        logger.log(Level.FINEST, "Создан новый пользователь, но почему то не зарегистрировался, непредвиденное поведение программы!");
+
+                                switch (authorizationRequestDTO.getAuthList()) {
+                                    case GET_STATUS -> {
+                                        if (facadeableDatabase.isAuthorization(userModel)) {
+                                            answerDTO.setAuth(AuthList.AUTHORIZATION);
+                                        } else if (facadeableDatabase.isExist(userModel)) {
+                                            answerDTO.setAuth(AuthList.IS_EXIST);
+                                        } else {
+                                            answerDTO.setAuth(AuthList.NOT_EXIST);
+                                        }
+                                        logger.log(Level.INFO, "Установлен статус " + answerDTO.getAuth());
                                     }
-                                } else {
-                                    if (facadeableDatabase.isAuthorization(userModel)) {
-                                        logger.log(Level.INFO, "Пользователь авторизован!");
-                                        answerDTO.setAuth(AuthList.AUTHORIZATION);
-                                    } else {
-                                        logger.log(Level.INFO, "Пользователь не авторизован");
-                                        answerDTO.setAuth(AuthList.UNAUTHORIZED);
-                                        if (!facadeableDatabase.isAuthentication(userModel)) {
-                                            logger.log(Level.INFO, "Пользователь не существует!");
-                                            answerDTO.setAuth(AuthList.UNAUTHENTICATED);
+                                    case REQUEST_REGISTER -> {
+                                        if (!facadeableDatabase.isExist(userModel)){
+                                            facadeableDatabase.authentication(userModel);
+                                            if (facadeableDatabase.isExist(userModel)){
+                                                answerDTO.setAuth(AuthList.UNAUTHORIZED);
+                                                answerDTO.setAnswer("Пользователь успешно создан!");
+                                            }else {
+                                                answerDTO.setAuth(AuthList.NONE);
+                                                answerDTO.setAnswer("Не удалось добавить пользователя, возможно ошибка в базе данных!");
+                                            }
+                                        }else {
+                                            answerDTO.setAuth(AuthList.IS_EXIST);
+                                            answerDTO.setAnswer("Пользователь с таким именем уже существует!");
                                         }
                                     }
                                 }
+
                             } catch (Exception e) {
                                 logger.log(Level.INFO, "Проблема с авторизацией класс " + this.getClass().getName());
                             }
 
-                            if (answerDTO.getAuth() == AuthList.AUTHORIZATION) {
-                                try {
-                                    byteBufferReceive.clear();
-                                    commandDTOWrapper = new CommandDTOWrapper(authorizationRequestDTO.getCommandDTO(), mapper);
-                                    Map<String, Command> commandMap = commandManager.getCommandMap();
-                                    Command thisCommand = new HelpCommand(commandManager);
-                                    if (commandMap.containsKey(commandDTOWrapper.getNameCommand())) {
-                                        thisCommand = commandMap.get(commandDTOWrapper.getNameCommand());
-                                    }
-                                    thisCommand.setCommandDTO(commandDTOWrapper.getCommandDTO());
-                                    try {
-                                        commandManager.execute(thisCommand);
-                                        answerDTO.setAnswer(thisCommand.getAnswer());
-                                    } catch (RuntimeException e) {
-                                        answerDTO.setAnswer("Невозможно выполнить такую команду!");
-                                        logger.log(Level.INFO, "Невозможно выполнить execute_script внутри другого!");
-                                    }
-                                    logger.log(Level.INFO, "Command is executed: " + commandDTOWrapper.getNameCommand());
-                                } catch (NullPointerException e) {
-                                    logger.log(Level.INFO, "Команда пустая!");
-                                    answerDTO.setAnswer("Команда пустая!");
-                                }
-                            } else {
-                                answerDTO.setAnswer("Несанкционированный доступ!");
-                            }
+//                            if (answerDTO.getAuth() == AuthList.AUTHORIZATION) {
+//                                try {
+//                                    byteBufferReceive.clear();
+//                                    commandDTOWrapper = new CommandDTOWrapper(authorizationRequestDTO.getCommandDTO(), mapper);
+//                                    Map<String, Command> commandMap = commandManager.getCommandMap();
+//                                    Command thisCommand = new HelpCommand(commandManager);
+//                                    if (commandMap.containsKey(commandDTOWrapper.getNameCommand())) {
+//                                        thisCommand = commandMap.get(commandDTOWrapper.getNameCommand());
+//                                    }
+//                                    thisCommand.setCommandDTO(commandDTOWrapper.getCommandDTO());
+//                                    try {
+//                                        commandManager.execute(thisCommand);
+//                                        answerDTO.setAnswer(thisCommand.getAnswer());
+//                                    } catch (RuntimeException e) {
+//                                        answerDTO.setAnswer("Невозможно выполнить такую команду!");
+//                                        logger.log(Level.INFO, "Невозможно выполнить execute_script внутри другого!");
+//                                    }
+//                                    logger.log(Level.INFO, "Command is executed: " + commandDTOWrapper.getNameCommand());
+//                                } catch (NullPointerException e) {
+//                                    logger.log(Level.INFO, "Команда пустая!");
+//                                    answerDTO.setAnswer("Команда пустая!");
+//                                }
+//                            } else {
+//                                answerDTO.setAnswer("Несанкционированный доступ!");
+//                            }
                             if (address != null) {
                                 ByteBuffer byteBufferSend = answerParser.getBytes(answerDTO);
                                 channel.send(byteBufferSend, address);

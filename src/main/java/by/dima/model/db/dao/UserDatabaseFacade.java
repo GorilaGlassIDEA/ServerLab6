@@ -41,8 +41,8 @@ public class UserDatabaseFacade implements UserFacadeableDatabase {
     /**
      * Данный метод проверят зарегистрирован ли пользователь
      */
-    public boolean isAuthentication(UserModel user) {
-        return AuthorizationService.isExist(user);
+    public boolean isExist(UserModel user) {
+        return AuthenticationService.isExist(user);
     }
 
     public boolean validateData(UserModel user) {
