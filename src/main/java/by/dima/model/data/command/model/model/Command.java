@@ -12,6 +12,9 @@ public interface Command extends Nameable, Helpable {
 
     default void setCommandDTO(CommandDTO commandDTO) {
     }
+    default void setUserId(Integer userId){
+        System.out.println("Вызван ментод setUserId интерфейса Command!");
+    }
 
     String getAnswer();
 

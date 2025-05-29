@@ -17,8 +17,10 @@ public class UsersCollectionParserToJson implements ParserToJson<UsersCollection
     @Override
     public String getJson(UsersCollectionDTO models) {
         try {
+            models.getMap().remove(null); // Удаление ключа null
             return mapper.writeValueAsString(models);
         } catch (JsonProcessingException e) {
+            e.printStackTrace();
             throw new JsonException("Ошибка сериализации объекта", e);
         }
     }

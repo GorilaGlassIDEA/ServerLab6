@@ -23,9 +23,6 @@ class AuthenticationService {
         String sqlRequest = """
                 INSERT INTO users (username, password) values (?,?)
                 """;
-        String sqlGetId = """
-                SELECT id from users where username=?
-                """;
 
         try (Connection connection = ConnectionManager.open()) {
             PreparedStatement statement = connection.prepareStatement(sqlRequest, Statement.RETURN_GENERATED_KEYS);
@@ -34,7 +31,7 @@ class AuthenticationService {
             int countEdit = statement.executeUpdate();
             ResultSet result = statement.getGeneratedKeys();
             if (countEdit > 0 && result.next()) {
-                logger.log(Level.FINE, "Пользователь успешно добавлен!");
+                logger.log(Level.FINE, "Пользователь успешно создан!");
                 user.setId(result.getInt("id"));
                 System.out.println("Успешное добавление user при регистрации" + user);
                 return user;

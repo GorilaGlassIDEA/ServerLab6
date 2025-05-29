@@ -58,7 +58,7 @@ public class Main {
                     readableFile, parserFromJson, writeableFile, parserToJson
             );
 
-            CommandManager manager = new CommandManager(logger, usersCollectionController, new ParserToJsonImpl<Route>(mapper), parserFromJsonRoute);
+            CommandManager manager = new CommandManager(logger, usersCollectionController, new ParserToJsonImpl<>(mapper), parserFromJsonRoute);
 
             Serverable serverUDP = new ServerUDPNonBlocking(userFacadeableDatabase, manager, mapper, logger);
             serverUDP.startServer();

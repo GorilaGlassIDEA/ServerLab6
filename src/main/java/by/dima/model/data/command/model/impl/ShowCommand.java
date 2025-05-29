@@ -17,6 +17,12 @@ public class ShowCommand extends CommandAbstract {
 
     private final UsersCollectionController usersCollectionController;
     private StringBuilder builder;
+    private Integer userId;
+
+    @Override
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
 
     public ShowCommand(UsersCollectionController usersCollectionController) {
         super("show", "Display all elements in the collection.");
@@ -25,7 +31,7 @@ public class ShowCommand extends CommandAbstract {
 
     @Override
     public void execute() {
-        CollectionController collectionController = new CollectionController(usersCollectionController.getCollectionDTO(getCommandDTO().getUserID()));
+        CollectionController collectionController = new CollectionController(usersCollectionController.getCollectionDTO((long) userId));
         builder = new StringBuilder();
         CollectionDTO models = collectionController.getModels();
         if (models.sizeArray() == 0) {
@@ -34,6 +40,7 @@ public class ShowCommand extends CommandAbstract {
             builder.append(collectionController.getModels());
         }
     }
+
     @Override
     public String getAnswer() {
         return new String(builder);

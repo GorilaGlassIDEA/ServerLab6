@@ -16,6 +16,13 @@ import lombok.Setter;
 public class ClearCommand extends CommandAbstract {
     private final UsersCollectionController usersCollectionController;
     private StringBuilder builder;
+    private Integer userId;
+
+    @Override
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
+
 
     public ClearCommand(UsersCollectionController usersCollectionController) {
         super("clear", "Clear command helps you with clearing collection!");
@@ -25,9 +32,8 @@ public class ClearCommand extends CommandAbstract {
     @Override
     public void execute() {
         builder = new StringBuilder();
-        Long userId = getCommandDTO().getUserID();
         if (userId != null) {
-            if (!usersCollectionController.deleteDataFromCollection(userId)) {
+            if (!usersCollectionController.deleteDataFromCollection((long) userId)) {
                 builder.append("Комадна ничего не удалила, возможно ваша коллекция пуста!");
             }
         }

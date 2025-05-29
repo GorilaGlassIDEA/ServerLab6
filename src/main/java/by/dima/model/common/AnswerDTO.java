@@ -19,6 +19,7 @@ public class AnswerDTO implements Serializable {
     private static final long serialVersionUID = 1L;
     private String answer;
     private AuthList auth;
+    private UserModel userModel;
 
 
     public AnswerDTO(String answer) {

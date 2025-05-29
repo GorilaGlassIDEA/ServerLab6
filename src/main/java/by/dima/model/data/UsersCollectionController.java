@@ -58,7 +58,6 @@ public class UsersCollectionController {
     }
 
 
-
     public boolean deleteDataFromCollection(Long userId) {
         if (usersCollectionDTO.getMap().containsKey(userId)) {
             usersCollectionDTO.getMap().remove(userId);
@@ -71,6 +70,7 @@ public class UsersCollectionController {
     }
 
     public boolean saveCollection() {
+
         try {
             if (usersCollectionDTO == null) {
                 writeableFile.write(parserToJson.getJson(new UsersCollectionDTO(new HashMap<>())));

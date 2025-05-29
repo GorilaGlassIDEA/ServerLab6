@@ -18,6 +18,12 @@ public class HistoryCommand extends CommandAbstract {
 
     private final UsersCollectionController usersCollectionController;
     private StringBuilder builder;
+    private Integer userId;
+
+    @Override
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
 
     public HistoryCommand(UsersCollectionController usersCollectionController) {
         super("history", "Display the last 8 commands.");
@@ -28,7 +34,7 @@ public class HistoryCommand extends CommandAbstract {
     @Override
     public void execute() {
         builder = new StringBuilder();
-        List<String> commandList = usersCollectionController.getCommandNameList(getCommandDTO().getUserID());
+        List<String> commandList = usersCollectionController.getCommandNameList((long) userId);
 
         if (commandList.isEmpty()) {
             builder.append("Your list is empty!");

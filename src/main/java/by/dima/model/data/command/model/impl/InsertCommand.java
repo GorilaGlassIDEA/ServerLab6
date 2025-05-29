@@ -8,7 +8,9 @@ import by.dima.model.data.command.model.model.CommandAbstract;
 import by.dima.model.common.route.main.Route;
 
 import by.dima.model.data.services.files.parser.string.model.ParserFromJson;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -24,6 +26,14 @@ public class InsertCommand extends CommandAbstract {
     private final Logger logger;
     private final ParserFromJson<Route> parserFromJson;
     private StringBuilder builder;
+
+
+    private Integer userId;
+
+    @Override
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
 
     public InsertCommand(UsersCollectionController usersCollectionController, ParserFromJson<Route> parserFromJson, Logger logger) {
         super("insert", "Add a new element with a specified key.");
@@ -42,15 +52,15 @@ public class InsertCommand extends CommandAbstract {
 
         logger.log(Level.INFO, "Команда которая пришла на выполнение к insertCommand:" + getCommandDTO());
         try {
-            if (getCommandDTO() != null && getCommandDTO().getJsonRouteObj()!=null) {
+            if (userId != null && userId != -1) {
                 String arg = getCommandDTO().getArgCommand();
-
-                Long userId = getCommandDTO().getUserID();
                 Route route = parserFromJson.getModels(getCommandDTO().getJsonRouteObj());
-                final CollectionController collectionController = new CollectionController(usersCollectionController.getCollectionDTO(userId));
+                final CollectionController collectionController = new CollectionController(usersCollectionController.getCollectionDTO((long) userId));
+
+                System.out.println("Коллекция пришедшего юзера:" + collectionController.getCollectionForControl());
+
                 collectionController.addElem(route);
                 logger.log(Level.FINE, "Нашлась коллекция для пользователя с id: " + userId + " аргумент равен " + arg);
-
                 if (usersCollectionController.saveCollection()) {
                     logger.log(Level.FINE, "Коллекция сохранила Map<Long id, Route userRoute!> " + collectionController.getCollectionForControl());
                     builder.append("Ваши данные сохранены корректно!").append(collectionController.getModels());

@@ -81,11 +81,12 @@ public class ServerUDPNonBlocking implements Serverable {
                             CommandDTOWrapper commandDTOWrapper;
                             final AnswerDTO answerDTO = new AnswerDTO();
 
-                            System.out.println(authorizationRequestDTO);
+
                             try {
                                 UserModel userModel = authorizationRequestDTO.getUserModel();
                                 logger.log(Level.INFO, "User который пришел от клиента: " + userModel);
                                 logger.log(Level.INFO, "Username: " + userModel.getUsername() + "\nPassword: " + userModel.getPassword());
+
 
                                 switch (authorizationRequestDTO.getAuthList()) {
                                     case GET_STATUS -> {
@@ -103,9 +104,9 @@ public class ServerUDPNonBlocking implements Serverable {
                                     }
                                     case REQUEST_REGISTER -> {
                                         if (!facadeableDatabase.isExist(userModel)) {
-                                            facadeableDatabase.authentication(userModel);
+                                            answerDTO.setUserModel(facadeableDatabase.authentication(userModel));
                                             if (facadeableDatabase.isExist(userModel)) {
-                                                answerDTO.setAuth(AuthList.UNAUTHORIZED);
+                                                answerDTO.setAuth(AuthList.AUTHORIZATION);
                                                 answerDTO.setAnswer("Пользователь успешно создан!");
                                             } else {
                                                 answerDTO.setAuth(AuthList.NONE);
@@ -116,11 +117,22 @@ public class ServerUDPNonBlocking implements Serverable {
                                             answerDTO.setAnswer("Пользователь с таким именем уже существует!");
                                         }
                                     }
+                                    case AUTHORIZATION -> {
+                                        if (facadeableDatabase.isAuthorization(authorizationRequestDTO.getUserModel())) {
+                                            answerDTO.setAuth(AuthList.AUTHORIZATION);
+                                            break;
+                                        } else {
+                                            answerDTO.setAuth(AuthList.UNAUTHORIZED);
+                                            authorizationRequestDTO.setAuthList(AuthList.UNAUTHORIZED);
+                                            continue;
+                                        }
+                                    }
                                     case UNAUTHORIZED -> {
                                         if (facadeableDatabase.isExist(userModel)) {
                                             if (facadeableDatabase.isAuthorization(userModel)) {
                                                 answerDTO.setAuth(AuthList.AUTHORIZATION);
                                                 answerDTO.setAnswer("Пользователь авторизирован!");
+                                                userModel = facadeableDatabase.authorization(userModel);
                                             } else {
                                                 answerDTO.setAuth(AuthList.UNAUTHORIZED);
                                                 answerDTO.setAnswer("Пользователь не авторизован!");
@@ -131,40 +143,51 @@ public class ServerUDPNonBlocking implements Serverable {
                                         }
                                     }
                                     default -> {
+                                        System.out.println(authorizationRequestDTO);
                                         answerDTO.setAuth(AuthList.NONE);
                                         answerDTO.setAnswer("Не соблюдено API проверьте код!");
                                     }
                                 }
+                                if (authorizationRequestDTO.getCommandDTO() == null) {
+                                    authorizationRequestDTO.setCommandDTO(new CommandDTO());
+                                }
+                                if (answerDTO.getAuth() == AuthList.AUTHORIZATION) {
+                                    userModel = facadeableDatabase.authorization(userModel);
+                                }
+                                answerDTO.setUserModel(userModel);
+                                System.out.println("ServerUDPNonBlocking говорит что после регистрации answer dto = " + answerDTO);
+
 
                             } catch (Exception e) {
+                                e.printStackTrace();
                                 logger.log(Level.INFO, "Проблема с авторизацией класс " + this.getClass().getName());
                             }
-
-//                            if (answerDTO.getAuth() == AuthList.AUTHORIZATION) {
-//                                try {
-//                                    byteBufferReceive.clear();
-//                                    commandDTOWrapper = new CommandDTOWrapper(authorizationRequestDTO.getCommandDTO(), mapper);
-//                                    Map<String, Command> commandMap = commandManager.getCommandMap();
-//                                    Command thisCommand = new HelpCommand(commandManager);
-//                                    if (commandMap.containsKey(commandDTOWrapper.getNameCommand())) {
-//                                        thisCommand = commandMap.get(commandDTOWrapper.getNameCommand());
-//                                    }
-//                                    thisCommand.setCommandDTO(commandDTOWrapper.getCommandDTO());
-//                                    try {
-//                                        commandManager.execute(thisCommand);
-//                                        answerDTO.setAnswer(thisCommand.getAnswer());
-//                                    } catch (RuntimeException e) {
-//                                        answerDTO.setAnswer("Невозможно выполнить такую команду!");
-//                                        logger.log(Level.INFO, "Невозможно выполнить execute_script внутри другого!");
-//                                    }
-//                                    logger.log(Level.INFO, "Command is executed: " + commandDTOWrapper.getNameCommand());
-//                                } catch (NullPointerException e) {
-//                                    logger.log(Level.INFO, "Команда пустая!");
-//                                    answerDTO.setAnswer("Команда пустая!");
-//                                }
-//                            } else {
-//                                answerDTO.setAnswer("Несанкционированный доступ!");
-//                            }
+                            if (answerDTO.getAuth() == AuthList.AUTHORIZATION) {
+                                try {
+                                    byteBufferReceive.clear();
+                                    commandDTOWrapper = new CommandDTOWrapper(authorizationRequestDTO.getCommandDTO(), mapper);
+                                    Map<String, Command> commandMap = commandManager.getCommandMap();
+                                    Command thisCommand = new HelpCommand(commandManager);
+                                    if (commandMap.containsKey(commandDTOWrapper.getNameCommand())) {
+                                        thisCommand = commandMap.get(commandDTOWrapper.getNameCommand());
+                                    }
+                                    thisCommand.setCommandDTO(commandDTOWrapper.getCommandDTO());
+                                    try {
+                                        thisCommand.setUserId(answerDTO.getUserModel().getId());
+                                        commandManager.execute(thisCommand);
+                                        answerDTO.setAnswer(thisCommand.getAnswer());
+                                    } catch (RuntimeException e) {
+                                        answerDTO.setAnswer("Невозможно выполнить такую команду!");
+                                        logger.log(Level.INFO, "Невозможно выполнить execute_script внутри другого!");
+                                    }
+                                    logger.log(Level.INFO, "Command is executed: " + commandDTOWrapper.getNameCommand());
+                                } catch (NullPointerException e) {
+                                    logger.log(Level.INFO, "Команда пустая!");
+                                    answerDTO.setAnswer("Команда пустая!");
+                                }
+                            } else {
+                                answerDTO.setAnswer("Неправильный логин или пароль!");
+                            }
                             if (address != null) {
                                 ByteBuffer byteBufferSend = answerParser.getBytes(answerDTO);
                                 channel.send(byteBufferSend, address);

@@ -14,6 +14,12 @@ public class UpdateCommand extends CommandAbstract {
     private final UsersCollectionController usersCollectionController;
     private final ParserFromJson<Route> parser;
     private StringBuilder builder;
+    private Integer userId;
+
+    @Override
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
 
     public UpdateCommand(ParserFromJson<Route> parser, UsersCollectionController usersCollectionController) {
         super("update", "Update an element by its ID.");
@@ -24,7 +30,7 @@ public class UpdateCommand extends CommandAbstract {
 
     @Override
     public void execute() {
-        CollectionController collectionController = new CollectionController(usersCollectionController.getCollectionDTO(getCommandDTO().getUserID()));
+        CollectionController collectionController = new CollectionController(usersCollectionController.getCollectionDTO((long) userId));
         builder = new StringBuilder();
 
         if (getCommandDTO().getArgCommand() != null) {
