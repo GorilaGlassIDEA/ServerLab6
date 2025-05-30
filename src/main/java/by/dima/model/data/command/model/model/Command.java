@@ -1,6 +1,7 @@
 package by.dima.model.data.command.model.model;
 
 import by.dima.model.common.CommandDTO;
+import by.dima.model.common.UserModel;
 
 /**
  * Этот интерфейс является абстракцией для каждой реализации команды
@@ -14,6 +15,10 @@ public interface Command extends Nameable, Helpable {
     }
     default void setUserId(Integer userId){
         System.out.println("Вызван ментод setUserId интерфейса Command!");
+        //TODO: заменить везд на userModel
+    }
+    default void serUserModel(UserModel userModel){
+
     }
 
     String getAnswer();

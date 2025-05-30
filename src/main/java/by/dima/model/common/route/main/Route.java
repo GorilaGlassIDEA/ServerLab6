@@ -2,9 +2,11 @@ package by.dima.model.common.route.main;
 
 
 import by.dima.model.common.route.sub.*;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Cascade;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -16,8 +18,13 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class Route implements Comparable<Route>, Serializable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String name;
+
+    @ManyToMany
+    @JoinColumn(name = "coordinates_id", referencedColumnName = "id")
     private Coordinates coordinates;
     private ZonedDateTime creationDate;
     private LocationFrom from;
@@ -35,6 +42,7 @@ public class Route implements Comparable<Route>, Serializable {
         this.distance = distance;
         // generate id
         this.id = id;
+        //TODO: не доделал настройки hibernate
     }
 
     @Override

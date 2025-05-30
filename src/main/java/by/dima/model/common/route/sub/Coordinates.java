@@ -1,5 +1,6 @@
 package by.dima.model.common.route.sub;
 
+import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -8,6 +9,7 @@ import java.io.Serializable;
 
 @Data
 @NoArgsConstructor
+@Table(name="coordinates")
 public class Coordinates implements Serializable {
     private int x;
     private Double y;

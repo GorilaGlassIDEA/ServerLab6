@@ -59,7 +59,7 @@ public class Main {
         UserFacadeableDatabase userFacadeableDatabase = new UserDatabaseFacade(sessionFactory);
         try {
 
-            UsersCollectionController usersCollectionController = new UsersCollectionController(logger,
+            UsersCollectionController usersCollectionController = new UsersCollectionController(userFacadeableDatabase,logger,
                     readableFile, parserFromJson, writeableFile, parserToJson
             );
 

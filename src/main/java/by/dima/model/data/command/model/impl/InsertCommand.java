@@ -1,5 +1,6 @@
 package by.dima.model.data.command.model.impl;
 
+import by.dima.model.common.UserModel;
 import by.dima.model.data.CollectionController;
 import by.dima.model.data.UsersCollectionController;
 import by.dima.model.data.command.model.model.Command;
@@ -28,11 +29,12 @@ public class InsertCommand extends CommandAbstract {
     private StringBuilder builder;
 
 
+    private UserModel userModel;
     private Integer userId;
 
     @Override
-    public void setUserId(Integer userId) {
-        this.userId = userId;
+    public void serUserModel(UserModel userModel) {
+        this.userModel = userModel;
     }
 
     public InsertCommand(UsersCollectionController usersCollectionController, ParserFromJson<Route> parserFromJson, Logger logger) {
@@ -52,6 +54,7 @@ public class InsertCommand extends CommandAbstract {
 
         logger.log(Level.INFO, "Команда которая пришла на выполнение к insertCommand:" + getCommandDTO());
         try {
+            userId = userModel.getId();
             if (userId != null && userId != -1) {
                 String arg = getCommandDTO().getArgCommand();
                 Route route = parserFromJson.getModels(getCommandDTO().getJsonRouteObj());
@@ -61,7 +64,7 @@ public class InsertCommand extends CommandAbstract {
 
                 collectionController.addElem(route);
                 logger.log(Level.FINE, "Нашлась коллекция для пользователя с id: " + userId + " аргумент равен " + arg);
-                if (usersCollectionController.saveCollection()) {
+                if (usersCollectionController.saveCollection(userModel)) {
                     logger.log(Level.FINE, "Коллекция сохранила Map<Long id, Route userRoute!> " + collectionController.getCollectionForControl());
                     builder.append("Ваши данные сохранены корректно!").append(collectionController.getModels());
                 } else {
@@ -81,7 +84,7 @@ public class InsertCommand extends CommandAbstract {
 
     @Override
     public String getAnswer() {
-        usersCollectionController.saveCollection();
+        usersCollectionController.saveCollection(userModel);
         return new String(builder);
     }
 }

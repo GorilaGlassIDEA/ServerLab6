@@ -2,6 +2,8 @@ package by.dima.model.common.route.sub;
 
 
 import by.dima.model.server.Serverable;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +12,8 @@ import java.io.Serializable;
 
 @Data
 @NoArgsConstructor
+@Entity
+@Table(name="location_to")
 public class LocationTo implements Serializable {
     private Double x;
     private Double y;

@@ -173,7 +173,7 @@ public class ServerUDPNonBlocking implements Serverable {
                                     }
                                     thisCommand.setCommandDTO(commandDTOWrapper.getCommandDTO());
                                     try {
-                                        thisCommand.setUserId(answerDTO.getUserModel().getId());
+                                        thisCommand.serUserModel(answerDTO.getUserModel());
                                         commandManager.execute(thisCommand);
                                         answerDTO.setAnswer(thisCommand.getAnswer());
                                     } catch (RuntimeException e) {

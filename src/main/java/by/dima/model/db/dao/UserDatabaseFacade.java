@@ -1,16 +1,20 @@
 package by.dima.model.db.dao;
 
 import by.dima.model.common.UserModel;
+import by.dima.model.common.route.main.Route;
+import by.dima.model.db.dao.save.RouteSaveService;
 import org.hibernate.SessionFactory;
 
 
-public class UserDatabaseFacade implements UserFacadeableDatabase {
+public class UserDatabaseFacade implements UserFacadeableDatabase<Route> {
     private final AuthorizationService authorizationService;
     private final AuthenticationService authenticationService;
+    private final RouteSaveService routeSaveService;
 
     public UserDatabaseFacade(SessionFactory sessionFactory) {
         authorizationService = new AuthorizationService(sessionFactory);
         authenticationService = new AuthenticationService(sessionFactory);
+        routeSaveService = new RouteSaveService(sessionFactory);
     }
 
     /**
@@ -57,5 +61,9 @@ public class UserDatabaseFacade implements UserFacadeableDatabase {
     public boolean validateData(UserModel user) {
         //TODO: написать проверку данных на корректность
         return true;
+    }
+
+    public boolean save(Route route) {
+        return routeSaveService.save(route);
     }
 }
