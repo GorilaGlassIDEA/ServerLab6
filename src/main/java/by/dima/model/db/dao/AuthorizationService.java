@@ -3,6 +3,7 @@ package by.dima.model.db.dao;
 import by.dima.model.Main;
 import by.dima.model.common.UserModel;
 import by.dima.model.db.utils.ConnectionManager;
+import org.hibernate.SessionFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,8 +14,14 @@ import java.util.logging.Logger;
 
 class AuthorizationService {
     private final static Logger logger = Main.logger;
+    private final SessionFactory sessionFactory;
 
-    public static UserModel authorization(UserModel user) {
+    public AuthorizationService(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
+
+    public UserModel authorization(UserModel user) {
+        //TODO: Переписать под hibernate
         UserModel answerUser = new UserModel();
         String sqlRequest = """
                 SELECT id, username, password from users where username = ?;
@@ -40,7 +47,8 @@ class AuthorizationService {
         return new UserModel();
     }
 
-    public static boolean isExist(UserModel userModel) {
+    public boolean isExist(UserModel userModel) {
+        //TODO: Переписать под hibernate
         String sqlRequest = """
                 SELECT COUNT(*) FROM users WHERE username=? and password=?
                 """;

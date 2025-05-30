@@ -1,6 +1,7 @@
 package by.dima.model;
 
 
+import by.dima.model.common.UserModel;
 import by.dima.model.data.UsersCollectionController;
 import by.dima.model.data.abstracts.model.UsersCollectionDTO;
 import by.dima.model.data.command.model.CommandManager;
@@ -18,6 +19,7 @@ import by.dima.model.data.services.files.parser.string.model.ParserFromJson;
 import by.dima.model.data.services.files.parser.string.model.ParserToJson;
 import by.dima.model.db.dao.UserDatabaseFacade;
 import by.dima.model.db.dao.UserFacadeableDatabase;
+import by.dima.model.db.hibernate.config.HibernateConfiguration;
 import by.dima.model.utils.log.FactoryLogger;
 import by.dima.model.server.ServerUDPNonBlocking;
 import by.dima.model.server.Serverable;
@@ -25,6 +27,7 @@ import by.dima.model.server.request.parser.RouteParserFromJson;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.hibernate.SessionFactory;
 
 import java.util.logging.Handler;
 import java.util.logging.Logger;
@@ -51,7 +54,9 @@ public class Main {
         ParserToJson<UsersCollectionDTO> parserToJson = new UsersCollectionParserToJson(mapper);
         ParserFromJson<Route> parserFromJsonRoute = new RouteParserFromJson(mapper);
 
-        UserFacadeableDatabase userFacadeableDatabase = new UserDatabaseFacade();
+        SessionFactory sessionFactory = HibernateConfiguration.getFactory();
+
+        UserFacadeableDatabase userFacadeableDatabase = new UserDatabaseFacade(sessionFactory);
         try {
 
             UsersCollectionController usersCollectionController = new UsersCollectionController(logger,
@@ -66,12 +71,12 @@ public class Main {
             //TODO: исправить ошибку команды info когда коллекция не пустая!
 
         } catch (RuntimeException e) {
-            ;
             System.err.println("Не удалось получить путь для сохранения объектов!");
         } finally {
             for (Handler handler : logger.getHandlers()) {
                 handler.close();
             }
+            HibernateConfiguration.closeSessionFactory();
         }
 
 

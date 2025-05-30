@@ -1,9 +1,18 @@
 package by.dima.model.db.dao;
 
 import by.dima.model.common.UserModel;
+import org.hibernate.SessionFactory;
 
 
 public class UserDatabaseFacade implements UserFacadeableDatabase {
+    private final AuthorizationService authorizationService;
+    private final AuthenticationService authenticationService;
+
+    public UserDatabaseFacade(SessionFactory sessionFactory) {
+        authorizationService = new AuthorizationService(sessionFactory);
+        authenticationService = new AuthenticationService(sessionFactory);
+    }
+
     /**
      * Данный метод выполняет авторизацию пользователей в базе данных.
      * На вход приходит потенциальный user, а на выходе либо тот же user с правильным Id,
@@ -14,7 +23,7 @@ public class UserDatabaseFacade implements UserFacadeableDatabase {
      */
 
     public UserModel authorization(UserModel user) {
-        return AuthorizationService.authorization(user);
+        return authorizationService.authorization(user);
     }
 
     /**
@@ -25,7 +34,7 @@ public class UserDatabaseFacade implements UserFacadeableDatabase {
      * @return
      */
     public UserModel authentication(UserModel user) {
-        return AuthenticationService.authentication(user);
+        return authenticationService.authentication(user);
     }
 
     /**
@@ -35,14 +44,14 @@ public class UserDatabaseFacade implements UserFacadeableDatabase {
      * @return
      */
     public boolean isAuthorization(UserModel user) {
-        return AuthorizationService.isExist(user);
+        return authorizationService.isExist(user);
     }
 
     /**
      * Данный метод проверят зарегистрирован ли пользователь
      */
     public boolean isExist(UserModel user) {
-        return AuthenticationService.isExist(user);
+        return authenticationService.isExist(user);
     }
 
     public boolean validateData(UserModel user) {

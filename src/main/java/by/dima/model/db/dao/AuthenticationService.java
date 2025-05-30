@@ -3,6 +3,10 @@ package by.dima.model.db.dao;
 import by.dima.model.Main;
 import by.dima.model.common.UserModel;
 import by.dima.model.db.utils.ConnectionManager;
+import jakarta.persistence.PersistenceException;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.exception.ConstraintViolationException;
 
 import java.sql.*;
 import java.util.logging.Level;
@@ -10,6 +14,11 @@ import java.util.logging.Logger;
 
 class AuthenticationService {
     private final static Logger logger = Main.logger;
+    private final SessionFactory sessionFactory;
+
+    public AuthenticationService(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
 
 
     /**
@@ -19,37 +28,31 @@ class AuthenticationService {
      * @param user
      * @return
      */
-    public static UserModel authentication(UserModel user) {
-        String sqlRequest = """
-                INSERT INTO users (username, password) values (?,?)
-                """;
-
-        try (Connection connection = ConnectionManager.open()) {
-            PreparedStatement statement = connection.prepareStatement(sqlRequest, Statement.RETURN_GENERATED_KEYS);
-            statement.setString(1, user.getUsername());
-            statement.setString(2, user.getPassword());
-            int countEdit = statement.executeUpdate();
-            ResultSet result = statement.getGeneratedKeys();
-            if (countEdit > 0 && result.next()) {
-                logger.log(Level.FINE, "Пользователь успешно создан!");
-                user.setId(result.getInt("id"));
-                System.out.println("Успешное добавление user при регистрации" + user);
-                return user;
-            } else {
-                logger.log(Level.INFO, "Не удалось добавить пользователя !");
+    public UserModel authentication(UserModel user) {
+        try (Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+            session.persist(user);
+            session.flush();
+            session.getTransaction().commit();
+            logger.log(Level.FINE, "Пользователь успешно создан!");
+            return user;
+        } catch (PersistenceException e) {
+            if (e.getCause() instanceof ConstraintViolationException) {
+                String sqlState = ((ConstraintViolationException) e.getCause()).getSQLState();
+                if ("23505".equals(sqlState)) {
+                    logger.log(Level.WARNING, "Пользователь с таким именем уже существует!");
+                } else {
+                    logger.log(Level.SEVERE, "Нарушение ограничения базы данных: " + sqlState, e);
+                }
             }
-        } catch (SQLException e) {
-            if ("23505".equals(e.getSQLState())) {
-                logger.log(Level.WARNING, "Пользователь с таким именем уже существует!");
-                //TODO добавлять в ответ от сервера информацию о том, что такой ник уже существует!
-            } else {
-                logger.log(Level.SEVERE, "Ошибка подключения к базе данных!");
-            }
+        } catch (Exception e) {
+            logger.log(Level.WARNING, "Неизвестная ошибка при выполнении запросов к базе!");
         }
         return null;
     }
 
-    public static boolean isExist(UserModel user) {
+    public boolean isExist(UserModel user) {
+        //TODO: реализоваь через Hibernate
         String sql = """
                 SELECT COUNT(*) FROM users WHERE  username=?
                 """;
