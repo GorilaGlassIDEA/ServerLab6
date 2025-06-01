@@ -3,10 +3,7 @@ package by.dima.model.common.route.main;
 
 import by.dima.model.common.route.sub.*;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.hibernate.annotations.Cascade;
+import lombok.*;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -16,18 +13,30 @@ import java.util.List;
 
 @Getter
 @Setter
+@AllArgsConstructor
 @NoArgsConstructor
+@Builder
+@Entity
+@Table(name = "routes")
 public class Route implements Comparable<Route>, Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String name;
 
-    @ManyToMany
-    @JoinColumn(name = "coordinates_id", referencedColumnName = "id")
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "coordinatesid")
     private Coordinates coordinates;
+
+    @Column(name = "create_time")
     private ZonedDateTime creationDate;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "locationfromid")
     private LocationFrom from;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "locationtoid")
     private LocationTo to;
     private double distance;
     @Serial
@@ -84,14 +93,14 @@ public class Route implements Comparable<Route>, Serializable {
 
 
         return "Route {" +
-                "\n\tID: " + id +
-                ",\n\tName: '" + name + '\'' +
-                ",\n\tCoordinates: " + coordinates +
-                ",\n\tCreation Date: " + creationDate +
-                ",\n\tFrom: " + from +
-                ",\n\tTo: " + to +
-                ",\n\tDistance: " + distance +
-                "\n}";
+               "\n\tID: " + id +
+               ",\n\tName: '" + name + '\'' +
+               ",\n\tCoordinates: " + coordinates +
+               ",\n\tCreation Date: " + creationDate +
+               ",\n\tFrom: " + from +
+               ",\n\tTo: " + to +
+               ",\n\tDistance: " + distance +
+               "\n}";
     }
 
 }
