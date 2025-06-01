@@ -1,6 +1,7 @@
 package by.dima.model.data;
 
 import by.dima.model.common.UserModel;
+import by.dima.model.common.route.main.Route;
 import by.dima.model.data.abstracts.model.CollectionDTO;
 import by.dima.model.data.abstracts.model.UsersCollectionDTO;
 import by.dima.model.data.services.files.io.read.ReadableFile;
@@ -13,6 +14,7 @@ import lombok.ToString;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @ToString
@@ -25,9 +27,9 @@ public class UsersCollectionController {
     private final ParserFromJson<UsersCollectionDTO> parserFromJson;
     private CollectionDTO collectionDTO;
     private final Logger logger;
-    private final UserFacadeableDatabase facadeableDatabase;
+    private final UserFacadeableDatabase<Route> facadeableDatabase;
 
-    public UsersCollectionController(UserFacadeableDatabase facadeableDatabase, Logger logger, ReadableFile readableFile, ParserFromJson<UsersCollectionDTO> parserFromJson, WriteableFile writeableFile, ParserToJson<UsersCollectionDTO> parserToJson) {
+    public UsersCollectionController(UserFacadeableDatabase<Route> facadeableDatabase, Logger logger, ReadableFile readableFile, ParserFromJson<UsersCollectionDTO> parserFromJson, WriteableFile writeableFile, ParserToJson<UsersCollectionDTO> parserToJson) {
         this.writeableFile = writeableFile;
         this.parserToJson = parserToJson;
         this.parserFromJson = parserFromJson;
@@ -71,8 +73,16 @@ public class UsersCollectionController {
         }
     }
 
+    public CollectionController getCollectionControllerForUserUsingId(UserModel userModel) {
+        try {
+            return new CollectionController(usersCollectionDTO.getCollection((long) userModel.getId()));
+        } catch (NullPointerException e) {
+            logger.log(Level.WARNING, "Id юзера равно null");
+            return new CollectionController(new CollectionDTO());
+        }
+    }
+
     public boolean saveCollection(UserModel userModel) {
-        facadeableDatabase.save(userModel);
         try {
             if (usersCollectionDTO == null) {
                 writeableFile.write(parserToJson.getJson(new UsersCollectionDTO(new HashMap<>())));

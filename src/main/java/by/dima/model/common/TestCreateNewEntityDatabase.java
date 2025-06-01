@@ -1,14 +1,16 @@
-package by.dima.model.common.route.sub;
+package by.dima.model.common;
 
-import by.dima.model.common.UserModel;
 import by.dima.model.common.route.main.Route;
+import by.dima.model.common.route.sub.Coordinates;
+import by.dima.model.common.route.sub.LocationFrom;
+import by.dima.model.common.route.sub.LocationTo;
 import by.dima.model.db.hibernate.config.HibernateConfiguration;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
 import java.time.ZonedDateTime;
 
-public class TestCreateNewEntityRouteSubInDatabase {
+public class TestCreateNewEntityDatabase {
     public static void main(String[] args) {
         SessionFactory sessionFactory = HibernateConfiguration.getFactory();
         try (Session session = sessionFactory.openSession()) {
@@ -36,7 +38,14 @@ public class TestCreateNewEntityRouteSubInDatabase {
                     .creationDate(ZonedDateTime.now())
                     .build();
 
-            session.persist(route);
+            UserModel userModel = new UserModel("dima","Crazy");
+
+            UserRouteLink userRouteLink = UserRouteLink.builder()
+                    .route(route)
+                    .userModel(userModel)
+                    .build();
+
+            session.persist(userRouteLink);
             session.getTransaction().commit();
         }
     }

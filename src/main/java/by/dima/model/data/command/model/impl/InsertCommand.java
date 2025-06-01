@@ -58,7 +58,7 @@ public class InsertCommand extends CommandAbstract {
             if (userId != null && userId != -1) {
                 String arg = getCommandDTO().getArgCommand();
                 Route route = parserFromJson.getModels(getCommandDTO().getJsonRouteObj());
-                final CollectionController collectionController = new CollectionController(usersCollectionController.getCollectionDTO((long) userId));
+                final CollectionController collectionController = usersCollectionController.getCollectionControllerForUserUsingId(userModel);
 
                 System.out.println("Коллекция пришедшего юзера:" + collectionController.getCollectionForControl());
 

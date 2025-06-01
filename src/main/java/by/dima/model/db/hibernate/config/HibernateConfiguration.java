@@ -1,6 +1,7 @@
 package by.dima.model.db.hibernate.config;
 
 import by.dima.model.common.UserModel;
+import by.dima.model.common.UserRouteLink;
 import by.dima.model.common.route.main.Route;
 import by.dima.model.common.route.sub.Coordinates;
 import by.dima.model.common.route.sub.LocationFrom;
@@ -19,6 +20,7 @@ public class HibernateConfiguration {
         configuration.addAnnotatedClass(LocationFrom.class);
         configuration.addAnnotatedClass(Coordinates.class);
         configuration.addAnnotatedClass(Route.class);
+        configuration.addAnnotatedClass(UserRouteLink.class);
 
 
         sessionFactory = configuration.buildSessionFactory();
