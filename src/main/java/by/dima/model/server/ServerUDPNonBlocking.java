@@ -23,12 +23,13 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ForkJoinPool;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Setter
 public class ServerUDPNonBlocking implements Serverable {
-    private static final Log log = LogFactory.getLog(ServerUDPNonBlocking.class);
     private final Logger logger;
     private final CommandManager commandManager;
     @Getter
@@ -74,126 +75,8 @@ public class ServerUDPNonBlocking implements Serverable {
                             address = channel.receive(byteBufferReceive);
                             logger.log(Level.INFO, "Ip address client: " + address);
                             logger.log(Level.CONFIG, "Data client" + ByteBuffer.wrap(byteBufferReceive.array(), 0, byteBufferReceive.limit()));
-
-                            byteBufferReceive.flip();
-                            authorizationRequestDTO = bytesParser.getObj(byteBufferReceive);
-                            CommandDTOWrapper commandDTOWrapper;
-                            final AnswerDTO answerDTO = new AnswerDTO();
-
-
-                            try {
-                                UserModel userModel = authorizationRequestDTO.getUserModel();
-                                logger.log(Level.INFO, "User который пришел от клиента: " + userModel);
-                                logger.log(Level.INFO, "Username: " + userModel.getUsername() + "\nPassword: " + userModel.getPassword());
-
-
-                                switch (authorizationRequestDTO.getAuthList()) {
-                                    case GET_STATUS -> {
-                                        if (facadeableDatabase.isAuthorization(userModel)) {
-                                            answerDTO.setAuth(AuthList.AUTHORIZATION);
-                                            answerDTO.setAnswer("Пользователь авторизирован");
-                                        } else if (facadeableDatabase.isExist(userModel)) {
-                                            answerDTO.setAuth(AuthList.IS_EXIST);
-                                            answerDTO.setAnswer("Пользователь существует в базе данных (возможно неверно введен пароль)");
-                                        } else {
-                                            answerDTO.setAuth(AuthList.NOT_EXIST);
-                                            answerDTO.setAnswer("Пользователь с таким username не существует!");
-                                        }
-                                        logger.log(Level.INFO, "Отправлен статус " + answerDTO.getAuth());
-                                    }
-                                    case REQUEST_REGISTER -> {
-                                        if (!facadeableDatabase.isExist(userModel)) {
-                                            answerDTO.setUserModel(facadeableDatabase.authentication(userModel));
-                                            if (facadeableDatabase.isExist(userModel)) {
-                                                answerDTO.setAuth(AuthList.AUTHORIZATION);
-                                                answerDTO.setAnswer("Пользователь успешно создан!");
-                                            } else {
-                                                answerDTO.setAuth(AuthList.NONE);
-                                                answerDTO.setAnswer("Не удалось добавить пользователя, возможно ошибка в базе данных!");
-                                            }
-                                        } else {
-                                            answerDTO.setAuth(AuthList.IS_EXIST);
-                                            answerDTO.setAnswer("Пользователь с таким именем уже существует!");
-                                        }
-                                    }
-                                    case AUTHORIZATION -> {
-                                        if (facadeableDatabase.isAuthorization(authorizationRequestDTO.getUserModel())) {
-                                            answerDTO.setAuth(AuthList.AUTHORIZATION);
-                                            break;
-                                        } else {
-                                            answerDTO.setAuth(AuthList.UNAUTHORIZED);
-                                            authorizationRequestDTO.setAuthList(AuthList.UNAUTHORIZED);
-                                            continue;
-                                        }
-                                    }
-                                    case UNAUTHORIZED -> {
-                                        if (facadeableDatabase.isExist(userModel)) {
-                                            if (facadeableDatabase.isAuthorization(userModel)) {
-                                                answerDTO.setAuth(AuthList.AUTHORIZATION);
-                                                answerDTO.setAnswer("Пользователь авторизирован!");
-                                                userModel = facadeableDatabase.authorization(userModel);
-                                            } else {
-                                                answerDTO.setAuth(AuthList.UNAUTHORIZED);
-                                                answerDTO.setAnswer("Пользователь не авторизован!");
-                                            }
-                                        } else {
-                                            answerDTO.setAuth(AuthList.NOT_EXIST);
-                                            answerDTO.setAnswer("Пользователь не существует");
-                                        }
-                                    }
-                                    default -> {
-                                        System.out.println(authorizationRequestDTO);
-                                        answerDTO.setAuth(AuthList.NONE);
-                                        answerDTO.setAnswer("Не соблюдено API проверьте код!");
-                                    }
-                                }
-                                if (authorizationRequestDTO.getCommandDTO() == null) {
-                                    authorizationRequestDTO.setCommandDTO(new CommandDTO());
-                                }
-                                if (answerDTO.getAuth() == AuthList.AUTHORIZATION) {
-                                    userModel = facadeableDatabase.authorization(userModel);
-                                }
-                                answerDTO.setUserModel(userModel);
-                                System.out.println("ServerUDPNonBlocking говорит что после регистрации answer dto = " + answerDTO);
-
-
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                logger.log(Level.INFO, "Проблема с авторизацией класс " + this.getClass().getName());
-                            }
-                            if (answerDTO.getAuth() == AuthList.AUTHORIZATION) {
-                                try {
-                                    byteBufferReceive.clear();
-                                    commandDTOWrapper = new CommandDTOWrapper(authorizationRequestDTO.getCommandDTO(), mapper);
-                                    Map<String, Command> commandMap = commandManager.getCommandMap();
-                                    Command thisCommand = new HelpCommand(commandManager);
-                                    if (commandMap.containsKey(commandDTOWrapper.getNameCommand())) {
-                                        thisCommand = commandMap.get(commandDTOWrapper.getNameCommand());
-                                    }
-                                    thisCommand.setCommandDTO(commandDTOWrapper.getCommandDTO());
-                                    try {
-                                        thisCommand.setUserModel(answerDTO.getUserModel());
-                                        commandManager.execute(thisCommand);
-                                        answerDTO.setAnswer(thisCommand.getAnswer());
-                                    } catch (RuntimeException e) {
-                                        e.printStackTrace();
-                                        answerDTO.setAnswer("Невозможно выполнить такую команду!");
-                                        logger.log(Level.INFO, "Невозможно выполнить execute_script внутри другого!");
-
-                                    }
-                                    logger.log(Level.INFO, "Command is executed: " + commandDTOWrapper.getNameCommand());
-                                } catch (NullPointerException e) {
-                                    logger.log(Level.INFO, "Команда пустая!");
-                                    answerDTO.setAnswer("Команда пустая!");
-                                }
-                            } else {
-                                answerDTO.setAnswer("Неправильный логин или пароль!");
-                            }
-                            if (address != null) {
-                                ByteBuffer byteBufferSend = answerParser.getBytes(answerDTO);
-                                channel.send(byteBufferSend, address);
-                                logger.log(Level.CONFIG, "Ответ " + answerDTO + " отправлен клиенту по адресу: " + address);
-                            }
+                            TaskForThreads taskForThreads = new TaskForThreads(byteBufferReceive, address,channel,bytesParser,answerParser,facadeableDatabase,commandManager,mapper, Executors.newFixedThreadPool(10),Executors.newCachedThreadPool(), logger);
+                            taskForThreads.run();
                         }
                     }
 
