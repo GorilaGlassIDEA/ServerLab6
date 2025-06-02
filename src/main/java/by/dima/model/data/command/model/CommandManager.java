@@ -30,7 +30,7 @@ public class CommandManager {
         //TODO: доделать RouteBuilder (routeCreator)
         Command helpCommand = new HelpCommand(this);
         Command infoCommand = new InfoCommand(usersCollectionController);
-        Command showCommand = new ShowCommand( usersCollectionController);
+        Command showCommand = new ShowCommand(usersCollectionController);
         Command updateCommand = new UpdateCommand(parserFromJsonRoute, usersCollectionController);
         Command clearCommand = new ClearCommand(usersCollectionController);
         Command insertCommand = new InsertCommand(usersCollectionController, parserFromJsonRoute, logger);
@@ -42,6 +42,7 @@ public class CommandManager {
         Command groupCountingByIdCommand = new GroupCountingByIdCommand(usersCollectionController);
         Command printAscendingCommand = new PrintAscendingCommand(usersCollectionController);
         Command printFieldDescendingDistanceCommand = new PrintFieldDescendingDistanceCommand(usersCollectionController);
+        Command showAllCommand = new ShowAllCommand(usersCollectionController);
 
         commandMap.put(helpCommand.getKey(), helpCommand);
         commandMap.put(infoCommand.getKey(), infoCommand);
@@ -57,7 +58,9 @@ public class CommandManager {
         commandMap.put(groupCountingByIdCommand.getKey(), groupCountingByIdCommand);
         commandMap.put(printAscendingCommand.getKey(), printAscendingCommand);
         commandMap.put(printFieldDescendingDistanceCommand.getKey(), printFieldDescendingDistanceCommand);
+        commandMap.put(showAllCommand.getKey(), showAllCommand);
     }
+
 
     public void execute(Command command) {
         command.execute();

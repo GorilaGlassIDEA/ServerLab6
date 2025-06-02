@@ -13,6 +13,7 @@ import by.dima.model.db.dao.UserFacadeableDatabase;
 import lombok.ToString;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
@@ -54,11 +55,13 @@ public class UsersCollectionController {
         }
         return collectionDTO;
     }
+
     @Deprecated
     public void addCommandName(String commandName, Long userId) {
         collectionDTO = getCollectionDTO(userId);
         collectionDTO.addCommandHistory(commandName);
     }
+
     @Deprecated
     public List<String> getCommandNameList(Long userId) {
         collectionDTO = getCollectionDTO(userId);
@@ -75,7 +78,8 @@ public class UsersCollectionController {
             return false;
         }
     }
-    public List<Route> getRouteListForUser(UserModel userModel){
+
+    public List<Route> getRouteListForUser(UserModel userModel) {
         return databaseSavingService.getRoutesForUser(userModel);
     }
 
@@ -100,6 +104,14 @@ public class UsersCollectionController {
     public List<Route> getRoutesForUser(UserModel userModel) {
         List<Route> routeList = databaseSavingService.getRoutesForUser(userModel);
         return routeList;
+    }
+
+    public List<Route> getAllRoute() {
+        List<Route> allRoutesList = new ArrayList<>();
+        for (UserModel userModel : databaseSavingService.getAllUser()) {
+            allRoutesList.addAll(userModel.getRoutesList());
+        }
+        return allRoutesList;
     }
 
     public boolean saveToCollectionRouteForUser() {

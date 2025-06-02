@@ -70,6 +70,15 @@ public class DatabaseSavingService {
         return null;
     }
 
+    public List<UserModel> getAllUser() {
+        try (Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+            List<UserModel> list = session.createQuery("FROM UserModel", UserModel.class).list();
+            session.getTransaction().commit();
+            return list;
+        }
+    }
+
     public void deleteDataForUser(UserModel userModel) {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
