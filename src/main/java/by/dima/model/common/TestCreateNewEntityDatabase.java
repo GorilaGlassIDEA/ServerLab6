@@ -19,7 +19,7 @@ public class TestCreateNewEntityDatabase {
                     .x(10)
                     .y(20D)
                     .build();
-            LocationTo locationTo= LocationTo.builder()
+            LocationTo locationTo = LocationTo.builder()
                     .name("New Location TO")
                     .y(123D)
                     .x(123D)
@@ -38,14 +38,14 @@ public class TestCreateNewEntityDatabase {
                     .creationDate(ZonedDateTime.now())
                     .build();
 
-            UserModel userModel = new UserModel("dima","Crazy");
+            UserModel userModel = new UserModel("new_username1", "Crazy");
 
             UserRouteLink userRouteLink = UserRouteLink.builder()
                     .route(route)
                     .userModel(userModel)
                     .build();
 
-            session.persist(userRouteLink);
+            session.merge(userRouteLink);
             session.getTransaction().commit();
         }
     }

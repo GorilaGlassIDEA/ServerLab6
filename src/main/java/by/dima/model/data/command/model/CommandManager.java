@@ -7,7 +7,9 @@ import by.dima.model.data.command.model.model.Command;
 import by.dima.model.common.route.main.Route;
 import by.dima.model.data.services.files.parser.string.model.ParserFromJson;
 import by.dima.model.data.services.files.parser.string.model.ParserToJson;
+import by.dima.model.db.dao.DatabaseSavingService;
 import lombok.Getter;
+import org.hibernate.SessionFactory;
 
 import java.util.*;
 import java.util.logging.Logger;
@@ -22,7 +24,7 @@ public class CommandManager {
     private final Map<String, Command> commandMap = new HashMap<>();
     private final UsersCollectionController usersCollectionController;
 
-    public CommandManager(Logger logger, UsersCollectionController usersCollectionController, ParserToJson<Route> parserToJson, ParserFromJson<Route> parserFromJsonRoute) {
+    public CommandManager(Logger logger, SessionFactory sessionFactory, UsersCollectionController usersCollectionController, ParserToJson<Route> parserToJson, ParserFromJson<Route> parserFromJsonRoute) {
         this.usersCollectionController = usersCollectionController;
 
         //TODO: доделать RouteBuilder (routeCreator)
@@ -31,7 +33,7 @@ public class CommandManager {
         Command showCommand = new ShowCommand(usersCollectionController);
         Command updateCommand = new UpdateCommand(parserFromJsonRoute, usersCollectionController);
         Command clearCommand = new ClearCommand(usersCollectionController);
-        Command insertCommand = new InsertCommand(usersCollectionController, parserFromJsonRoute, logger);
+        Command insertCommand = new InsertCommand(new DatabaseSavingService(sessionFactory),usersCollectionController, parserFromJsonRoute, logger);
         Command removeKeyCommand = new RemoveKeyCommand(usersCollectionController);
         Command historyCommand = new HistoryCommand(usersCollectionController);
         Command executeScriptCommand = new ExecuteScriptCommand(parserToJson, this);

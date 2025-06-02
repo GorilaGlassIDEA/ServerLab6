@@ -9,6 +9,7 @@ import by.dima.model.data.command.model.model.CommandAbstract;
 import by.dima.model.common.route.main.Route;
 
 import by.dima.model.data.services.files.parser.string.model.ParserFromJson;
+import by.dima.model.db.dao.DatabaseSavingService;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,18 +32,20 @@ public class InsertCommand extends CommandAbstract {
 
     private UserModel userModel;
     private Integer userId;
+    private final DatabaseSavingService databaseSavingService;
 
     @Override
-    public void serUserModel(UserModel userModel) {
+    public void setUserModel(UserModel userModel) {
         this.userModel = userModel;
     }
 
-    public InsertCommand(UsersCollectionController usersCollectionController, ParserFromJson<Route> parserFromJson, Logger logger) {
+    public InsertCommand(DatabaseSavingService databaseSavingService, UsersCollectionController usersCollectionController, ParserFromJson<Route> parserFromJson, Logger logger) {
         super("insert", "Add a new element with a specified key.");
         this.usersCollectionController = usersCollectionController;
-        saveCommand = new SaveCommand(usersCollectionController);
         this.logger = logger;
         this.parserFromJson = parserFromJson;
+        this.databaseSavingService = databaseSavingService;
+        saveCommand = new SaveCommand(usersCollectionController);
         builder = new StringBuilder();
     }
 
@@ -60,12 +63,15 @@ public class InsertCommand extends CommandAbstract {
                 Route route = parserFromJson.getModels(getCommandDTO().getJsonRouteObj());
                 final CollectionController collectionController = usersCollectionController.getCollectionControllerForUserUsingId(userModel);
 
+
                 System.out.println("Коллекция пришедшего юзера:" + collectionController.getCollectionForControl());
 
                 collectionController.addElem(route);
                 logger.log(Level.FINE, "Нашлась коллекция для пользователя с id: " + userId + " аргумент равен " + arg);
-                if (usersCollectionController.saveCollection(userModel)) {
-                    logger.log(Level.FINE, "Коллекция сохранила Map<Long id, Route userRoute!> " + collectionController.getCollectionForControl());
+
+                if (databaseSavingService.saveRoute(userModel, route)) {
+                    logger.log(Level.FINE, "Коллекция сохранила Route " + route);
+
                     builder.append("Ваши данные сохранены корректно!").append(collectionController.getModels());
                 } else {
                     logger.log(Level.WARNING, "Не удалось сохранить Map<Long id, Route userRoute!>");

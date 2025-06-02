@@ -59,11 +59,11 @@ public class Main {
         UserFacadeableDatabase userFacadeableDatabase = new UserDatabaseFacade(sessionFactory);
         try {
 
-            UsersCollectionController usersCollectionController = new UsersCollectionController(userFacadeableDatabase,logger,
+            UsersCollectionController usersCollectionController = new UsersCollectionController(userFacadeableDatabase, logger,
                     readableFile, parserFromJson, writeableFile, parserToJson
             );
 
-            CommandManager manager = new CommandManager(logger, usersCollectionController, new ParserToJsonImpl<>(mapper), parserFromJsonRoute);
+            CommandManager manager = new CommandManager(logger, sessionFactory, usersCollectionController, new ParserToJsonImpl<>(mapper), parserFromJsonRoute);
 
             Serverable serverUDP = new ServerUDPNonBlocking(userFacadeableDatabase, manager, mapper, logger);
             serverUDP.startServer();

@@ -14,7 +14,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.w3c.dom.ls.LSOutput;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
@@ -173,7 +172,7 @@ public class ServerUDPNonBlocking implements Serverable {
                                     }
                                     thisCommand.setCommandDTO(commandDTOWrapper.getCommandDTO());
                                     try {
-                                        thisCommand.serUserModel(answerDTO.getUserModel());
+                                        thisCommand.setUserModel(answerDTO.getUserModel());
                                         commandManager.execute(thisCommand);
                                         answerDTO.setAnswer(thisCommand.getAnswer());
                                     } catch (RuntimeException e) {

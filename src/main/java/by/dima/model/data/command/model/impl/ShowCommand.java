@@ -1,6 +1,7 @@
 package by.dima.model.data.command.model.impl;
 
 import by.dima.model.common.CommandDTO;
+import by.dima.model.common.UserModel;
 import by.dima.model.data.CollectionController;
 import by.dima.model.data.UsersCollectionController;
 import by.dima.model.data.abstracts.model.CollectionDTO;
@@ -18,11 +19,8 @@ public class ShowCommand extends CommandAbstract {
     private final UsersCollectionController usersCollectionController;
     private StringBuilder builder;
     private Integer userId;
+    private UserModel userModel;
 
-    @Override
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
 
     public ShowCommand(UsersCollectionController usersCollectionController) {
         super("show", "Display all elements in the collection.");
@@ -31,6 +29,7 @@ public class ShowCommand extends CommandAbstract {
 
     @Override
     public void execute() {
+        userId = userModel.getId();
         CollectionController collectionController = new CollectionController(usersCollectionController.getCollectionDTO((long) userId));
         builder = new StringBuilder();
         CollectionDTO models = collectionController.getModels();

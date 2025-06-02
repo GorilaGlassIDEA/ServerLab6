@@ -17,7 +17,7 @@ public interface Command extends Nameable, Helpable {
         System.out.println("Вызван ментод setUserId интерфейса Command!");
         //TODO: заменить везд на userModel
     }
-    default void serUserModel(UserModel userModel){
+    default void setUserModel(UserModel userModel){
 
     }
 

@@ -4,16 +4,16 @@ import by.dima.model.common.route.main.Route;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
-
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Entity
 @Table(name = "user_link_route")
-public class UserRouteLink {
+public final class UserRouteLink {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
