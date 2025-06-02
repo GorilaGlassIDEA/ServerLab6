@@ -25,10 +25,25 @@ public class DatabaseSavingService {
 
 
     public boolean saveRoute(UserModel userModel, Route route) {
+        route.setId(null);
+
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
-            //TODO: сделать сохранение route для конкретного
-            // и сделать общие id для всех юзеров ккуuser
+            UserModel existingUserModel = session.createQuery("FROM UserModel where username= :username", UserModel.class)
+                    .setParameter("username", userModel.getUsername())
+                    .uniqueResult();
+            if (existingUserModel != null) {
+                existingUserModel.setPassword(userModel.getPassword());
+                userModel = existingUserModel;
+                UserRouteLink userRouteLink = UserRouteLink.builder()
+                        .route(route)
+                        .userModel(userModel)
+                        .build();
+                session.merge(userRouteLink);
+            } else {
+                logger.log(Level.WARNING, "Пользователя с таким username не существует! " + getClass().getName());
+            }
+            session.getTransaction().commit();
             return true;
         } catch (RuntimeException e) {
             e.printStackTrace();

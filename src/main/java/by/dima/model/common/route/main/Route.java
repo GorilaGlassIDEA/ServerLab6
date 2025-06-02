@@ -21,7 +21,7 @@ import java.util.List;
 public class Route implements Comparable<Route>, Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     private String name;
 
     @OneToOne(cascade = CascadeType.ALL)

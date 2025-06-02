@@ -40,12 +40,21 @@ public class TestCreateNewEntityDatabase {
 
             UserModel userModel = new UserModel("new_username1", "Crazy");
 
-            UserRouteLink userRouteLink = UserRouteLink.builder()
-                    .route(route)
-                    .userModel(userModel)
-                    .build();
 
-            session.merge(userRouteLink);
+            UserModel existingUserModel = session.createQuery("FROM UserModel where username= :username", UserModel.class)
+                    .setParameter("username", userModel.getUsername())
+                    .uniqueResult();
+            if (existingUserModel != null) {
+                existingUserModel.setPassword(userModel.getPassword());
+                userModel = existingUserModel;
+                UserRouteLink userRouteLink = UserRouteLink.builder()
+                        .route(route)
+                        .userModel(userModel)
+                        .build();
+                session.merge(userRouteLink);
+            }else {
+                System.out.println("Ошибка доступа, такого User не существует!");
+            }
             session.getTransaction().commit();
         }
     }
