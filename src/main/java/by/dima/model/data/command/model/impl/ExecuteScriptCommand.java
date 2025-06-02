@@ -2,6 +2,7 @@ package by.dima.model.data.command.model.impl;
 
 import by.dima.model.common.CommandDTO;
 import by.dima.model.common.ExecuteDTO;
+import by.dima.model.common.UserModel;
 import by.dima.model.common.route.main.Route;
 import by.dima.model.data.command.model.CommandManager;
 import by.dima.model.data.command.model.model.Command;
@@ -30,6 +31,7 @@ public class ExecuteScriptCommand extends CommandAbstract {
     private RouteBuilder builder;
     private ParserToJson<Route> parser;
     private StringBuilder stringBuilder;
+    private UserModel userModel;
 
     public ExecuteScriptCommand(ParserToJson<Route> parser, CommandManager manager) {
         super("execute_script", "Execute commands from a specified file.");
@@ -49,10 +51,11 @@ public class ExecuteScriptCommand extends CommandAbstract {
                 if (command != null) {
                     CommandDTO commandDTO = new CommandDTO();
                     commandDTO.setNameCommand(command.getKey());
-                    commandDTO.setUserID(getCommandDTO().getUserID());
+                    commandDTO.setUserID((long)userModel.getId());
                     for (Route route : executeCommandMap.get(command.getKey())) {
                         commandDTO.setJsonRouteObj(parser.getJson(route));
                         command.setCommandDTO(commandDTO);
+                        command.setUserModel(userModel);
                         command.execute();
                         if (!command.getKey().equals("execute_script"))
                             stringBuilder.append("Команда ").append(command.getKey()).append(" выполнена!").append("\n");
