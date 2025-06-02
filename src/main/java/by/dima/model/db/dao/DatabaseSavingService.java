@@ -7,6 +7,7 @@ import by.dima.model.common.route.main.Route;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -70,12 +71,16 @@ public class DatabaseSavingService {
         return null;
     }
 
-    public List<UserModel> getAllUser() {
+    public List<Route> getAllRoute() {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
             List<UserModel> list = session.createQuery("FROM UserModel", UserModel.class).list();
+            List<Route> allRoutesList = new ArrayList<>();
+            for (UserModel userModel : list) {
+                allRoutesList.addAll(userModel.getRoutesList());
+            }
             session.getTransaction().commit();
-            return list;
+            return allRoutesList;
         }
     }
 

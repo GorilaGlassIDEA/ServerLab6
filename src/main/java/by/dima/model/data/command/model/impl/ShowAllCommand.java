@@ -7,7 +7,6 @@ import by.dima.model.data.command.model.model.CommandAbstract;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.AbstractCollection;
 import java.util.List;
 @Setter
 @Getter

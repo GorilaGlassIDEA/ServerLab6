@@ -107,11 +107,7 @@ public class UsersCollectionController {
     }
 
     public List<Route> getAllRoute() {
-        List<Route> allRoutesList = new ArrayList<>();
-        for (UserModel userModel : databaseSavingService.getAllUser()) {
-            allRoutesList.addAll(userModel.getRoutesList());
-        }
-        return allRoutesList;
+        return databaseSavingService.getAllRoute();
     }
 
     public boolean saveToCollectionRouteForUser() {
