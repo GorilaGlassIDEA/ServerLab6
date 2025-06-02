@@ -43,7 +43,7 @@ public class ReplaceIfLoweCommand extends CommandAbstract {
 
     @Override
     public String getAnswer() {
-        usersCollectionController.saveCollection();
+        usersCollectionController.saveToCollectionRouteForUser();
         return new String(builder);
     }
 }

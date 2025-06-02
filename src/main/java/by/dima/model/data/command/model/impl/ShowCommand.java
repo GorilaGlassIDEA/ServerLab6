@@ -6,6 +6,7 @@ import by.dima.model.data.CollectionController;
 import by.dima.model.data.UsersCollectionController;
 import by.dima.model.data.abstracts.model.CollectionDTO;
 import by.dima.model.data.command.model.model.CommandAbstract;
+import by.dima.model.db.dao.DatabaseSavingService;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -31,12 +32,13 @@ public class ShowCommand extends CommandAbstract {
     public void execute() {
         userId = userModel.getId();
         CollectionController collectionController = new CollectionController(usersCollectionController.getCollectionDTO((long) userId));
+
         builder = new StringBuilder();
         CollectionDTO models = collectionController.getModels();
         if (models.sizeArray() == 0) {
             builder.append("Your collections is Empty!\nYou can add new element between insert command!");
         } else {
-            builder.append(collectionController.getModels());
+            builder.append(usersCollectionController.getRoutesForUser(userModel));
         }
     }
 

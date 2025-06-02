@@ -1,15 +1,15 @@
 package by.dima.model.common;
 
+import by.dima.model.common.route.main.Route;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.IdGeneratorType;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Data
 @Builder
@@ -23,6 +23,9 @@ public final class UserModel implements Serializable {
     private Integer id;
     private String username;
     private String password;
+    @OneToMany(mappedBy = "userModel", cascade = CascadeType.ALL)
+    @Getter(AccessLevel.NONE)
+    private List<UserRouteLink> routeList;
     @Serial
     private static final long serialVersionUID = 1L;
 
@@ -36,6 +39,12 @@ public final class UserModel implements Serializable {
     public UserModel(String username, String password) {
         this.username = username;
         this.password = password;
+    }
+
+    public List<Route> getRoutesList() {
+        return routeList.stream()
+                .map(UserRouteLink::getRoute)
+                .collect(Collectors.toList());
     }
 
     @Override

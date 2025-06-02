@@ -1,6 +1,5 @@
 package by.dima.model.data.command.model.impl;
 
-import by.dima.model.data.CollectionController;
 import by.dima.model.data.UsersCollectionController;
 import by.dima.model.data.command.model.model.CommandAbstract;
 import lombok.Getter;
@@ -25,7 +24,7 @@ public class SaveCommand extends CommandAbstract {
     public void execute() {
         stringBuilder = new StringBuilder();
 
-        if (usersCollectionController.saveCollection()) {
+        if (usersCollectionController.saveToCollectionRouteForUser()) {
             stringBuilder.append("Your changes was saving!");
         } else {
             stringBuilder.append("Your changes wasn't saving!");

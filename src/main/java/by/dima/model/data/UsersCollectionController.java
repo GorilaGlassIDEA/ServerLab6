@@ -8,6 +8,7 @@ import by.dima.model.data.services.files.io.read.ReadableFile;
 import by.dima.model.data.services.files.io.write.WriteableFile;
 import by.dima.model.data.services.files.parser.string.model.ParserFromJson;
 import by.dima.model.data.services.files.parser.string.model.ParserToJson;
+import by.dima.model.db.dao.DatabaseSavingService;
 import by.dima.model.db.dao.UserFacadeableDatabase;
 import lombok.ToString;
 
@@ -28,13 +29,15 @@ public class UsersCollectionController {
     private CollectionDTO collectionDTO;
     private final Logger logger;
     private final UserFacadeableDatabase<Route> facadeableDatabase;
+    private final DatabaseSavingService databaseSavingService;
 
-    public UsersCollectionController(UserFacadeableDatabase<Route> facadeableDatabase, Logger logger, ReadableFile readableFile, ParserFromJson<UsersCollectionDTO> parserFromJson, WriteableFile writeableFile, ParserToJson<UsersCollectionDTO> parserToJson) {
+    public UsersCollectionController(DatabaseSavingService databaseSavingService, UserFacadeableDatabase<Route> facadeableDatabase, Logger logger, ReadableFile readableFile, ParserFromJson<UsersCollectionDTO> parserFromJson, WriteableFile writeableFile, ParserToJson<UsersCollectionDTO> parserToJson) {
         this.writeableFile = writeableFile;
         this.parserToJson = parserToJson;
         this.parserFromJson = parserFromJson;
         this.logger = logger;
         this.facadeableDatabase = facadeableDatabase;
+        this.databaseSavingService = databaseSavingService;
         try {
             usersCollectionDTO = parserFromJson.getModels(readableFile.getContent());
         } catch (IOException e) {
@@ -82,20 +85,21 @@ public class UsersCollectionController {
         }
     }
 
-    public boolean saveCollection(UserModel userModel) {
+    public boolean saveToCollectionRouteForUser(UserModel userModel, Route route) {
         try {
-            if (usersCollectionDTO == null) {
-                writeableFile.write(parserToJson.getJson(new UsersCollectionDTO(new HashMap<>())));
-            } else {
-                writeableFile.write(parserToJson.getJson(usersCollectionDTO));
-            }
+            databaseSavingService.saveRoute(userModel, route);
             return true;
         } catch (RuntimeException e) {
             return false;
         }
     }
 
-    public boolean saveCollection() {
+    public List<Route> getRoutesForUser(UserModel userModel) {
+        List<Route> routeList = databaseSavingService.getRoutesForUser(userModel);
+        return routeList;
+    }
+
+    public boolean saveToCollectionRouteForUser() {
         //todo:  убрать! это затычка чтобы не было ошибок!
         return true;
     }

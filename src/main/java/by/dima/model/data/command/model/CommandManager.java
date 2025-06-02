@@ -26,14 +26,14 @@ public class CommandManager {
 
     public CommandManager(Logger logger, SessionFactory sessionFactory, UsersCollectionController usersCollectionController, ParserToJson<Route> parserToJson, ParserFromJson<Route> parserFromJsonRoute) {
         this.usersCollectionController = usersCollectionController;
-
+        DatabaseSavingService databaseSavingService = new DatabaseSavingService(sessionFactory);
         //TODO: доделать RouteBuilder (routeCreator)
         Command helpCommand = new HelpCommand(this);
         Command infoCommand = new InfoCommand(usersCollectionController);
-        Command showCommand = new ShowCommand(usersCollectionController);
+        Command showCommand = new ShowCommand( usersCollectionController);
         Command updateCommand = new UpdateCommand(parserFromJsonRoute, usersCollectionController);
         Command clearCommand = new ClearCommand(usersCollectionController);
-        Command insertCommand = new InsertCommand(new DatabaseSavingService(sessionFactory),usersCollectionController, parserFromJsonRoute, logger);
+        Command insertCommand = new InsertCommand(usersCollectionController, parserFromJsonRoute, logger);
         Command removeKeyCommand = new RemoveKeyCommand(usersCollectionController);
         Command historyCommand = new HistoryCommand(usersCollectionController);
         Command executeScriptCommand = new ExecuteScriptCommand(parserToJson, this);

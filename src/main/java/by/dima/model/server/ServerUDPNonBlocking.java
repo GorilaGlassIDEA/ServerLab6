@@ -178,6 +178,7 @@ public class ServerUDPNonBlocking implements Serverable {
                                     } catch (RuntimeException e) {
                                         answerDTO.setAnswer("Невозможно выполнить такую команду!");
                                         logger.log(Level.INFO, "Невозможно выполнить execute_script внутри другого!");
+
                                     }
                                     logger.log(Level.INFO, "Command is executed: " + commandDTOWrapper.getNameCommand());
                                 } catch (NullPointerException e) {

@@ -17,6 +17,7 @@ import by.dima.model.data.services.files.parser.string.impl.UsersCollectionParse
 import by.dima.model.data.services.files.parser.string.impl.UsersCollectionParserToJson;
 import by.dima.model.data.services.files.parser.string.model.ParserFromJson;
 import by.dima.model.data.services.files.parser.string.model.ParserToJson;
+import by.dima.model.db.dao.DatabaseSavingService;
 import by.dima.model.db.dao.UserDatabaseFacade;
 import by.dima.model.db.dao.UserFacadeableDatabase;
 import by.dima.model.db.hibernate.config.HibernateConfiguration;
@@ -59,7 +60,7 @@ public class Main {
         UserFacadeableDatabase userFacadeableDatabase = new UserDatabaseFacade(sessionFactory);
         try {
 
-            UsersCollectionController usersCollectionController = new UsersCollectionController(userFacadeableDatabase, logger,
+            UsersCollectionController usersCollectionController = new UsersCollectionController(new DatabaseSavingService(sessionFactory),userFacadeableDatabase, logger,
                     readableFile, parserFromJson, writeableFile, parserToJson
             );
 

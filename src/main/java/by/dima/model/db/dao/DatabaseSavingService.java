@@ -9,13 +9,15 @@ import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
+import javax.annotation.processing.RoundEnvironment;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
 public class DatabaseSavingService {
 
-    private static final Log log = LogFactory.getLog(DatabaseSavingService.class);
+
     private final SessionFactory sessionFactory;
     private static Logger logger = Main.logger;
 
@@ -24,7 +26,7 @@ public class DatabaseSavingService {
     }
 
 
-    public boolean saveRoute(UserModel userModel, Route route) {
+    public void saveRoute(UserModel userModel, Route route) {
         route.setId(null);
 
         try (Session session = sessionFactory.openSession()) {
@@ -44,12 +46,32 @@ public class DatabaseSavingService {
                 logger.log(Level.WARNING, "Пользователя с таким username не существует! " + getClass().getName());
             }
             session.getTransaction().commit();
-            return true;
         } catch (RuntimeException e) {
             e.printStackTrace();
             logger.log(Level.WARNING, "Ошибка при добавлении маршрута для пользователя: " + e.getMessage());
-            return false;
         }
+    }
+
+    public List<Route> getRoutesForUser(UserModel userModel) {
+
+        try (Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+
+            UserModel userFromDb = session.find(UserModel.class, userModel.getId());
+            if (userFromDb != null) {
+                if (userFromDb.equals(userModel)) {
+                    logger.log(Level.FINE, "Данные совпадают! User найден");
+                    //TODO:Vпроверить  вывод
+                    return userFromDb.getRoutesList();
+                } else {
+                    logger.log(Level.WARNING, "ID user совпадает, но неправильный логин или пароль");
+                }
+            } else {
+                logger.log(Level.WARNING, "User не был найден " + getClass().getName());
+            }
+            session.getTransaction().commit();
+        }
+        return null;
     }
 
 }
