@@ -13,9 +13,7 @@ import by.dima.model.db.dao.UserFacadeableDatabase;
 import lombok.ToString;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -79,8 +77,8 @@ public class UsersCollectionController {
         }
     }
 
-    public List<Route> getRouteListForUser(UserModel userModel) {
-        return databaseSavingService.getRoutesForUser(userModel);
+    public Collection<Route> getRouteListForUser(UserModel userModel) {
+        return Collections.synchronizedCollection(databaseSavingService.getRoutesForUser(userModel));
     }
 
     public CollectionController getCollectionControllerForUser(UserModel userModel) {

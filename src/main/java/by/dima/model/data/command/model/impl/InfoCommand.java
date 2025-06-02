@@ -9,6 +9,9 @@ import by.dima.model.data.command.model.model.CommandAbstract;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -31,7 +34,7 @@ public class InfoCommand extends CommandAbstract {
     @Override
     public void execute() {
 
-        List<Route> routeList = usersCollectionController.getRouteListForUser(userModel);
+        Collection<Route> routeList = usersCollectionController.getRouteListForUser(userModel);
         builder = new StringBuilder();
         if (routeList.isEmpty()) {
             builder.append("Your collections is Empty!\nYou can add new element between insert command!");
@@ -39,7 +42,7 @@ public class InfoCommand extends CommandAbstract {
             builder.append("Type: ").append(Route.class.getName()).append("\n");
             builder.append("Size: ").append(routeList.size()).append("\n");
             for (Route route : routeList) {
-                builder.append("Date for Route with id = " + routeList.indexOf(route) + ": ").append(route.getCreationDate()).append("\n");
+                builder.append("Date for Route "  + ": ").append(route.getCreationDate()).append("\n");
             }
         }
     }

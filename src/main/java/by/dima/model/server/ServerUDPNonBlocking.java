@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ForkJoinPool;
 import java.util.logging.Level;
@@ -37,6 +38,8 @@ public class ServerUDPNonBlocking implements Serverable {
 
     private final ObjectMapper mapper;
     private UserFacadeableDatabase facadeableDatabase;
+    private ExecutorService sendThreadPool = Executors.newFixedThreadPool(10);
+    private ExecutorService processThreadPool = Executors.newCachedThreadPool();
 
 
     public ServerUDPNonBlocking(UserFacadeableDatabase facadeableDatabase, CommandManager commandManager, ObjectMapper mapper, Logger logger) {
@@ -76,7 +79,7 @@ public class ServerUDPNonBlocking implements Serverable {
                             logger.log(Level.INFO, "Ip address client: " + address);
                             logger.log(Level.CONFIG, "Data client" + ByteBuffer.wrap(byteBufferReceive.array(), 0, byteBufferReceive.limit()));
                             TaskForThreads taskForThreads = new TaskForThreads(byteBufferReceive, address,channel,bytesParser,answerParser,facadeableDatabase,commandManager,mapper, Executors.newFixedThreadPool(10),Executors.newCachedThreadPool(), logger);
-                            taskForThreads.run();
+                            processThreadPool.submit(taskForThreads);
                         }
                     }
 
