@@ -1,12 +1,15 @@
 package by.dima.model.data.command.model.impl;
 
-import by.dima.model.common.CommandDTO;
+import by.dima.model.common.UserModel;
+import by.dima.model.common.route.main.Route;
 import by.dima.model.data.CollectionController;
 import by.dima.model.data.UsersCollectionController;
 import by.dima.model.data.abstracts.model.CollectionDTO;
 import by.dima.model.data.command.model.model.CommandAbstract;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 /**
  * Команда выводящая информацию по всем элементам коллекции на данный момент
@@ -15,6 +18,8 @@ import lombok.Setter;
 public class InfoCommand extends CommandAbstract {
     private StringBuilder builder;
     private final UsersCollectionController usersCollectionController;
+    @Setter
+    private UserModel userModel;
 
     public InfoCommand(UsersCollectionController usersCollectionController) {
         super("info", "Show collection details (type, initialization date, size).");
@@ -25,20 +30,22 @@ public class InfoCommand extends CommandAbstract {
 
     @Override
     public void execute() {
-        CollectionController collectionController = new CollectionController(usersCollectionController.getCollectionDTO(getCommandDTO().getUserID()));
-        CollectionDTO models = collectionController.getModels();
+
+        List<Route> routeList = usersCollectionController.getRouteListForUser(userModel);
         builder = new StringBuilder();
-        if (models.sizeArray() == 0) {
+        if (routeList.isEmpty()) {
             builder.append("Your collections is Empty!\nYou can add new element between insert command!");
         } else {
-            builder.append("Type: ").append(models.getType()).append("\n");
-            builder.append("Date: ").append(models.getZonedDateTime()).append("\n");
-            builder.append("Size: ").append(models.sizeArray());
+            builder.append("Type: ").append(Route.class.getName()).append("\n");
+            builder.append("Size: ").append(routeList.size()).append("\n");
+            for (Route route : routeList) {
+                builder.append("Date for Route with id = " + routeList.indexOf(route) + ": ").append(route.getCreationDate()).append("\n");
+            }
         }
     }
 
     @Override
     public String getAnswer() {
-        return new String(builder);
+        return new String(builder).trim();
     }
 }

@@ -45,7 +45,7 @@ public class UsersCollectionController {
         }
     }
 
-
+    @Deprecated
     public CollectionDTO getCollectionDTO(Long userId) {
         collectionDTO = usersCollectionDTO.getCollection(userId);
         if (collectionDTO == null) {
@@ -54,12 +54,12 @@ public class UsersCollectionController {
         }
         return collectionDTO;
     }
-
+    @Deprecated
     public void addCommandName(String commandName, Long userId) {
         collectionDTO = getCollectionDTO(userId);
         collectionDTO.addCommandHistory(commandName);
     }
-
+    @Deprecated
     public List<String> getCommandNameList(Long userId) {
         collectionDTO = getCollectionDTO(userId);
         return collectionDTO.getHistoryCommandList();
@@ -75,8 +75,11 @@ public class UsersCollectionController {
             return false;
         }
     }
+    public List<Route> getRouteListForUser(UserModel userModel){
+        return databaseSavingService.getRoutesForUser(userModel);
+    }
 
-    public CollectionController getCollectionControllerForUserUsingId(UserModel userModel) {
+    public CollectionController getCollectionControllerForUser(UserModel userModel) {
         try {
             return new CollectionController(usersCollectionDTO.getCollection((long) userModel.getId()));
         } catch (NullPointerException e) {

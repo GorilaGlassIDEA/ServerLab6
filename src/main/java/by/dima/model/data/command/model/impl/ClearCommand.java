@@ -30,6 +30,7 @@ public class ClearCommand extends CommandAbstract {
     public void execute() {
         builder = new StringBuilder();
         usersCollectionController.deleteDataFromCollection(userModel);
+        builder.append("Данные пользователя удалены!");
     }
 
     @Override
