@@ -18,7 +18,7 @@ public final class UserRouteLink {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "userid")
     private UserModel userModel;
 

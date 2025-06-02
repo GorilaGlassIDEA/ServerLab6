@@ -3,7 +3,6 @@ package by.dima.model.common;
 import by.dima.model.common.route.main.Route;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.IdGeneratorType;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -16,6 +15,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@ToString(exclude = "userRoutLinkList")
 @Table(name = "users")
 public final class UserModel implements Serializable {
     @Id
@@ -23,9 +23,8 @@ public final class UserModel implements Serializable {
     private Integer id;
     private String username;
     private String password;
-    @OneToMany(mappedBy = "userModel", cascade = CascadeType.ALL)
-    @Getter(AccessLevel.NONE)
-    private List<UserRouteLink> routeList;
+    @OneToMany(mappedBy = "userModel", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserRouteLink> userRouteLinkList;
     @Serial
     private static final long serialVersionUID = 1L;
 
@@ -42,10 +41,14 @@ public final class UserModel implements Serializable {
     }
 
     public List<Route> getRoutesList() {
-        return routeList.stream()
+        return userRouteLinkList.stream()
                 .map(UserRouteLink::getRoute)
                 .collect(Collectors.toList());
     }
+    public void deleteAllRouteForThisUser(){
+        userRouteLinkList.clear();
+    }
+
 
     @Override
     public boolean equals(Object o) {

@@ -1,6 +1,7 @@
 package by.dima.model.data.command.model.impl;
 
 import by.dima.model.common.CommandDTO;
+import by.dima.model.common.UserModel;
 import by.dima.model.data.CollectionController;
 import by.dima.model.data.UsersCollectionController;
 import by.dima.model.data.command.model.model.CommandAbstract;
@@ -16,12 +17,8 @@ import lombok.Setter;
 public class ClearCommand extends CommandAbstract {
     private final UsersCollectionController usersCollectionController;
     private StringBuilder builder;
-    private Integer userId;
-
-    @Override
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
+    @Setter
+    private UserModel userModel;
 
 
     public ClearCommand(UsersCollectionController usersCollectionController) {
@@ -32,12 +29,7 @@ public class ClearCommand extends CommandAbstract {
     @Override
     public void execute() {
         builder = new StringBuilder();
-        if (userId != null) {
-            if (!usersCollectionController.deleteDataFromCollection((long) userId)) {
-                builder.append("Комадна ничего не удалила, возможно ваша коллекция пуста!");
-            }
-        }
-        builder.append("Команда выполнена!");
+        usersCollectionController.deleteDataFromCollection(userModel);
     }
 
     @Override

@@ -2,6 +2,7 @@ package by.dima.model.data.command.model.impl;
 
 import by.dima.model.common.CommandDTO;
 import by.dima.model.common.UserModel;
+import by.dima.model.common.route.main.Route;
 import by.dima.model.data.CollectionController;
 import by.dima.model.data.UsersCollectionController;
 import by.dima.model.data.abstracts.model.CollectionDTO;
@@ -9,6 +10,8 @@ import by.dima.model.data.command.model.model.CommandAbstract;
 import by.dima.model.db.dao.DatabaseSavingService;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 /**
  * Данная команда показывает полную информацию по всем элементам коллекции
@@ -31,11 +34,9 @@ public class ShowCommand extends CommandAbstract {
     @Override
     public void execute() {
         userId = userModel.getId();
-        CollectionController collectionController = new CollectionController(usersCollectionController.getCollectionDTO((long) userId));
-
+        List<Route> routeList = usersCollectionController.getRoutesForUser(userModel);
         builder = new StringBuilder();
-        CollectionDTO models = collectionController.getModels();
-        if (models.sizeArray() == 0) {
+        if (routeList.isEmpty()) {
             builder.append("Your collections is Empty!\nYou can add new element between insert command!");
         } else {
             builder.append(usersCollectionController.getRoutesForUser(userModel));

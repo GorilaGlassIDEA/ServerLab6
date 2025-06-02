@@ -4,12 +4,9 @@ import by.dima.model.Main;
 import by.dima.model.common.UserModel;
 import by.dima.model.common.UserRouteLink;
 import by.dima.model.common.route.main.Route;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
-import javax.annotation.processing.RoundEnvironment;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -61,7 +58,6 @@ public class DatabaseSavingService {
             if (userFromDb != null) {
                 if (userFromDb.equals(userModel)) {
                     logger.log(Level.FINE, "Данные совпадают! User найден");
-                    //TODO:Vпроверить  вывод
                     return userFromDb.getRoutesList();
                 } else {
                     logger.log(Level.WARNING, "ID user совпадает, но неправильный логин или пароль");
@@ -74,4 +70,16 @@ public class DatabaseSavingService {
         return null;
     }
 
+    public void deleteDataForUser(UserModel userModel) {
+        try (Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+
+            UserModel existingUserModel = session.find(UserModel.class, userModel.getId());
+            existingUserModel.getUserRouteLinkList().clear();
+            existingUserModel.deleteAllRouteForThisUser();
+
+            session.getTransaction().commit();
+
+        }
+    }
 }

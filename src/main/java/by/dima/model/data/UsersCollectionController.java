@@ -66,12 +66,12 @@ public class UsersCollectionController {
     }
 
 
-    public boolean deleteDataFromCollection(Long userId) {
-        if (usersCollectionDTO.getMap().containsKey(userId)) {
-            usersCollectionDTO.getMap().remove(userId);
+    public boolean deleteDataFromCollection(UserModel userModel) {
+        try {
+            databaseSavingService.deleteDataForUser(userModel);
+            logger.log(Level.FINE, "Данные пользователя удалены");
             return true;
-
-        } else {
+        } catch (RuntimeException e) {
             return false;
         }
     }
