@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
+
 @Setter
 @Getter
 public class ShowAllCommand extends CommandAbstract {
@@ -24,13 +25,12 @@ public class ShowAllCommand extends CommandAbstract {
 
     @Override
     public void execute() {
-        List<Route> routeList = usersCollectionController.getRoutesForUser(userModel);
         builder = new StringBuilder();
-        if (routeList.isEmpty()) {
+        List<Route> allRoute = usersCollectionController.getAllRoute();
+        builder.append(allRoute);
+        builder.append("Успешно получены все записи для всех пользователей!");
+        if (allRoute.isEmpty()){
             builder.append("Your collections is Empty!\nYou can add new element between insert command!");
-        } else {
-            builder.append(usersCollectionController.getAllRoute());
-            builder.append("Успешно получены все записи для всех пользователей!");
         }
     }
 

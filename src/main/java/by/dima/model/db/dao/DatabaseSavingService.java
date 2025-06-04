@@ -96,4 +96,23 @@ public class DatabaseSavingService {
 
         }
     }
+
+    public boolean updateRoute(UserModel userModel, Route newRoute) {
+        try (Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+
+            UserModel existingUserModel = session.find(UserModel.class, userModel.getId());
+
+            if (existingUserModel != null && existingUserModel.getRoutesList().contains(newRoute)) {
+                session.merge(newRoute);
+            }else {
+                logger.log(Level.INFO, "Не удалось обновить элемент, нет доступа!");
+            }
+
+            session.getTransaction().commit();
+            return true;
+        } catch (RuntimeException e) {
+            return false;
+        }
+    }
 }

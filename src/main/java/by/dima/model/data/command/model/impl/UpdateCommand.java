@@ -1,10 +1,12 @@
 package by.dima.model.data.command.model.impl;
 
+import by.dima.model.common.UserModel;
 import by.dima.model.data.CollectionController;
 import by.dima.model.data.UsersCollectionController;
 import by.dima.model.data.command.model.model.CommandAbstract;
 import by.dima.model.common.route.main.Route;
 import by.dima.model.data.services.files.parser.string.model.ParserFromJson;
+import lombok.Setter;
 
 /**
  * Данная команда позволяет обновить элемент по указанному id
@@ -14,12 +16,9 @@ public class UpdateCommand extends CommandAbstract {
     private final UsersCollectionController usersCollectionController;
     private final ParserFromJson<Route> parser;
     private StringBuilder builder;
-    private Integer userId;
+    @Setter
+    private UserModel userModel;
 
-    @Override
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
 
     public UpdateCommand(ParserFromJson<Route> parser, UsersCollectionController usersCollectionController) {
         super("update", "Update an element by its ID.");
@@ -30,12 +29,10 @@ public class UpdateCommand extends CommandAbstract {
 
     @Override
     public void execute() {
-        CollectionController collectionController = new CollectionController(usersCollectionController.getCollectionDTO((long) userId));
         builder = new StringBuilder();
-
         if (getCommandDTO().getArgCommand() != null) {
             Route newRoute = parser.getModels(getCommandDTO().getJsonRouteObj());
-            if (collectionController.updateElem(newRoute)) {
+            if (usersCollectionController.updateElem(userModel, newRoute)) {
                 builder.append("Элемент успешно обновлен!");
             } else {
                 builder.append("Не удалось обновить элемент с id: ").append(newRoute.getId()).append(" элемент не существует!");

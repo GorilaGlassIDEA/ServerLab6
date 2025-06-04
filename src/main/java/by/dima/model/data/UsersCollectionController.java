@@ -112,4 +112,8 @@ public class UsersCollectionController {
         //todo:  убрать! это затычка чтобы не было ошибок!
         return true;
     }
+
+    public boolean updateElem(UserModel userModel, Route newRoute) {
+        return databaseSavingService.updateRoute(userModel,newRoute);
+    }
 }
