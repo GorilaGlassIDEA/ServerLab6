@@ -2,10 +2,7 @@ package by.dima.model.common;
 
 import by.dima.model.common.route.main.Route;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
@@ -14,6 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Entity
+@EqualsAndHashCode(exclude = "id")
 @Table(name = "user_link_route")
 public final class UserRouteLink {
     @Id

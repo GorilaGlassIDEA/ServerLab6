@@ -7,10 +7,12 @@ import by.dima.model.common.route.main.Route;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
+import javax.swing.plaf.synth.SynthOptionPaneUI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Stream;
 
 
 public class DatabaseSavingService {
@@ -102,12 +104,19 @@ public class DatabaseSavingService {
             session.beginTransaction();
 
             UserModel existingUserModel = session.find(UserModel.class, userModel.getId());
-
-            if (existingUserModel != null && existingUserModel.getRoutesList().contains(newRoute)) {
-                session.merge(newRoute);
-            }else {
+            //TODO: переписать правильно условие с испольование StreamAPI,
+            // то есть исправить сранвение по всем полям метода contains и оставить только сранвение по id
+            if (existingUserModel.getRoutesList().contains(newRoute)) {
+                Route exisingRouteFromDB = existingUserModel.getRoutesList().stream()
+                        .filter(s -> s.getId().equals(newRoute.getId()))
+                        .findFirst().get();
+                exisingRouteFromDB.setName(newRoute.getName());
+                logger.log(Level.INFO, "Успешное обновление Route");
+            } else {
                 logger.log(Level.INFO, "Не удалось обновить элемент, нет доступа!");
+                return false;
             }
+
 
             session.getTransaction().commit();
             return true;
