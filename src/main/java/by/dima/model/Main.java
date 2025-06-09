@@ -21,6 +21,7 @@ import by.dima.model.db.dao.DatabaseSavingService;
 import by.dima.model.db.dao.UserDatabaseFacade;
 import by.dima.model.db.dao.UserFacadeableDatabase;
 import by.dima.model.db.hibernate.config.HibernateConfiguration;
+import by.dima.model.locale.LocalizationSettings;
 import by.dima.model.utils.log.FactoryLogger;
 import by.dima.model.server.ServerUDPNonBlocking;
 import by.dima.model.server.Serverable;
@@ -30,20 +31,26 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.hibernate.SessionFactory;
 
+import java.util.Locale;
+import java.util.ResourceBundle;
 import java.util.logging.Handler;
 import java.util.logging.Logger;
 
 public class Main {
-    public static String FILE_PATH;
     public static final Logger logger = FactoryLogger.create();
 
     public static void main(String[] args) {
+
+        String FILE_PATH;
         if (System.getenv("FILE_PATH") == null) {
             FILE_PATH = System.getProperty("user.dir") + '/' + "save.json";
         } else {
             FILE_PATH = System.getenv("FILE_PATH") + '/' + "save.json";
         }
-        System.out.println("Путь сохранения вашего файла: " + FILE_PATH);
+
+//        System.out.println("Путь сохранения вашего файла: " + FILE_PATH);
+        //TODO: убрать сохранения файлов в текстовом формате
+
         WriteableFile writeableFile = new WriteFileOutputStreamWriter(FILE_PATH);
         Creatable creatable = new CreateFile(writeableFile);
         creatable.fileCreator();
@@ -57,22 +64,19 @@ public class Main {
 
         SessionFactory sessionFactory = HibernateConfiguration.getFactory();
 
-        UserFacadeableDatabase userFacadeableDatabase = new UserDatabaseFacade(sessionFactory);
+        UserFacadeableDatabase<Route> userFacadeableDatabase = new UserDatabaseFacade(sessionFactory);
+
+        final ResourceBundle resourceBundle = LocalizationSettings.installLangResource(new Locale("ru"));
         try {
+            UsersCollectionController usersCollectionController = new UsersCollectionController(new DatabaseSavingService(sessionFactory), userFacadeableDatabase, logger,
+                    readableFile, parserFromJson, writeableFile, parserToJson);
 
-            UsersCollectionController usersCollectionController = new UsersCollectionController(new DatabaseSavingService(sessionFactory),userFacadeableDatabase, logger,
-                    readableFile, parserFromJson, writeableFile, parserToJson
-            );
-
-            CommandManager manager = new CommandManager(logger, sessionFactory, usersCollectionController, new ParserToJsonImpl<>(mapper), parserFromJsonRoute);
-
-            Serverable serverUDP = new ServerUDPNonBlocking(userFacadeableDatabase, manager, mapper, logger);
+            CommandManager manager = new CommandManager(resourceBundle, logger, sessionFactory, usersCollectionController, new ParserToJsonImpl<>(mapper), parserFromJsonRoute);
+            Serverable serverUDP = new ServerUDPNonBlocking(resourceBundle, userFacadeableDatabase, manager, mapper, logger);
             serverUDP.startServer();
 
-            //TODO: исправить ошибку команды info когда коллекция не пустая!
-
         } catch (RuntimeException e) {
-            System.err.println("Не удалось получить путь для сохранения объектов!");
+            System.err.println(resourceBundle.getString("exception.main"));
         } finally {
             for (Handler handler : logger.getHandlers()) {
                 handler.close();

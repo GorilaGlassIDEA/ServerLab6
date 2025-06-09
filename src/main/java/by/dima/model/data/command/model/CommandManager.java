@@ -24,11 +24,11 @@ public class CommandManager {
     private final Map<String, Command> commandMap = new HashMap<>();
     private final UsersCollectionController usersCollectionController;
 
-    public CommandManager(Logger logger, SessionFactory sessionFactory, UsersCollectionController usersCollectionController, ParserToJson<Route> parserToJson, ParserFromJson<Route> parserFromJsonRoute) {
+    public CommandManager(ResourceBundle bundle, Logger logger, SessionFactory sessionFactory, UsersCollectionController usersCollectionController, ParserToJson<Route> parserToJson, ParserFromJson<Route> parserFromJsonRoute) {
         this.usersCollectionController = usersCollectionController;
         DatabaseSavingService databaseSavingService = new DatabaseSavingService(sessionFactory);
         //TODO: доделать RouteBuilder (routeCreator)
-        Command helpCommand = new HelpCommand(this);
+        Command helpCommand = new HelpCommand(this, bundle);
         Command infoCommand = new InfoCommand(usersCollectionController);
         Command showCommand = new ShowCommand(usersCollectionController);
         Command updateCommand = new UpdateCommand(parserFromJsonRoute, usersCollectionController);

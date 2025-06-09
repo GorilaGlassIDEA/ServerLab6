@@ -1,6 +1,7 @@
 package by.dima.model.server;
 
 import by.dima.model.common.*;
+import by.dima.model.common.route.main.Route;
 import by.dima.model.data.command.model.CommandManager;
 import by.dima.model.data.command.model.impl.HelpCommand;
 import by.dima.model.data.command.model.model.Command;
@@ -12,20 +13,14 @@ import by.dima.model.server.request.serealizible.ParserObjToBytes;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.*;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ForkJoinPool;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -37,16 +32,17 @@ public class ServerUDPNonBlocking implements Serverable {
     private final int thisPort = 8932;
 
     private final ObjectMapper mapper;
-    private UserFacadeableDatabase facadeableDatabase;
-    private ExecutorService sendThreadPool = Executors.newFixedThreadPool(10);
+    private UserFacadeableDatabase<Route> facadeableDatabase;
     private ExecutorService processThreadPool = Executors.newCachedThreadPool();
+    private final ResourceBundle bundle;
 
 
-    public ServerUDPNonBlocking(UserFacadeableDatabase facadeableDatabase, CommandManager commandManager, ObjectMapper mapper, Logger logger) {
+    public ServerUDPNonBlocking(ResourceBundle bundle, UserFacadeableDatabase<Route> facadeableDatabase, CommandManager commandManager, ObjectMapper mapper, Logger logger) {
         this.commandManager = commandManager;
         this.logger = logger;
         this.mapper = mapper;
         this.facadeableDatabase = facadeableDatabase;
+        this.bundle = bundle;
     }
 
 
@@ -54,7 +50,6 @@ public class ServerUDPNonBlocking implements Serverable {
         ParserBytesToObj<AuthRequestDTO> bytesParser = new ParserFromBytesToObject<>(logger);
         ParserObjToBytes<AnswerDTO> answerParser = new ParserAnswerDTOToBytes(logger);
         ByteBuffer byteBufferReceive = ByteBuffer.allocate(100000);
-        AuthRequestDTO authorizationRequestDTO;
 
         try (DatagramChannel channel = DatagramChannel.open();
              Selector selector = Selector.open()) {
@@ -78,7 +73,7 @@ public class ServerUDPNonBlocking implements Serverable {
                             address = channel.receive(byteBufferReceive);
                             logger.log(Level.INFO, "Ip address client: " + address);
                             logger.log(Level.CONFIG, "Data client" + ByteBuffer.wrap(byteBufferReceive.array(), 0, byteBufferReceive.limit()));
-                            TaskForThreads taskForThreads = new TaskForThreads(byteBufferReceive, address,channel,bytesParser,answerParser,facadeableDatabase,commandManager,mapper, Executors.newFixedThreadPool(10),Executors.newCachedThreadPool(), logger);
+                            TaskForThreads taskForThreads = new TaskForThreads(bundle, byteBufferReceive, address, channel, bytesParser, answerParser, facadeableDatabase, commandManager, mapper, Executors.newFixedThreadPool(10), Executors.newCachedThreadPool(), logger);
                             processThreadPool.submit(taskForThreads);
                         }
                     }

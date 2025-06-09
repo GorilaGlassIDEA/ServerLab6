@@ -14,6 +14,7 @@ import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 
 import java.util.logging.Level;
@@ -31,9 +32,10 @@ public class TaskForThreads implements Runnable {
     private final ExecutorService workPool;
     private final ExecutorService sendPool;
     private final Logger logger;
+    public final ResourceBundle bundle;
 
 
-    public TaskForThreads( ByteBuffer data, SocketAddress address, DatagramChannel channel, ParserBytesToObj<AuthRequestDTO> bytesParser, ParserObjToBytes<AnswerDTO> answerParser, UserFacadeableDatabase database, CommandManager commandManager, ObjectMapper mapper, ExecutorService workPool, ExecutorService sendPool, Logger logger) {
+    public TaskForThreads(ResourceBundle bundle, ByteBuffer data, SocketAddress address, DatagramChannel channel, ParserBytesToObj<AuthRequestDTO> bytesParser, ParserObjToBytes<AnswerDTO> answerParser, UserFacadeableDatabase database, CommandManager commandManager, ObjectMapper mapper, ExecutorService workPool, ExecutorService sendPool, Logger logger) {
         this.data = data;
         this.address = address;
         this.channel = channel;
@@ -45,6 +47,7 @@ public class TaskForThreads implements Runnable {
         this.workPool = workPool;
         this.sendPool = sendPool;
         this.logger = logger;
+        this.bundle = bundle;
     }
 
     @Override
@@ -134,7 +137,7 @@ public class TaskForThreads implements Runnable {
                 try {
                     final CommandDTOWrapper commandDTOWrapper = new CommandDTOWrapper(authorizationRequestDTO.getCommandDTO(), mapper);
                     Map<String, Command> commandMap = commandManager.getCommandMap();
-                    Command thisCommand = new HelpCommand(commandManager);
+                    Command thisCommand = new HelpCommand(commandManager, bundle);
                     if (commandMap.containsKey(commandDTOWrapper.getNameCommand())) {
                         thisCommand = commandMap.get(commandDTOWrapper.getNameCommand());
                     }
@@ -164,7 +167,7 @@ public class TaskForThreads implements Runnable {
                         channel.send(byteBufferSend, address);
                         logger.log(Level.CONFIG, "Ответ " + answerDTO + " отправлен клиенту по адресу: " + address);
                     }
-                }catch (IOException e){
+                } catch (IOException e) {
                     logger.log(Level.FINE, "Не удалось отправить ответ от сервера клиенту");
                 }
 
