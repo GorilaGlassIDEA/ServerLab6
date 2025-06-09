@@ -10,10 +10,15 @@ import java.util.Locale;
 class LocalizationSettingsTest {
 
     @Test
-    void test() {
-
+    void testFirst() {
         Locale locale = new Locale("ru", "RU");
         String russianLangYes = LocalizationSettings.installLangResource(locale).getString("yes");
+        Assertions.assertEquals("да", russianLangYes);
+    }
+    @Test
+    void testSecond() {
+        Locale.setDefault(new Locale("ru"));
+        String russianLangYes = LocalizationSettings.installLangResource().getString("yes");
         Assertions.assertEquals("да", russianLangYes);
     }
 
