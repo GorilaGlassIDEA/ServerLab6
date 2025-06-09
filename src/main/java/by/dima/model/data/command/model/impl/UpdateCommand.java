@@ -1,7 +1,6 @@
 package by.dima.model.data.command.model.impl;
 
 import by.dima.model.common.UserModel;
-import by.dima.model.data.CollectionController;
 import by.dima.model.data.UsersCollectionController;
 import by.dima.model.data.command.model.model.CommandAbstract;
 import by.dima.model.common.route.main.Route;
