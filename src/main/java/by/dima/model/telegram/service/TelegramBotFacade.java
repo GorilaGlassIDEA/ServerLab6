@@ -15,7 +15,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 public class TelegramBotFacade extends TelegramLongPollingBot {
 
     private final BotCredentials config;
-    MyActionOnUpdateMessageFromUser action = new MyActionOnUpdateMessageFromUser();
+    HandlerMessage handlerMessage = new MyHandlerMessage();
 
     @Autowired
     public TelegramBotFacade(BotCredentials config) {
@@ -35,12 +35,12 @@ public class TelegramBotFacade extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        if (action.validateMessage(update)) {
-            SendMessage answerFromProcessedCommand = action.moveActionWithCommandFromMessage(update);
+        if (handlerMessage.validate(update)) {
+            SendMessage answerFromProcessedCommand = handlerMessage.process(update);
             try {
                 execute(answerFromProcessedCommand);
-            } catch (Exception e) {
-                //TODO: обрабатывать это исключение на более низком уровне
+            } catch (TelegramApiException e) {
+                throw new RuntimeException("Не получилось отправить ответное сообщение пользователю!", e);
             }
         }
     }
@@ -48,22 +48,40 @@ public class TelegramBotFacade extends TelegramLongPollingBot {
 
 }
 
-class MyActionOnUpdateMessageFromUser {
-    public boolean validateMessage(Update update) {
+class MyHandlerMessage implements HandlerMessage {
+    @Override
+    public boolean validate(Update update) {
         return update.hasMessage() && update.getMessage().hasText();
     }
 
-    public SendMessage moveActionWithCommandFromMessage(Update update) {
+    @Override
+    public SendMessage process(Update update) {
         long chatId = update.getMessage().getChatId();
         String firstName = update.getMessage().getChat().getFirstName();
         String answer = "Hi," + firstName;
-        return sendMessage(chatId, answer);
+        return send(chatId, answer);
     }
 
-    private SendMessage sendMessage(long chatId, String textMessage) {
+    @Override
+    public SendMessage send(long chatId, String textMessage) {
         SendMessage message = new SendMessage();
         message.setChatId(chatId);
         message.setText(textMessage);
         return message;
     }
+}
+
+interface Validationable {
+    boolean validate(Update update);
+}
+
+interface Processable {
+    SendMessage process(Update update);
+}
+
+interface Sendable {
+    SendMessage send(long chatId, String textMessage);
+}
+
+interface HandlerMessage extends Validationable, Processable, Sendable {
 }
