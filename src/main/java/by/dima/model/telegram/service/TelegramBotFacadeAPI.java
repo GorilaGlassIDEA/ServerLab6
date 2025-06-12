@@ -3,7 +3,6 @@ package by.dima.model.telegram.service;
 
 import by.dima.model.telegram.config.BotCredentials;
 import by.dima.model.telegram.service.message.handler.MessageHandler;
-import by.dima.model.telegram.service.message.handler.MyMessageHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -14,13 +13,13 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 @SuppressWarnings("ALL")
 @Component
-public class TelegramBotFacade extends TelegramLongPollingBot {
+public class TelegramBotFacadeAPI extends TelegramLongPollingBot {
 
     private final BotCredentials credentials;
     private final MessageHandler messageHandler;
 
     @Autowired
-    public TelegramBotFacade(BotCredentials credentials, MessageHandler messageHandler) {
+    public TelegramBotFacadeAPI(BotCredentials credentials, MessageHandler messageHandler) {
         this.credentials = credentials;
         this.messageHandler = messageHandler;
     }
