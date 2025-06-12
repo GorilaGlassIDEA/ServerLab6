@@ -11,6 +11,8 @@ import by.dima.model.data.services.files.parser.string.model.ParserFromJson;
  * Класс реализующий команду, которая заменяет {@link Route} если значение нового Route меньше
  * это проверка происходит с помощью реализации интерфейса {@link Comparable} в Route
  */
+@Deprecated
+
 public class ReplaceIfLoweCommand extends CommandAbstract {
     private final UsersCollectionController usersCollectionController;
     private final ParserFromJson<Route> parser;

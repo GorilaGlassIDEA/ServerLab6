@@ -12,6 +12,7 @@ import java.util.Map;
  * Данная команда реализует группировку элементов коллекции по любому признаку, описание группировки
  * можно узнать в классе {@link by.dima.model.data.group.model.Groups}
  */
+@Deprecated
 public class GroupCountingByIdCommand extends CommandAbstract {
     private final UsersCollectionController usersCollectionController;
     private StringBuilder builder;

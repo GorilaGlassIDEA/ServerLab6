@@ -1,6 +1,5 @@
 package by.dima.model.data.command.model.impl;
 
-import by.dima.model.Main;
 import by.dima.model.data.command.model.CommandManager;
 import by.dima.model.data.command.model.model.Command;
 import by.dima.model.data.command.model.model.CommandAbstract;

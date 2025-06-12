@@ -8,6 +8,7 @@ import by.dima.model.data.services.iterator.RouteIdSortIterator;
 /**
  * Данная команда выводит все элементы коллекции в порядке возрастания Id
  */
+@Deprecated
 public class PrintAscendingCommand extends CommandAbstract {
     private final UsersCollectionController usersCollectionController;
     private StringBuilder builder;

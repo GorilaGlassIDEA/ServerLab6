@@ -7,6 +7,7 @@ import by.dima.model.data.command.model.model.CommandAbstract;
 /**
  * Данная команда позволяет удалить все элементы коллекции id которых меньше заданного
  */
+@Deprecated
 public class RemoveLowerKeyCommand extends CommandAbstract {
 
     private final UsersCollectionController usersCollectionController;

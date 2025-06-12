@@ -10,6 +10,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@Deprecated
 public class SaveCommand extends CommandAbstract {
 
     private final UsersCollectionController usersCollectionController;

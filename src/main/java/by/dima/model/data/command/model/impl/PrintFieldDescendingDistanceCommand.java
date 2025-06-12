@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 /**
  * Данная команда выводит все элементы коллекции отсортированные по убыванию поля distance модели {@link Route}
  */
+@Deprecated
 public class PrintFieldDescendingDistanceCommand extends CommandAbstract {
     private final UsersCollectionController usersCollectionController;
     private StringBuilder builder;
